@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "anysphere.remote-containers",
+        "ms-azuretools.vscode-docker",
+        "christian-kohler.path-intellisense",
+        "aki77.rails-db-schema",
+        "shopify.ruby-extensions-pack",
+        "bradlc.vscode-tailwindcss",
+        "redhat.vscode-yaml",
+        "wayou.vscode-todo-highlight",
+        "gruntfuggly.todo-tree",
+        "alefragnani.bookmarks"
+    ]
+}
