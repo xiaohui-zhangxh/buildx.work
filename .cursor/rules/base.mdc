@@ -1,0 +1,208 @@
+---
+description: 项目基础规则和文档索引
+alwaysApply: true
+---
+
+# Tanmer Egg 项目基础规则
+
+## 📚 文档结构总览
+
+本项目采用分阶段文档管理方式，所有文档按功能模块和开发阶段组织。
+
+### 根目录文档
+
+- **README.md** - 项目概览、快速开始、技术栈（精简版，详细内容在其他文档）
+- **CURRENT_WORK.md** - 当前工作状态和待办事项（每日更新）
+
+### 文档目录 (docs/)
+
+所有项目文档都统一放在 `docs/` 目录下：
+
+- **docs/README.md** - 文档索引，所有文档的导航
+- **docs/FEATURES.md** - 完整的功能清单（所有功能的详细列表）
+- **docs/DEVELOPMENT_PLAN.md** - 开发计划总览（指向各阶段详细文档）
+- **docs/DEVELOPER_GUIDE.md** - 开发者指南（技术决策、架构设计、开发规范）
+
+### 阶段文档 (docs/phase-*)
+
+每个开发阶段都有独立的文档目录，包含：
+
+- **README.md** - 阶段概览、目标、主要功能
+- **plan.md** - 详细的开发计划和任务清单
+- **progress.md** - 开发进度跟踪（已完成、进行中、待开始）
+- **notes.md** - 开发笔记、问题记录、技术决策
+
+**当前阶段**：
+- `docs/phase-1-authentication/` - 第一阶段：用户认证系统（进行中）
+- `docs/phase-2-authorization/` - 第二阶段：权限系统（计划中）
+- `docs/phase-3-multi-tenant/` - 第三阶段：多租户支持（计划中）
+- `docs/phase-4-advanced/` - 第四阶段：高级功能（计划中）
+
+## 🗺️ 文档查找指南
+
+### 当需要了解项目整体情况时
+
+1. **项目概览**：查看 `README.md`
+2. **当前工作状态**：查看 `CURRENT_WORK.md`（了解正在做什么）
+3. **功能清单**：查看 `docs/FEATURES.md`
+4. **开发计划**：查看 `docs/DEVELOPMENT_PLAN.md` 或 `docs/README.md`
+
+### 当需要了解技术决策和架构时
+
+1. **技术架构**：查看 `docs/DEVELOPER_GUIDE.md`
+2. **认证系统设计**：查看 `docs/DEVELOPER_GUIDE.md` 的认证系统章节
+3. **Warden 集成**：查看 `docs/DEVELOPER_GUIDE.md` 的身份管理章节
+
+### 当需要开发某个功能时
+
+1. **查看阶段概览**：`docs/phase-{阶段名}/README.md`
+2. **查看详细计划**：`docs/phase-{阶段名}/plan.md`
+3. **查看开发进度**：`docs/phase-{阶段名}/progress.md`
+4. **查看开发笔记**：`docs/phase-{阶段名}/notes.md`
+
+### 当需要了解认证相关功能时
+
+1. **认证规则**：查看 `.cursor/rules/authentication.mdc`
+2. **认证架构**：查看 `docs/DEVELOPER_GUIDE.md` 的认证系统章节
+3. **开发计划**：查看 `docs/phase-1-authentication/plan.md`
+4. **Rails 官方文档**：https://guides.rubyonrails.org/security.html#authentication
+
+### 当需要了解 UI 组件时
+
+1. **DaisyUI 规则**：查看 `.cursor/rules/daisy-ui.mdc`
+2. **DaisyUI 文档**：https://daisyui.com/
+
+## 📋 核心开发原则
+
+### 1. 文档先行
+- 重要技术决策先记录在文档中
+- 开发前先查看相关文档
+- 开发过程中及时更新文档
+
+### 2. 分阶段开发
+- 按阶段逐步实现功能
+- 每个阶段完成后才进入下一阶段
+- 阶段文档独立管理
+
+### 3. 代码规范
+- 遵循 Rails 社区最佳实践
+- 使用 RuboCop 进行代码检查
+- 编写测试覆盖新功能
+- **添加 Gem 时记录版本号**：在 Gemfile 中明确指定版本号，并在相关文档中记录，避免以后出现兼容问题
+  - **必须使用最新版本**：添加 Gem 时，版本号必须是当下最新的稳定版本
+  - 可以通过 `gem search <gem_name>` 或访问 https://rubygems.org/gems/<gem_name> 查看最新版本
+
+### 4. 技术栈选择
+- **认证系统**：Rails 8 Authentication Generator + Warden
+- **前端**：Tailwind CSS 4 + DaisyUI 5
+- **身份管理**：Warden（支持多种认证策略）
+- **部署**：Kamal + Docker
+
+## 🔍 常见任务文档查找
+
+### 添加新功能
+1. 查看 `docs/FEATURES.md` 确认功能是否已规划
+2. 查看对应阶段的 `plan.md` 了解开发计划
+3. 查看 `docs/DEVELOPER_GUIDE.md` 了解技术规范
+4. 更新对应阶段的 `progress.md`
+
+### 添加新的 Gem 依赖
+1. **查找最新版本**：
+   - 使用命令：`gem search <gem_name>` 或 `gem info <gem_name>`
+   - 或访问：https://rubygems.org/gems/<gem_name>
+   - 确保获取的是最新稳定版本
+2. **在 Gemfile 中明确指定版本号**：
+   - 必须使用最新版本（如 `gem "warden", "~> 1.2.9"`）
+   - 不要使用过时的版本号
+3. 运行 `bundle install` 安装依赖
+4. **在相关文档中记录 Gem 名称和版本号**：
+   - 技术栈说明：更新 `README.md` 或 `docs/DEVELOPER_GUIDE.md`
+   - 开发笔记：更新对应阶段的 `notes.md`
+5. 记录添加原因和使用场景，便于后续维护
+
+### 解决技术问题
+1. 查看 `docs/phase-{阶段名}/notes.md` 是否有类似问题
+2. 查看 `docs/DEVELOPER_GUIDE.md` 了解技术决策
+3. 查看相关 Cursor 规则文件（如 `authentication.mdc`）
+
+### 更新开发进度
+1. 更新对应阶段的 `progress.md`
+2. 在 `notes.md` 中记录遇到的问题和解决方案
+3. 如有技术决策，更新 `docs/DEVELOPER_GUIDE.md`
+
+### 了解项目状态
+1. 查看 `CURRENT_WORK.md` 了解当前正在做什么
+2. 查看 `docs/DEVELOPMENT_PLAN.md` 了解整体进度
+3. 查看各阶段的 `progress.md` 了解详细进度
+4. 查看 `docs/FEATURES.md` 了解功能完成情况
+
+## 📝 文档更新规范
+
+### 何时更新文档
+
+1. **技术决策**：更新 `docs/DEVELOPER_GUIDE.md`
+2. **开发进度**：更新对应阶段的 `progress.md`
+3. **开发笔记**：更新对应阶段的 `notes.md`
+4. **功能完成**：更新 `docs/FEATURES.md` 和 `README.md`
+
+### 如何更新文档
+
+1. **阶段内文档**：在对应阶段的文件夹中更新
+2. **跨阶段文档**：在 `docs/` 根目录更新
+3. **技术决策**：更新 `docs/DEVELOPER_GUIDE.md`
+4. **功能清单**：更新 `docs/FEATURES.md`
+
+## 🎯 项目目标
+
+- **标准化开发**：提供统一的基础功能实现
+- **快速启动**：跳过重复的基础开发工作
+- **最佳实践**：集成 Rails 社区推荐的最佳实践
+- **开箱即用**：包含企业级功能模块
+
+## 🔗 重要链接
+
+- **项目主页**：`README.md`
+- **当前工作**：`CURRENT_WORK.md` ⭐ 每日必看
+- **文档索引**：`docs/README.md`
+- **功能清单**：`docs/FEATURES.md`
+- **开发计划**：`docs/DEVELOPMENT_PLAN.md`
+- **开发者指南**：`docs/DEVELOPER_GUIDE.md`
+- **认证规则**：`.cursor/rules/authentication.mdc`
+- **DaisyUI 规则**：`.cursor/rules/daisy-ui.mdc`
+
+## ⚠️ 注意事项
+
+1. **每日更新 CURRENT_WORK.md**：开始工作时查看，完成工作后更新
+2. **不要重复文档内容**：README.md 保持精简，详细内容在其他文档
+3. **及时更新进度**：开发过程中及时更新 progress.md 和 CURRENT_WORK.md
+4. **记录技术决策**：重要决策记录在 DEVELOPER_GUIDE.md 和对应阶段的 notes.md
+5. **遵循开发顺序**：按阶段顺序开发，不要跳跃
+
+## 📖 快速参考
+
+### 当前开发阶段
+- **阶段**：第一阶段 - 用户认证系统
+- **状态**：进行中
+- **文档位置**：`docs/phase-1-authentication/`
+- **详细计划**：`docs/phase-1-authentication/plan.md`
+
+### 技术栈核心
+- **Ruby**: 3.3.5
+- **Rails**: 8.1.1
+- **认证**: Rails 8 Authentication Generator + Warden
+- **前端**: Tailwind CSS 4 + DaisyUI 5
+- **部署**: Kamal + Docker
+
+### 开发规范
+- 遵循 Rails 最佳实践
+- 使用 RuboCop 代码检查
+- 编写测试覆盖
+- 文档先行原则
+
+### 获取当前时间
+当需要获取当前系统时间时，可以通过执行 Ruby 代码获取：
+- **日期**：`ruby -e "puts Time.now.strftime('%Y-%m-%d')"`
+- **完整时间**：`ruby -e "puts Time.now.strftime('%Y-%m-%d %H:%M:%S')"`
+- **ISO 格式**：`ruby -e "puts Time.now.iso8601"`
+
+常用于更新文档中的"最后更新"日期等场景。

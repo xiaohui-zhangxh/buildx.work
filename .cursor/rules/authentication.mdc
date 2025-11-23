@@ -1,0 +1,188 @@
+---
+description: 认证系统开发规则和参考
+alwaysApply: true
+---
+
+# 认证系统开发规则
+
+## 核心原则
+
+1. **使用 Rails 8 Authentication Generator**：所有认证相关的基础功能使用 Rails 8.0+ 内置的 `authentication` generator 生成
+2. **使用 Warden 管理身份**：身份存储和获取统一使用 Warden，便于扩展 API 认证策略
+3. **遵循 Rails 安全最佳实践**：参考 [Rails Security Guide](https://guides.rubyonrails.org/security.html#authentication)
+
+## 开发认证功能时的参考文件
+
+### 1. 开发者文档
+**文件位置**：`docs/DEVELOPER_GUIDE.md`
+**用途**：
+- 查看认证系统的架构设计
+- 了解 Warden 集成方式
+- 查看 API 认证策略设计
+- 参考开发规范和命名约定
+
+### 2. Rails Security Guide
+**链接**：https://guides.rubyonrails.org/security.html#authentication
+**用途**：
+- 了解 Rails 8 Authentication Generator 的使用方法
+- 查看安全最佳实践
+- 参考密码重置、邮箱确认等功能的实现
+
+### 3. Warden 配置文件
+**文件位置**：`config/initializers/warden.rb`
+**用途**：
+- 查看 Warden 的配置
+- 了解认证策略的注册方式
+- 查看身份获取的配置
+
+### 4. 认证策略实现
+**文件位置**：`lib/warden/strategies/`
+**用途**：
+- 查看现有认证策略的实现
+- 参考如何实现新的认证策略
+- 了解策略的注册和使用方式
+
+### 5. 认证辅助方法
+**文件位置**：`app/controllers/concerns/authenticatable.rb`
+**用途**：
+- 查看 `current_user`、`user_signed_in?` 等方法的实现
+- 了解认证相关的 before_action
+- 参考如何在控制器中使用认证功能
+
+### 6. User 模型
+**文件位置**：`app/models/user.rb`
+**用途**：
+- 查看用户模型的定义
+- 了解密码加密、邮箱确认等功能的实现
+- 参考用户相关的验证和方法
+
+### 7. 路由配置
+**文件位置**：`config/routes.rb`
+**用途**：
+- 查看认证相关的路由定义
+- 了解 RESTful 路由的命名规范
+
+## 开发流程
+
+### 添加新的认证功能
+
+1. **查阅文档**：
+   - 先查看 `docs/DEVELOPER_GUIDE.md` 了解整体架构
+   - 查看 Rails Security Guide 了解最佳实践
+
+2. **检查现有实现**：
+   - 查看 `app/models/user.rb` 了解用户模型
+   - 查看 `app/controllers/concerns/authenticatable.rb` 了解认证辅助方法
+   - 查看 `config/initializers/warden.rb` 了解 Warden 配置
+
+3. **实现功能**：
+   - 遵循现有的代码风格和命名规范
+   - 使用 Warden 进行身份管理
+   - 添加必要的测试
+
+4. **更新文档**：
+   - 更新 `docs/DEVELOPER_GUIDE.md` 记录新的功能
+   - 更新 README.md 标记完成的功能
+
+### 添加新的认证策略（如 API Token、JWT）
+
+1. **创建策略文件**：
+   - 在 `lib/warden/strategies/` 目录下创建新的策略文件
+   - 参考现有的策略实现（如 `password.rb`）
+
+2. **注册策略**：
+   - 在 `config/initializers/warden.rb` 中注册新策略
+   - 配置策略的优先级和适用范围
+
+3. **实现认证逻辑**：
+   - 实现 `authenticate!` 方法
+   - 处理认证成功和失败的情况
+
+4. **添加测试**：
+   - 编写策略的单元测试
+   - 编写集成测试
+
+## 代码规范
+
+### 控制器中的认证
+
+```ruby
+class ApplicationController < ActionController::Base
+  include Authenticatable
+  
+  # 要求用户登录
+  before_action :authenticate_user!, except: [:index, :show]
+  
+  # 要求用户未登录（用于登录/注册页面）
+  before_action :require_no_authentication, only: [:new, :create]
+end
+```
+
+### 模型中的密码处理
+
+```ruby
+class User < ApplicationRecord
+  has_secure_password
+  
+  # 不要手动处理密码
+  # 使用 authenticate 方法验证密码
+  # user.authenticate("password")
+end
+```
+
+### Warden 策略实现
+
+```ruby
+module Warden
+  module Strategies
+    class Password < Base
+      def authenticate!
+        user = User.find_by(email: params[:email])
+        if user && user.authenticate(params[:password])
+          success!(user)
+        else
+          fail!("Invalid email or password")
+        end
+      end
+    end
+  end
+end
+```
+
+## 常见任务
+
+### 实现邮箱注册/登录
+1. 使用 `bin/rails generate authentication` 生成基础代码
+2. 查看生成的 `app/models/user.rb` 和 `app/controllers/authentication_controller.rb`
+3. 使用 DaisyUI 设计登录/注册页面
+4. 参考 `docs/DEVELOPER_GUIDE.md` 了解 Warden 集成
+
+### 实现 API Token 认证
+1. 创建 `lib/warden/strategies/token.rb`
+2. 在 `config/initializers/warden.rb` 中注册策略
+3. 创建 `api_tokens` 表存储 Token
+4. 在 API 控制器中使用 `authenticate_user!`
+
+### 实现 OAuth 登录
+1. 安装 omniauth gem
+2. 创建 `lib/warden/strategies/oauth.rb`
+3. 配置 OAuth 提供商的密钥
+4. 实现回调处理
+
+## 注意事项
+
+1. **不要手动处理密码**：始终使用 `has_secure_password` 和 `authenticate` 方法
+2. **使用 Warden 获取用户**：不要直接访问 session，使用 `current_user` 方法
+3. **遵循 RESTful 路由**：使用标准的 Rails 路由命名
+4. **添加测试**：所有认证功能都要有对应的测试
+5. **安全第一**：参考 Rails Security Guide 确保实现的安全性
+
+## 相关文件索引
+
+- 开发者文档：`docs/DEVELOPER_GUIDE.md`
+- Warden 配置：`config/initializers/warden.rb`
+- 认证策略：`lib/warden/strategies/`
+- 认证辅助方法：`app/controllers/concerns/authenticatable.rb`
+- User 模型：`app/models/user.rb`
+- 路由配置：`config/routes.rb`
+- Rails Security Guide：https://guides.rubyonrails.org/security.html#authentication
