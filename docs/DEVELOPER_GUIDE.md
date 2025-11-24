@@ -6,6 +6,7 @@
 
 - [认证系统](#认证系统)
 - [身份管理](#身份管理)
+- [权限系统](#权限系统) - [查看架构图](../phase-2-authorization/architecture.md) ⭐
 - [API 认证策略](#api-认证策略)
 - [开发规范](#开发规范)
 - [技术栈决策](#技术栈决策)
@@ -105,23 +106,137 @@ bin/rails generate authentication
 
 ### 身份获取方法
 
-在控制器中使用：
+在控制器和视图中使用：
 
 ```ruby
-# 获取当前用户
-current_user
+# 获取当前用户（统一使用 Current.user）
+Current.user
 
-# 检查用户是否已登录
-user_signed_in?
+# 检查用户是否已登录（统一使用 authenticated?）
+authenticated?
 
 # 要求用户登录（未登录会重定向）
-authenticate_user!
+require_authentication  # 通过 before_action :require_authentication
 
 # 要求用户未登录（已登录会重定向）
-require_no_authentication
+allow_unauthenticated_access  # 通过 allow_unauthenticated_access only: [:new, :create]
 ```
 
-这些方法在 `ApplicationController` 中通过 Warden 实现。
+**统一数据源**：
+- 所有身份相关数据都通过 `Current` 模型获取
+- `Current.user` - 当前用户（通过 `Current.session.user` 委托）
+- `Current.session` - 当前会话记录
+- `authenticated?` - 检查是否已认证（检查 `Current.user.present?`）
+
+这些方法在 `ApplicationController` 中通过 Warden 实现，Warden 的回调会自动设置 `Current.session`。
+
+## 🔐 权限系统
+
+### Action Policy
+
+我们使用 [Action Policy](https://github.com/palkan/action_policy) Gem 作为权限策略框架。
+
+**为什么选择 Action Policy**：
+1. **成熟稳定**：由知名 Rails 开发者维护，在 Rails 社区广泛使用
+2. **高性能**：通过缓存和优化，确保授权检查的高效执行
+3. **灵活可测试**：使用 Policy 类定义权限规则，易于测试和维护
+4. **Rails 友好**：与 Rails 深度集成，提供控制器和视图辅助方法
+5. **可扩展**：支持复杂的权限逻辑，适应各种应用需求
+
+**版本**：`~> 0.7.5`
+
+**参考文档**：
+- [Action Policy GitHub](https://github.com/palkan/action_policy)
+- [Action Policy 文档](https://actionpolicy.evilmartians.io/)
+
+### 权限系统架构
+
+我们的权限系统采用以下架构：
+
+1. **Action Policy**：使用 Policy 类定义权限规则（代码中定义）
+2. **Role 模型**：管理角色（数据库中存储）
+3. **角色判断**：在 Policy 类中通过角色判断权限（如：`user.has_role?(:admin)`）
+4. **资源级权限**：在 Policy 类中实现细粒度权限控制
+
+### Policy 类定义
+
+为每个需要权限控制的资源创建对应的 Policy 类：
+
+```ruby
+# app/policies/user_policy.rb
+class UserPolicy < ApplicationPolicy
+  def index?
+    user.has_role?(:admin)
+  end
+
+  def show?
+    user.has_role?(:admin) || user == record
+  end
+
+  def update?
+    user.has_role?(:admin) || user == record
+  end
+
+  def destroy?
+    user.has_role?(:admin)
+  end
+end
+```
+
+### 在控制器中使用
+
+```ruby
+class UsersController < ApplicationController
+  include ActionPolicy::Controller
+
+  def update
+    @user = User.find(params[:id])
+    authorize! @user  # 自动调用 UserPolicy#update?
+    
+    # 更新逻辑
+  end
+end
+```
+
+### 在视图中使用
+
+```erb
+<% if allowed_to?(:update?, @user) %>
+  <%= link_to "Edit", edit_user_path(@user) %>
+<% end %>
+```
+
+### 角色系统
+
+使用 Role 模型管理角色：
+
+```ruby
+# User 模型
+has_many :user_roles
+has_many :roles, through: :user_roles
+
+def has_role?(role_name)
+  roles.exists?(name: role_name)
+end
+```
+
+### 相关文件
+
+- `app/policies/` - Policy 类定义
+- `app/models/role.rb` - Role 模型
+- `app/models/user.rb` - User 模型（包含角色关联）
+
+### 架构图
+
+详细的权限系统架构图请查看：[权限系统架构图](../phase-2-authorization/architecture.md) ⭐
+
+架构图包含：
+- 系统架构概览
+- 权限检查流程
+- 数据模型关系
+- 代码组织结构
+- 权限检查示例
+- 权限检查决策树
 
 ## 🌐 API 认证策略
 
@@ -185,10 +300,10 @@ Authorization: Bearer <token>
   - `POST /sign_up` - 处理注册
 
 - **控制器方法**：
-  - `authenticate_user!` - 要求登录
-  - `require_no_authentication` - 要求未登录
-  - `current_user` - 当前用户
-  - `user_signed_in?` - 是否已登录
+  - `require_authentication` - 要求登录（通过 before_action）
+  - `allow_unauthenticated_access` - 允许未登录访问（通过类方法）
+  - `Current.user` - 当前用户（统一数据源）
+  - `authenticated?` - 是否已认证（helper_method）
 
 ### 安全规范
 
@@ -198,12 +313,57 @@ Authorization: Bearer <token>
 4. **登录限制**：5 次失败后锁定账户 30 分钟
 5. **HTTPS**：生产环境必须使用 HTTPS
 
+### 测试规范
+
+#### 测试覆盖率要求
+
+项目使用 **SimpleCov** 进行测试覆盖率统计，要求代码测试覆盖率至少达到 **85%**。
+
+**配置位置**：`test/test_helper.rb`
+
+**查看覆盖率报告**：
+```bash
+# 运行测试后，打开覆盖率报告
+open coverage/index.html
+```
+
+#### 指定文件覆盖率检查
+
+支持通过环境变量 `COVERAGE_FILES` 指定只检查某些文件的测试覆盖率，这在开发特定功能时非常有用。
+
+**使用方法**：
+
+```bash
+# 只检查单个文件
+COVERAGE_FILES=app/models/user.rb bin/rails test test/models/user_test.rb
+
+# 检查多个文件（用逗号分隔）
+COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rails test
+
+# 检查整个目录（使用部分路径匹配）
+COVERAGE_FILES=app/models bin/rails test test/models/
+```
+
+**工作原理**：
+- 当设置了 `COVERAGE_FILES` 环境变量时，SimpleCov 只会跟踪匹配的文件
+- 如果没有设置环境变量，则使用默认行为（跟踪所有文件）
+- 支持部分路径匹配，例如 `app/models` 会匹配 `app/models/` 下的所有文件
+
+**使用场景**：
+- 开发新功能时，只关注当前文件的覆盖率
+- 调试特定文件的测试问题
+- 提高测试运行效率（减少覆盖率计算时间）
+
 ## 🛠️ 技术栈决策
 
 ### 认证系统
 - **Rails 8 Authentication Generator** - 基础认证功能
 - **Warden** - 身份管理和认证策略
 - **bcrypt** - 密码加密
+
+### 权限系统
+- **Action Policy** (~> 0.7.5) - 权限策略框架
+- **Role 模型** - 角色管理
 
 ### 前端
 - **DaisyUI** - UI 组件库
@@ -235,6 +395,16 @@ rails generate warden:strategy <strategy_name>
 
 # 运行测试
 bin/rails test
+
+# 运行测试并查看覆盖率报告
+bin/rails test
+open coverage/index.html
+
+# 只检查特定文件的覆盖率
+COVERAGE_FILES=app/models/user.rb bin/rails test test/models/user_test.rb
+
+# 检查多个文件的覆盖率
+COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rails test
 ```
 
 ### 调试技巧
@@ -254,9 +424,12 @@ bin/rails test
 
 3. **查看当前用户**：
    ```ruby
-   # 在控制器中
-   current_user
-   warden.user
+   # 在控制器和视图中（统一使用 Current）
+   Current.user
+   Current.session
+   
+   # 在控制器中（直接访问 Warden）
+   warden.user  # 返回 Session 对象
    ```
 
 ## 🔗 相关资源
@@ -264,6 +437,8 @@ bin/rails test
 - [Rails Security Guide](https://guides.rubyonrails.org/security.html)
 - [Warden Documentation](https://github.com/wardencommunity/warden)
 - [Rails Authentication Generator](https://guides.rubyonrails.org/security.html#authentication)
+- [Action Policy Documentation](https://actionpolicy.evilmartians.io/)
+- [Action Policy GitHub](https://github.com/palkan/action_policy)
 - [DaisyUI Documentation](https://daisyui.com/)
 
 ## 📅 更新日志

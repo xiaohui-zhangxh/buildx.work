@@ -1,0 +1,57 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Users</h1>
+    <% if authenticated? %>
+      <%= link_to "My Profile", user_path(Current.user), class: "btn btn-primary" %>
+    <% end %>
+  </div>
+
+  <% if notice = flash[:notice] %>
+    <div role="alert" class="alert alert-success mb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span><%= notice %></span>
+    </div>
+  <% end %>
+
+  <% if alert = flash[:alert] %>
+    <div role="alert" class="alert alert-error mb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span><%= alert %></span>
+    </div>
+  <% end %>
+
+  <div class="overflow-x-auto">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= user.name || "N/A" %></td>
+            <td><%= user.email_address %></td>
+            <td><%= user.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td>
+              <%= link_to "View", user_path(user), class: "btn btn-sm btn-ghost" %>
+              <% if user == Current.user %>
+                <%= link_to "Edit", edit_user_path(user), class: "btn btn-sm btn-primary" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+

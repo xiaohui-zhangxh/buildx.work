@@ -23,5 +23,9 @@ module TanmerEgg
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Set default locale to Chinese
+    config.i18n.default_locale = :"zh-CN"
+    config.i18n.available_locales = [ :"zh-CN", :en ]
   end
 end

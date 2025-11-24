@@ -79,8 +79,8 @@ resources :users, only: [:index, :show, :edit, :update]
 
 **ApplicationController**
 - [ ] 集成 Warden
-- [ ] 添加 `current_user` 方法（通过 Warden 实现）
-- [ ] 添加 `user_signed_in?` 方法（通过 Warden 实现）
+- [ ] 统一使用 `Current.user` 获取当前用户（通过 Warden 回调自动设置）
+- [ ] 添加 `authenticated?` helper_method（检查 `Current.user.present?`）
 - [ ] 添加 `authenticate_user!` before_action
 - [ ] 添加 `require_no_authentication` before_action（已登录用户不能访问登录/注册页）
 

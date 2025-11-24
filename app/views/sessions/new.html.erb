@@ -1,0 +1,106 @@
+<div class="text-center mb-8">
+  <%= link_to root_path, class: "inline-block" do %>
+    <div class="flex flex-col items-center gap-3">
+      <%= image_tag "logo.svg", alt: "Tanmer Egg", class: "h-16 w-16" %>
+
+      <h1
+        class="
+          text-4xl font-bold bg-gradient-to-r from-primary to-secondary
+          bg-clip-text text-transparent
+        "
+      >
+        Tanmer Egg
+      </h1>
+    </div>
+  <% end %>
+</div>
+
+<% if alert = flash[:alert] %>
+  <div role="alert" class="alert alert-error mb-5 shadow-lg">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+
+    <span><%= alert %></span>
+  </div>
+<% end %>
+
+<% if notice = flash[:notice] %>
+  <div role="alert" class="alert alert-success mb-5 shadow-lg">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+
+    <span><%= notice %></span>
+  </div>
+<% end %>
+
+<div class="card bg-base-100 shadow-2xl border border-base-300">
+  <div class="card-body p-8">
+    <h2 class="card-title text-3xl mb-2 justify-center">Sign in</h2>
+
+    <p class="text-center text-base-content/60 mb-6">
+      Welcome back! Please sign in to your account.
+    </p>
+
+    <%= form_with url: session_url, class: "space-y-5" do |form| %>
+      <div class="form-control">
+        <%= form.label :email_address, class: "label" do %>
+          <span class="label-text font-medium">Email address</span>
+        <% end %>
+
+        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "input input-bordered w-full focus:input-primary" %>
+      </div>
+
+      <div class="form-control">
+        <%= form.label :password, class: "label" do %>
+          <span class="label-text font-medium">Password</span>
+        <% end %>
+
+        <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "input input-bordered w-full focus:input-primary" %>
+      </div>
+
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-2">
+          <%= form.check_box :remember_me, { checked: false, class: "checkbox checkbox-primary" }, "1", "0" %>
+          <span class="label-text">Remember me</span>
+        </label>
+      </div>
+
+      <div class="form-control mt-6">
+        <%= form.submit "Sign in", class: "btn btn-primary w-full btn-lg shadow-lg" %>
+      </div>
+
+      <div class="text-center mt-6 space-y-2">
+        <%= link_to "Forgot password?", new_password_path, class: "link link-primary text-sm" %>
+
+        <div class="divider my-4">OR</div>
+
+        <p class="text-sm text-base-content/60">
+          Don't have an account?
+          <%= link_to "Sign up", new_user_path, class: "link link-primary font-medium" %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>

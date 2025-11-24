@@ -1,0 +1,65 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <% if notice = flash[:notice] %>
+      <div role="alert" class="alert alert-success mb-5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span><%= notice %></span>
+      </div>
+    <% end %>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="card-title text-3xl">User Profile</h1>
+          <% if @user == Current.user %>
+            <%= link_to "Edit Profile", edit_user_path(@user), class: "btn btn-primary" %>
+          <% end %>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">ID</span>
+            </label>
+            <div class="text-lg"><%= @user.id %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">Name</span>
+            </label>
+            <div class="text-lg"><%= @user.name || "N/A" %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">Email Address</span>
+            </label>
+            <div class="text-lg"><%= @user.email_address %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">Created At</span>
+            </label>
+            <div class="text-lg"><%= @user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">Updated At</span>
+            </label>
+            <div class="text-lg"><%= @user.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></div>
+          </div>
+        </div>
+
+        <div class="card-actions justify-end mt-6">
+          <%= link_to "Back to Users", users_path, class: "btn btn-ghost" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

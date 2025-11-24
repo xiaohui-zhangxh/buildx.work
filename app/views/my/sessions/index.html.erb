@@ -1,0 +1,231 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-6xl mx-auto">
+    <%= render "shared/flash_messages" %>
+
+    <div class="mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-bold">登录日志</h1>
+          <p class="text-base-content/70 mt-2">管理您的登录设备和会话</p>
+        </div>
+
+        <%= link_to my_root_path, class: "btn btn-ghost" do %>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          返回个人中心
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Active Sessions -->
+    <% active_sessions = @sessions.select(&:active?) %>
+
+    <% if active_sessions.any? %>
+      <div class="card bg-base-100 shadow-xl mb-6">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title">活跃会话 (<%= active_sessions.count %>)</h2>
+
+            <% if active_sessions.count > 1 %>
+              <%= button_to destroy_all_others_my_sessions_path, method: :post, 
+                  data: { turbo_confirm: "确定要退出所有其他设备吗？" },
+                  class: "btn btn-error btn-sm" do %>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                退出所有其他设备
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>设备信息</th>
+                  <th>IP 地址</th>
+                  <th>登录时间</th>
+                  <th>最后活动</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% active_sessions.each do |session| %>
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <span class="badge badge-ghost">
+                          <%= session.device_info %>
+                        </span>
+
+                        <% if session.current? %>
+                          <span class="badge badge-primary">当前设备</span>
+                        <% end %>
+                      </div>
+
+                      <div class="text-sm text-base-content/70 mt-1">
+                        <%= session.device_info_detailed %>
+                      </div>
+                    </td>
+
+                    <td><%= session.ip_address %></td>
+
+                    <td>
+                      <div><%= format_time(session.created_at) %></div>
+
+                      <div class="text-sm text-base-content/50">
+                        <%= session.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+                      </div>
+                    </td>
+
+                    <td>
+                      <div><%= format_time(session.updated_at) %></div>
+
+                      <div class="text-sm text-base-content/50">
+                        <%= session.updated_at.strftime("%Y-%m-%d %H:%M:%S") %>
+                      </div>
+                    </td>
+
+                    <td>
+                      <% if session.current? %>
+                        <span class="text-base-content/50">当前会话</span>
+                      <% else %>
+                        <%= button_to my_session_path(session), method: :delete,
+                            data: { turbo_confirm: "确定要退出此设备吗？" },
+                            class: "btn btn-error btn-sm" do %>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                          </svg>
+                          退出
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Inactive Sessions (History) -->
+    <% inactive_sessions = @sessions.reject(&:active?) %>
+
+    <% if inactive_sessions.any? %>
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title mb-4">历史会话 (<%= inactive_sessions.count %>)</h2>
+
+          <div class="overflow-x-auto">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>设备信息</th>
+                  <th>IP 地址</th>
+                  <th>登录时间</th>
+                  <th>退出时间</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% inactive_sessions.each do |session| %>
+                  <tr class="opacity-60">
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <span class="badge badge-ghost">
+                          <%= session.device_info %>
+                        </span>
+                      </div>
+
+                      <div class="text-sm text-base-content/70 mt-1">
+                        <%= session.device_info_detailed %>
+                      </div>
+                    </td>
+
+                    <td><%= session.ip_address %></td>
+
+                    <td>
+                      <div><%= format_time(session.created_at) %></div>
+
+                      <div class="text-sm text-base-content/50">
+                        <%= session.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+                      </div>
+                    </td>
+
+                    <td>
+                      <div><%= format_time(session.updated_at) %></div>
+
+                      <div class="text-sm text-base-content/50">
+                        <%= session.updated_at.strftime("%Y-%m-%d %H:%M:%S") %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @sessions.empty? %>
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body text-center py-12">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-16 w-16 mx-auto text-base-content/30 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+
+          <p class="text-lg font-semibold text-base-content/70 mb-2">暂无登录记录</p>
+          <p class="text-sm text-base-content/50">当您登录后，登录记录将显示在这里</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

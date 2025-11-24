@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "anysphere.remote-containers",
+        "marcoroth.herb-lsp",
         "ms-azuretools.vscode-docker",
         "christian-kohler.path-intellisense",
         "aki77.rails-db-schema",

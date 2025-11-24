@@ -1,0 +1,235 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <%= render "shared/flash_messages" %>
+
+    <div class="mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-bold">安全设置</h1>
+          <p class="text-base-content/70 mt-2">管理您的账户安全选项</p>
+        </div>
+
+        <%= link_to my_root_path, class: "btn btn-ghost" do %>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          返回
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Password Status -->
+    <% if @user.password_changed_at.present? %>
+      <div class="card bg-base-100 shadow-xl mb-6">
+        <div class="card-body">
+          <h2 class="card-title mb-4">密码状态</h2>
+
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-base-content/70">上次修改密码</span>
+
+              <span>
+                <%= @user.password_changed_at.strftime("%Y-%m-%d %H:%M:%S") %>
+              </span>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-base-content/70">已使用天数</span>
+              <span><%= @user.days_since_password_change %> 天</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-base-content/70">密码状态</span>
+
+              <% if @user.password_expired? %>
+                <span class="badge badge-error">已过期</span>
+              <% elsif @user.password_expires_soon? %>
+                <span class="badge badge-warning">即将过期</span>
+              <% else %>
+                <span class="badge badge-success">正常</span>
+              <% end %>
+            </div>
+
+            <% if @user.password_expired? %>
+              <div role="alert" class="alert alert-error">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+
+                <span>您的密码已过期，为了账户安全，请尽快修改密码。</span>
+              </div>
+            <% elsif @user.password_expires_soon? %>
+              <div role="alert" class="alert alert-warning">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+
+                <span>
+                  您的密码将在 <%= @user.days_until_password_expires %>
+                  天后过期，建议提前修改密码。
+                </span>
+              </div>
+            <% else %>
+              <div class="flex justify-between items-center">
+                <span class="text-base-content/70">距离过期还有</span>
+
+                <span class="font-semibold">
+                  <%= @user.days_until_password_expires %> 天
+                </span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Account Status -->
+    <div class="card bg-base-100 shadow-xl mb-6">
+      <div class="card-body">
+        <h2 class="card-title mb-4">账户状态</h2>
+
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-base-content/70">账户锁定状态</span>
+
+            <span class="badge <%= @user.locked? ? 'badge-error' : 'badge-success' %>">
+              <%= @user.locked? ? "已锁定" : "正常" %>
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-base-content/70">登录失败次数</span>
+            <span><%= @user.failed_login_attempts %></span>
+          </div>
+
+          <% if @user.locked_at.present? %>
+            <div class="flex justify-between items-center">
+              <span class="text-base-content/70">锁定时间</span>
+              <span><%= @user.locked_at.strftime("%Y-%m-%d %H:%M:%S") %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title mb-4">修改密码</h2>
+
+        <%= form_with model: @user, url: my_security_path, method: :patch, local: true, data: { controller: "form", turbo: true } do |form| %>
+          <% if @user.errors.any? %>
+            <div role="alert" class="alert alert-error mb-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+
+              <div>
+                <h3 class="font-bold">请修正以下错误：</h3>
+
+                <ul class="list-disc list-inside">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="form-control mb-4" data-controller="password-strength">
+            <%= form.label :password, "新密码", class: "label" %>
+            <span class="label-text">新密码</span>
+
+            <%= form.password_field :password,
+                class: "input input-bordered w-full",
+                placeholder: "至少 8 位，包含字母和数字",
+                required: true,
+                data: {
+                  password_strength_target: "input",
+                  action: "input->password-strength#updateStrength"
+                } %>
+
+            <div
+              class="w-full bg-base-200 rounded-full h-2 mt-2"
+              style="display: none;"
+              data-password-strength-target="indicatorContainer"
+            >
+              <div
+                class="h-2 rounded-full transition-all duration-300"
+                data-password-strength-target="indicator"
+                style="width: 0%;"
+              ></div>
+            </div>
+
+            <label class="label">
+              <span
+                class="label-text-alt"
+                data-password-strength-target="feedback"
+              >
+                密码必须至少 8 位，包含字母和数字
+              </span>
+            </label>
+          </div>
+
+          <div class="form-control mb-4">
+            <%= form.label :password_confirmation, "确认新密码", class: "label" %>
+            <span class="label-text">确认新密码</span>
+            <%= form.password_field :password_confirmation, class: "input input-bordered w-full", placeholder: "请再次输入新密码", required: true %>
+          </div>
+
+          <div class="card-actions justify-end mt-6">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-form-target="submit"
+              data-action="submit->form#submit"
+            >
+              更新密码
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

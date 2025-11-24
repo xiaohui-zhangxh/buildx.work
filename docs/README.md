@@ -21,7 +21,8 @@ docs/
 │   ├── README.md
 │   ├── plan.md
 │   ├── progress.md
-│   └── notes.md
+│   ├── notes.md
+│   └── architecture.md          # 权限系统架构图 ⭐
 │
 ├── phase-3-multi-tenant/        # 第三阶段：多租户支持
 │   ├── README.md

@@ -1,0 +1,86 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <%= render "shared/flash_messages" %>
+
+    <div class="mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-bold">个人信息</h1>
+          <p class="text-base-content/70 mt-2">查看您的个人信息</p>
+        </div>
+
+        <%= link_to my_root_path, class: "btn btn-ghost" do %>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          返回
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="space-y-4">
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">ID</span>
+            </label>
+
+            <div class="text-lg"><%= @user.id %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">姓名</span>
+            </label>
+
+            <div class="text-lg"><%= @user.name || "未设置" %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">邮箱地址</span>
+            </label>
+
+            <div class="text-lg"><%= @user.email_address %></div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">注册时间</span>
+            </label>
+
+            <div class="text-lg">
+              <%= @user.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+            </div>
+          </div>
+
+          <div>
+            <label class="label">
+              <span class="label-text font-semibold">最后更新</span>
+            </label>
+
+            <div class="text-lg">
+              <%= @user.updated_at.strftime("%Y-%m-%d %H:%M:%S") %>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions justify-end mt-6">
+          <%= link_to "编辑信息", edit_my_profile_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

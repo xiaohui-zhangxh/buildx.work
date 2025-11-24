@@ -1,4 +1,21 @@
 Rails.application.routes.draw do
+  resource :session
+  resources :users
+  resources :passwords, param: :token
+
+  # Personal center (my namespace)
+  namespace :my do
+    root to: "dashboard#show" # Personal center homepage (/my)
+
+    resource :profile, only: [ :show, :edit, :update ], controller: "profile" # Personal information (/my/profile)
+    resource :security, only: [ :show, :update ], controller: "security" # Security settings (/my/security)
+    resources :sessions, only: [ :index, :destroy ] do # Session management (/my/sessions)
+      collection do
+        post "destroy_all_others" # Logout all other devices
+      end
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

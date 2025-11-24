@@ -87,10 +87,43 @@ alwaysApply: true
 ### 3. 代码规范
 - 遵循 Rails 社区最佳实践
 - 使用 RuboCop 进行代码检查
-- 编写测试覆盖新功能
+- **测试用例规范**：
+  - **全面覆盖**：测试用例需要根据功能情况，尽可能覆盖所有场景，避免遗漏
+    - 包括正常流程、边界条件、异常情况、错误处理等
+    - 对于控制器，需要测试所有 action 的成功和失败场景
+    - 对于模型，需要测试所有验证规则、关联关系、业务逻辑
+    - 对于视图，需要测试不同状态下的显示效果
+  - **代码与测试冲突处理**：当被测试的代码和测试用例产生冲突时，需要深度思考冲突问题，决定以哪边为基准
+    - **分析冲突原因**：理解冲突的根本原因，是代码逻辑错误还是测试用例设计不当
+    - **以功能需求为准**：优先考虑实际业务需求和功能设计意图
+    - **测试驱动开发（TDD）场景**：如果采用 TDD，测试用例定义了预期行为，代码应该符合测试
+    - **代码重构场景**：如果是重构现有代码，需要更新测试用例以反映新的实现
+    - **记录决策过程**：在 `notes.md` 中记录冲突分析和决策过程，便于后续维护
+  - **测试质量要求**：
+    - 每个功能都要有对应的测试
+    - 测试应该独立、可重复、快速执行
+    - 使用 Rails 测试框架（Minitest）编写测试
+    - 测试命名清晰，能够表达测试意图
+    - **测试覆盖率要求**：代码测试覆盖率至少达到 85%
+      - 使用 SimpleCov 等工具测量测试覆盖率
+      - 覆盖率报告应包含在 CI/CD 流程中
+      - 新功能开发时，确保相关代码的测试覆盖率达标
+      - 重构代码时，不应降低现有测试覆盖率
+      - **指定文件覆盖率检查**：支持通过环境变量 `COVERAGE_FILES` 指定只检查某些文件的测试覆盖率
+        - 使用方法：`COVERAGE_FILES=app/models/user.rb bin/rails test test/models/user_test.rb`
+        - 多个文件用逗号分隔：`COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rails test`
+        - 支持部分路径匹配：`COVERAGE_FILES=app/models bin/rails test test/models/`
+        - 详细说明请查看 `docs/DEVELOPER_GUIDE.md` 的测试规范章节
 - **添加 Gem 时记录版本号**：在 Gemfile 中明确指定版本号，并在相关文档中记录，避免以后出现兼容问题
   - **必须使用最新版本**：添加 Gem 时，版本号必须是当下最新的稳定版本
   - 可以通过 `gem search <gem_name>` 或访问 https://rubygems.org/gems/<gem_name> 查看最新版本
+- **图片资源管理**：
+  - **必须使用 `app/assets/images/` 目录**：所有图片文件必须放在 `app/assets/images/` 目录下
+  - **禁止使用 `public/` 目录**：不要将图片放在 `public/` 目录，否则无法通过 Rails Asset Pipeline 正确加载和显示
+  - **引用方式**：在视图中使用 `image_tag` 或 `image_path` 辅助方法引用图片
+  - **示例**：
+    - ✅ 正确：`app/assets/images/logo.png` → `<%= image_tag "logo.png" %>`
+    - ❌ 错误：`public/logo.png` → 无法正确显示
 
 ### 4. 技术栈选择
 - **认证系统**：Rails 8 Authentication Generator + Warden
@@ -135,6 +168,12 @@ alwaysApply: true
 2. 查看 `docs/DEVELOPMENT_PLAN.md` 了解整体进度
 3. 查看各阶段的 `progress.md` 了解详细进度
 4. 查看 `docs/FEATURES.md` 了解功能完成情况
+
+### 运行测试和查看覆盖率
+1. **运行测试**：`bin/rails test`
+2. **查看覆盖率报告**：`open coverage/index.html`
+3. **检查特定文件覆盖率**：使用 `COVERAGE_FILES` 环境变量（详见 `docs/DEVELOPER_GUIDE.md` 测试规范章节）
+4. **测试覆盖率要求**：至少 85%（配置在 `test/test_helper.rb`）
 
 ## 📝 文档更新规范
 
@@ -196,8 +235,14 @@ alwaysApply: true
 ### 开发规范
 - 遵循 Rails 最佳实践
 - 使用 RuboCop 代码检查
-- 编写测试覆盖
+- 编写测试覆盖（覆盖率要求 85%）
 - 文档先行原则
+
+### 测试覆盖率快速命令
+- **查看覆盖率报告**：`open coverage/index.html`
+- **检查单个文件**：`COVERAGE_FILES=app/models/user.rb bin/rails test test/models/user_test.rb`
+- **检查多个文件**：`COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rails test`
+- **检查目录**：`COVERAGE_FILES=app/models bin/rails test test/models/`
 
 ### 获取当前时间
 当需要获取当前系统时间时，可以通过执行 Ruby 代码获取：
@@ -206,3 +251,12 @@ alwaysApply: true
 - **ISO 格式**：`ruby -e "puts Time.now.iso8601"`
 
 常用于更新文档中的"最后更新"日期等场景。
+
+### 浏览器调试工具
+当需要查看界面效果、验证 UI 实现或调试前端问题时，可以使用浏览器工具进行调试：
+- 使用 `browser_navigate` 导航到页面
+- 使用 `browser_snapshot` 查看页面快照
+- 使用 `browser_take_screenshot` 截图
+- 使用 `browser_click`、`browser_type` 等工具进行交互测试
+
+这在开发视图、验证 DaisyUI 组件效果、调试前端问题时特别有用。
