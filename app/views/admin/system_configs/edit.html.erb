@@ -1,0 +1,29 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold">编辑配置</h1>
+</div>
+
+<div class="max-w-2xl mx-auto">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <%= daisy_form_with model: [ :admin, @system_config ], local: true, class: "space-y-5" do |form| %>
+        <%= form.error_messages %>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold">键</span>
+          </label>
+
+          <div class="text-lg">
+            <code class="badge badge-outline"><%= @system_config.key %></code>
+          </div>
+        </div>
+
+        <%= form.text_field :value, label_text: "值", placeholder: "请输入配置值" %>
+
+        <%= form.text_area :description, label_text: "描述", placeholder: "请输入配置描述", rows: 3 %>
+
+        <%= form.card_actions submit_text: "更新", cancel_text: "取消", cancel_url: admin_system_configs_path %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -13,57 +13,27 @@
       <div class="card-body">
         <h1 class="card-title text-3xl mb-6">Edit Profile</h1>
 
-        <%= form_with model: @user, url: user_path(@user), class: "space-y-4" do |form| %>
-          <% if @user.errors.any? %>
-            <div role="alert" class="alert alert-error mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div>
-                <h3 class="font-bold">Please fix the following errors:</h3>
-                <ul class="list-disc list-inside">
-                  <% @user.errors.full_messages.each do |message| %>
-                    <li><%= message %></li>
-                  <% end %>
-                </ul>
-              </div>
-            </div>
-          <% end %>
+        <%= daisy_form_with model: @user, url: user_path(@user), local: true, class: "space-y-5" do |form| %>
+          <%= form.error_messages %>
 
-          <div class="form-control">
-            <%= form.label :name, class: "label" do %>
-              <span class="label-text">Name (optional)</span>
-            <% end %>
-            <%= form.text_field :name, placeholder: "Enter your name", class: "input input-bordered w-full" %>
-          </div>
-
-          <div class="form-control">
-            <%= form.label :email_address, class: "label" do %>
-              <span class="label-text">Email address</span>
-            <% end %>
-            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", class: "input input-bordered w-full" %>
-          </div>
+          <%= form.text_field :name, label_text: "Name (optional)", placeholder: "Enter your name" %>
+          <%= form.email_field :email_address, label_text: "Email address", required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address" %>
 
           <div class="form-control">
             <label class="label">
               <span class="label-text">Password</span>
               <span class="label-text-alt">Leave blank if you don't want to change it</span>
             </label>
-            <%= form.password_field :password, autocomplete: "new-password", placeholder: "Enter new password (min 8 characters)", maxlength: 72, class: "input input-bordered w-full" %>
+            <%= form.password_field :password, autocomplete: "new-password", placeholder: "Enter new password (min 8 characters)", maxlength: 72, no_default_classes: true, class: "input input-bordered w-full" %>
             <label class="label">
               <span class="label-text-alt">At least 8 characters, including letters and numbers</span>
             </label>
           </div>
 
-          <div class="form-control">
-            <%= form.label :password_confirmation, class: "label" do %>
-              <span class="label-text">Password confirmation</span>
-            <% end %>
-            <%= form.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Confirm new password", maxlength: 72, class: "input input-bordered w-full" %>
-          </div>
+          <%= form.password_field :password_confirmation, label_text: "Password confirmation", autocomplete: "new-password", placeholder: "Confirm new password", maxlength: 72 %>
 
           <div class="form-control mt-6">
-            <%= form.submit "Update Profile", class: "btn btn-primary w-full" %>
+            <%= form.submit "Update Profile", full_width: true %>
           </div>
         <% end %>
 

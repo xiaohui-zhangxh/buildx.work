@@ -1,0 +1,19 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold">权限说明</h1>
+  <p class="text-base-content/60">查看系统中所有权限策略的说明</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <% @policies.each do |policy| %>
+    <div class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h2 class="card-title"><%= policy[:name] %></h2>
+        <p><%= policy[:description] %></p>
+        <div class="card-actions justify-end">
+          <%= link_to "查看详情", admin_policy_path(policy[:name]), class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+

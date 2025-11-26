@@ -18,6 +18,8 @@ gem "stimulus-rails"
 gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
+# 解决 importmap 下载依赖失败的问题 state=error: certificate verify failed
+gem "openssl", "~> 3.3", ">= 3.3.2"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
@@ -29,7 +31,7 @@ gem "warden", "~> 1.2.9"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
+gem "solid_cache", "~> 1.0", ">= 1.0.10"
 gem "solid_queue"
 gem "solid_cable"
 
@@ -47,6 +49,15 @@ gem "image_processing", "~> 1.2"
 
 # Rails I18n for Chinese locale support
 gem "rails-i18n", "~> 8.1"
+
+# Action Policy for authorization
+gem "action_policy", "~> 0.7.5"
+
+# Markdown rendering for tech stack rules
+gem "redcarpet", "~> 3.6.1"
+
+# SEO meta tags management for TDK (Title, Description, Keywords)
+gem "meta-tags", "~> 2.22", ">= 2.22.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

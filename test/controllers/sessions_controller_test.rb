@@ -246,4 +246,80 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_response :success, "new action should not be rate limited"
     end
   end
+
+  test "create sets last_activity_at on login" do
+    post session_path, params: { email_address: @user.email_address, password: "password123" }
+
+    assert_redirected_to root_path
+    user = User.find_by(email_address: @user.email_address)
+    session = user.sessions.active.order(created_at: :desc).first
+    assert_not_nil session.last_activity_at, "last_activity_at should be set on login"
+    assert_in_delta Time.current.to_i, session.last_activity_at.to_i, 5, "last_activity_at should be approximately now"
+  end
+
+  test "last_activity_at is updated when more than 1 minute has passed" do
+    # Login first
+    post session_path, params: { email_address: @user.email_address, password: "password123" }
+    assert_redirected_to root_path
+
+    user = User.find_by(email_address: @user.email_address)
+    session = user.sessions.active.order(created_at: :desc).first
+    initial_time = session.last_activity_at
+    assert_not_nil initial_time, "last_activity_at should be set on login"
+
+    # Travel forward in time more than 1 minute
+    travel_to 2.minutes.from_now do
+      # Make a request to trigger after_fetch callback
+      get root_path
+      assert_response :success
+
+      # Reload session and check last_activity_at was updated
+      session.reload
+      assert_not_nil session.last_activity_at, "last_activity_at should still be set"
+      assert session.last_activity_at > initial_time, "last_activity_at should be updated after 1 minute"
+      assert_in_delta Time.current.to_i, session.last_activity_at.to_i, 5, "last_activity_at should be approximately now"
+    end
+  end
+
+  test "last_activity_at is not updated when less than 1 minute has passed" do
+    # Login first
+    post session_path, params: { email_address: @user.email_address, password: "password123" }
+    assert_redirected_to root_path
+
+    user = User.find_by(email_address: @user.email_address)
+    session = user.sessions.active.order(created_at: :desc).first
+    initial_time = session.last_activity_at
+    assert_not_nil initial_time, "last_activity_at should be set on login"
+
+    # Travel forward in time less than 1 minute
+    travel_to 30.seconds.from_now do
+      # Make a request to trigger after_fetch callback
+      get root_path
+      assert_response :success
+
+      # Reload session and check last_activity_at was NOT updated
+      session.reload
+      assert_equal initial_time.to_i, session.last_activity_at.to_i, "last_activity_at should not be updated within 1 minute"
+    end
+  end
+
+  test "last_activity_at is updated when nil" do
+    # Login first
+    post session_path, params: { email_address: @user.email_address, password: "password123" }
+    assert_redirected_to root_path
+
+    user = User.find_by(email_address: @user.email_address)
+    session = user.sessions.active.order(created_at: :desc).first
+    # Manually set last_activity_at to nil to simulate old session
+    session.update_column(:last_activity_at, nil)
+
+    # Make a request to trigger after_fetch callback
+    get root_path
+    assert_response :success
+
+    # Reload session and check last_activity_at was set
+    session.reload
+    assert_not_nil session.last_activity_at, "last_activity_at should be set when nil"
+    assert_in_delta Time.current.to_i, session.last_activity_at.to_i, 5, "last_activity_at should be approximately now"
+  end
 end

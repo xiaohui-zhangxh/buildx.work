@@ -1,0 +1,20 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold">编辑用户</h1>
+</div>
+
+<div class="max-w-2xl mx-auto">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <%= daisy_form_with model: [ :admin, @user ], local: true, class: "space-y-5" do |form| %>
+        <%= form.error_messages %>
+
+        <%= form.email_field :email_address, label_text: "邮箱" %>
+        <%= form.text_field :name, label_text: "姓名" %>
+        <%= form.password_field :password, label_text: "新密码（留空则不修改）" %>
+        <%= form.password_field :password_confirmation, label_text: "确认密码" %>
+
+        <%= form.card_actions submit_text: "更新", cancel_text: "取消", cancel_url: admin_user_path(@user) %>
+      <% end %>
+    </div>
+  </div>
+</div>

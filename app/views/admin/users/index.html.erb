@@ -1,0 +1,170 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold">用户管理</h1>
+  <p class="text-base-content/60">管理系统中的所有用户</p>
+</div>
+
+<!-- Search and Filter Form -->
+<div class="card bg-base-100 shadow mb-6">
+  <div class="card-body">
+    <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-wrap gap-4 items-end" do |form| %>
+      <div class="form-control flex-1 min-w-[200px]">
+        <%= form.label :search, "搜索（邮箱/姓名）", class: "label" %>
+        <%= form.text_field :search, value: params[:search], placeholder: "输入邮箱或姓名...", class: "input input-bordered" %>
+      </div>
+
+      <div class="form-control min-w-[150px]">
+        <%= form.label :role, "角色筛选", class: "label" %>
+        <%= form.select :role, options_for_select([["全部", ""]] + @roles.map { |r| [r.name, r.name] }, params[:role]), {}, { class: "select select-bordered" } %>
+      </div>
+
+      <div class="form-control">
+        <%= form.submit "搜索", class: "btn btn-primary" %>
+        <%= link_to "重置", admin_users_path, class: "btn btn-ghost" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="card bg-base-100 shadow">
+  <div class="card-body">
+    <!-- Batch Actions -->
+    <div
+      class="mb-4 flex gap-4 items-center"
+      id="batch-actions"
+      style="display: none;"
+    >
+      <span class="text-sm text-base-content/60" id="selected-count">
+        已选择 0 个用户
+      </span>
+
+      <div class="flex gap-2">
+        <%= form_with url: batch_assign_role_admin_users_path, method: :post, local: true, class: "flex gap-2 items-center" do |form| %>
+          <%= form.hidden_field :user_ids, id: "batch-user-ids" %>
+          <%= form.select :role_name, options_for_select(@roles.map { |r| [r.name, r.name] }), { prompt: "选择角色" }, { class: "select select-bordered select-sm", required: true } %>
+          <%= form.submit "批量分配角色", class: "btn btn-sm btn-primary" %>
+        <% end %>
+
+        <%= form_with url: batch_remove_role_admin_users_path, method: :post, local: true, class: "flex gap-2 items-center" do |form| %>
+          <%= form.hidden_field :user_ids, id: "batch-remove-user-ids" %>
+          <%= form.select :role_name, options_for_select(@roles.map { |r| [r.name, r.name] }), { prompt: "选择角色" }, { class: "select select-bordered select-sm", required: true } %>
+          <%= form.submit "批量移除角色", class: "btn btn-sm btn-warning" %>
+        <% end %>
+
+        <%= form_with url: batch_destroy_admin_users_path, method: :post, local: true, data: { confirm: "确定要删除选中的用户吗？" }, class: "flex gap-2 items-center" do |form| %>
+          <%= form.hidden_field :user_ids, id: "batch-destroy-user-ids" %>
+          <%= form.submit "批量删除", class: "btn btn-sm btn-error" %>
+        <% end %>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost"
+          onclick="clearSelection()"
+        >
+          取消选择
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <input
+                type="checkbox"
+                class="checkbox"
+                id="select-all"
+                onchange="toggleAll(this)"
+              >
+            </th>
+
+            <th>ID</th>
+            <th>邮箱</th>
+            <th>姓名</th>
+            <th>角色</th>
+            <th>注册时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if @users.any? %>
+            <% @users.each do |user| %>
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    class="checkbox user-checkbox"
+                    value="<%= user.id %>"
+                    onchange="updateBatchActions()"
+                  >
+                </td>
+
+                <td><%= user.id %></td>
+                <td><%= user.email_address %></td>
+                <td><%= user.name || "-" %></td>
+
+                <td>
+                  <% user.roles.each do |role| %>
+                    <span class="badge badge-primary"><%= role.name %></span>
+                  <% end %>
+                </td>
+
+                <td><%= user.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+
+                <td>
+                  <div class="flex gap-2">
+                    <%= link_to "查看", admin_user_path(user), class: "btn btn-sm btn-ghost" %>
+                    <%= link_to "编辑", edit_admin_user_path(user), class: "btn btn-sm btn-ghost" %>
+
+                    <%= button_to "删除", admin_user_path(user), method: :delete, 
+                        class: "btn btn-sm btn-error", 
+                        data: { confirm: "确定要删除此用户吗？" } %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="7" class="text-center text-base-content/60">暂无用户</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleAll(checkbox) {
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+    checkboxes.forEach(cb => cb.checked = checkbox.checked);
+    updateBatchActions();
+  }
+
+  function updateBatchActions() {
+    const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+    const count = checkboxes.length;
+    const batchActions = document.getElementById('batch-actions');
+    const selectedCount = document.getElementById('selected-count');
+    
+    if (count > 0) {
+      batchActions.style.display = 'flex';
+      selectedCount.textContent = `已选择 ${count} 个用户`;
+      
+      const userIds = Array.from(checkboxes).map(cb => cb.value).join(',');
+      document.getElementById('batch-user-ids').value = userIds;
+      document.getElementById('batch-remove-user-ids').value = userIds;
+      document.getElementById('batch-destroy-user-ids').value = userIds;
+    } else {
+      batchActions.style.display = 'none';
+    }
+  }
+
+  function clearSelection() {
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+    checkboxes.forEach(cb => cb.checked = false);
+    document.getElementById('select-all').checked = false;
+    updateBatchActions();
+  }
+</script>

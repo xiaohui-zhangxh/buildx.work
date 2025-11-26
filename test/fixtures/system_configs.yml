@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+site_name:
+  key: site_name
+  value: Test Site
+  description: Site name
+  category: site
+
+time_zone:
+  key: time_zone
+  value: Asia/Shanghai
+  description: Time zone
+  category: system

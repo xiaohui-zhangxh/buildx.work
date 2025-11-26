@@ -1,10 +1,18 @@
-# Tanmer Egg 🥚
+# BuildX.work 🚀
 
-> 一个开源的 Ruby on Rails 应用脚手架，集成企业级基础功能，让您专注于业务逻辑开发。
+> 一个开源的 Ruby on Rails 业务网站生成平台，集成企业级基础功能，让您专注于业务逻辑开发。
 
 ## 📖 项目简介
 
-Tanmer Egg 是一个功能完整的 Rails 应用模板，旨在解决多项目开发中重复编写基础代码的问题。通过提供一套经过验证的企业级功能模块，帮助开发者快速启动新项目，避免因复制代码而遗漏关键功能。
+**BuildX.work** 是一个功能完整的 Rails 应用模板，用于生成不同业务网站。通过提供一套经过验证的企业级功能模块，帮助开发者快速启动新项目，避免因复制代码而遗漏关键功能。
+
+**品牌说明**：
+- **品牌名**：BuildX（简洁，用于技术文档和 Logo）
+- **产品/平台名**：BuildX.work（完整，用于网站标题和营销材料）
+
+**域名规划**：
+- **buildx.work** - 主平台（用于生成不同业务网站）
+- **buildx.run** - 业务站点（生产出来的业务使用 buildx.run 的二级域名）
 
 ### 🎯 核心特性
 
@@ -50,8 +58,8 @@ Tanmer Egg 是一个功能完整的 Rails 应用模板，旨在解决多项目�
 
 ```bash
 # 克隆项目
-git clone https://github.com/xiaohui-zhangxh/tanmer-egg.git
-cd tanmer-egg
+git clone https://github.com/xiaohui-zhangxh/buildx.git
+cd buildx
 
 # 安装依赖
 bundle install
@@ -151,7 +159,7 @@ bin/kamal console
 
 ## 📧 联系方式
 
-- 提交 [Issue](https://github.com/xiaohui-zhangxh/tanmer-egg/issues)
+- 提交 [Issue](https://github.com/xiaohui-zhangxh/buildx/issues)
 - 查看 [开发文档](docs/README.md)
 
 ---

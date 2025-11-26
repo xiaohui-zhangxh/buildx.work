@@ -1,0 +1,400 @@
+<div class="text-center mb-8">
+  <div class="flex flex-col items-center gap-3">
+    <%= image_tag "logo.svg", alt: site_name, class: "h-16 w-16" %>
+
+    <h1
+      class="
+        text-4xl font-bold bg-gradient-to-r from-primary to-secondary
+        bg-clip-text text-transparent
+      "
+    >
+      <%= site_name %>
+    </h1>
+
+    <p class="text-base-content/60">系统安装向导</p>
+  </div>
+</div>
+
+<% if alert = flash[:alert] %>
+  <div role="alert" class="alert alert-error mb-5 shadow-lg">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+
+    <span><%= alert %></span>
+  </div>
+<% end %>
+
+<div class="card bg-base-100 shadow-2xl border border-base-300">
+  <div class="card-body p-8">
+    <h2 class="card-title text-3xl mb-6 justify-center">欢迎使用系统安装向导</h2>
+
+    <p class="text-center text-base-content/60 mb-8">
+      请按照以下步骤完成系统配置
+    </p>
+
+    <!-- Steps indicator -->
+    <ul
+      class="steps steps-vertical lg:steps-horizontal w-full mb-8"
+      id="steps-indicator"
+    >
+      <li class="step step-primary" data-step-indicator="1">站点信息</li>
+      <li class="step" data-step-indicator="2">系统配置</li>
+      <li class="step" data-step-indicator="3">管理员账号</li>
+    </ul>
+
+    <%= form_with model: @installation, url: installation_path, class: "space-y-5", data: { controller: "form", action: "submit->form#submit" } do |form| %>
+      <% if @installation.errors.any? %>
+        <div role="alert" class="alert alert-error mb-4 shadow-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+
+          <div>
+            <h3 class="font-bold">请修复以下错误：</h3>
+
+            <ul class="list-disc list-inside text-sm">
+              <% @installation.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Step 1: Site Information -->
+      <div
+        class="step-content <%= 'hidden' if @installation.errors.any? && !@installation.errors[:site_name].any? && (@installation.errors[:admin_email].any? || @installation.errors[:admin_password].any? || @installation.errors[:admin_password_confirmation].any? || @installation.errors[:admin_name].any? || @installation.errors[:time_zone].any? || @installation.errors[:locale].any?) %>"
+        data-step="1"
+      >
+        <h3 class="text-xl font-semibold mb-4">步骤 1：站点基本信息</h3>
+
+        <div class="form-control">
+          <%= form.label :site_name, class: "label" do %>
+            <span class="label-text font-medium">
+              站点名称 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.text_field :site_name, required: true, autofocus: true, placeholder: "请输入站点名称", class: "input input-bordered w-full focus:input-primary", value: @installation.site_name %>
+
+          <label class="label">
+            <span class="label-text-alt text-base-content/60"> 2-100 个字符 </span>
+          </label>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :site_description, class: "label" do %>
+            <span class="label-text font-medium">站点描述（可选）</span>
+          <% end %>
+
+          <%= form.text_area :site_description, rows: 3, placeholder: "请输入站点描述", class: "textarea textarea-bordered w-full focus:textarea-primary", value: @installation.site_description %>
+        </div>
+      </div>
+
+      <!-- Step 2: System Configuration -->
+      <div
+        class="step-content <%= 'hidden' unless @installation.errors.any? && (@installation.errors[:time_zone].any? || @installation.errors[:locale].any?) && !@installation.errors[:admin_email].any? && !@installation.errors[:admin_password].any? && !@installation.errors[:admin_password_confirmation].any? && !@installation.errors[:admin_name].any? && !@installation.errors[:site_name].any? %>"
+        data-step="2"
+      >
+        <h3 class="text-xl font-semibold mb-4">步骤 2：系统配置</h3>
+
+        <div class="form-control">
+          <%= form.label :time_zone, class: "label" do %>
+            <span class="label-text font-medium">
+              时区 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.time_zone_select :time_zone, ActiveSupport::TimeZone.all, { default: @installation.time_zone || Time.zone.name, include_blank: false }, { class: "select select-bordered w-full focus:select-primary", id: "installation_form_time_zone", data: { controller: "timezone-detector" } } %>
+
+          <label class="label">
+            <span class="label-text-alt text-base-content/60">
+              系统将使用此时区显示时间
+            </span>
+          </label>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :locale, class: "label" do %>
+            <span class="label-text font-medium">
+              语言 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.select :locale, [["中文", "zh-CN"], ["English", "en"]], { selected: @installation.locale || "zh-CN" }, { class: "select select-bordered w-full focus:select-primary" } %>
+
+          <label class="label">
+            <span class="label-text-alt text-base-content/60"> 系统界面语言 </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 3: Admin Account -->
+      <div
+        class="step-content <%= 'hidden' unless @installation.errors.any? && (@installation.errors[:admin_email].any? || @installation.errors[:admin_password].any? || @installation.errors[:admin_password_confirmation].any? || @installation.errors[:admin_name].any?) %>"
+        data-step="3"
+      >
+        <h3 class="text-xl font-semibold mb-4">步骤 3：管理员账号</h3>
+
+        <div class="form-control">
+          <%= form.label :admin_name, class: "label" do %>
+            <span class="label-text font-medium">
+              姓名 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.text_field :admin_name, required: true, placeholder: "请输入管理员姓名", class: "input input-bordered w-full focus:input-primary", value: @installation.admin_name %>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :admin_email, class: "label" do %>
+            <span class="label-text font-medium">
+              邮箱地址 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.email_field :admin_email, required: true, autocomplete: "username", placeholder: "请输入管理员邮箱", class: "input input-bordered w-full focus:input-primary", value: @installation.admin_email %>
+
+          <label class="label">
+            <span class="label-text-alt text-base-content/60">
+              将作为管理员登录账号
+            </span>
+          </label>
+        </div>
+
+        <div class="form-control" data-controller="password-strength">
+          <%= form.label :admin_password, class: "label" do %>
+            <span class="label-text font-medium">
+              密码 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.password_field :admin_password, required: true, autocomplete: "new-password", placeholder: "请输入密码（至少 8 位，包含字母和数字）", maxlength: 72, class: "input input-bordered w-full focus:input-primary", data: { password_strength_target: "input", action: "input->password-strength#updateStrength" } %>
+
+          <div
+            class="w-full bg-base-200 rounded-full h-2 mt-2"
+            style="display: none;"
+            data-password-strength-target="indicatorContainer"
+          >
+            <div
+              class="h-2 rounded-full transition-all duration-300"
+              data-password-strength-target="indicator"
+              style="width: 0%;"
+            ></div>
+          </div>
+
+          <label class="label">
+            <span
+              class="label-text-alt text-base-content/60"
+              data-password-strength-target="feedback"
+            >
+              至少 8 位，包含字母和数字
+            </span>
+          </label>
+        </div>
+
+        <div class="form-control">
+          <%= form.label :admin_password_confirmation, class: "label" do %>
+            <span class="label-text font-medium">
+              确认密码 <span class="text-error">*</span>
+            </span>
+          <% end %>
+
+          <%= form.password_field :admin_password_confirmation, required: true, autocomplete: "new-password", placeholder: "请再次输入密码", maxlength: 72, class: "input input-bordered w-full focus:input-primary" %>
+        </div>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="flex justify-between mt-8">
+        <button
+          type="button"
+          class="btn btn-outline"
+          id="prev-button"
+          data-installation-target="prevButton"
+          style="display: none;"
+        >
+          上一步
+        </button>
+
+        <div class="flex gap-2 ml-auto">
+          <button
+            type="button"
+            class="btn btn-outline"
+            id="next-button"
+            data-installation-target="nextButton"
+          >
+            下一步
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            data-installation-target="submitButton"
+            style="display: none;"
+          >
+            完成安装
+          </button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  // Installation wizard step management
+  (function() {
+    const totalSteps = 3;
+    let currentStep = 1;
+    
+    // Determine initial step based on visible content
+    // Server-side rendering sets the correct step visible based on errors
+    document.querySelectorAll('.step-content').forEach(content => {
+      if (!content.classList.contains('hidden')) {
+        const step = parseInt(content.getAttribute('data-step'));
+        if (step) currentStep = step;
+      }
+    });
+
+    function showStep(step, skipContentToggle) {
+      // Hide all step contents (unless skipContentToggle is true)
+      if (!skipContentToggle) {
+        document.querySelectorAll('.step-content').forEach(content => {
+          content.classList.add('hidden');
+        });
+
+        // Show current step content
+        const currentContent = document.querySelector(`.step-content[data-step="${step}"]`);
+        if (currentContent) {
+          currentContent.classList.remove('hidden');
+        }
+      }
+
+      // Update steps indicator
+      const stepsIndicator = document.getElementById('steps-indicator');
+      if (stepsIndicator) {
+        stepsIndicator.querySelectorAll('.step').forEach((stepEl) => {
+          const stepNum = parseInt(stepEl.getAttribute('data-step-indicator'));
+          stepEl.classList.remove('step-primary');
+          if (stepNum && stepNum <= step) {
+            stepEl.classList.add('step-primary');
+          }
+        });
+      }
+
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-button');
+      const nextButton = document.getElementById('next-button');
+      const submitButton = document.querySelector('[data-installation-target="submitButton"]');
+
+      if (prevButton) {
+        if (step > 1) {
+          prevButton.style.display = 'inline-flex';
+          prevButton.style.visibility = 'visible';
+        } else {
+          prevButton.style.display = 'none';
+          prevButton.style.visibility = 'hidden';
+        }
+      }
+
+      if (nextButton) {
+        if (step < totalSteps) {
+          nextButton.style.display = 'inline-flex';
+          nextButton.style.visibility = 'visible';
+        } else {
+          nextButton.style.display = 'none';
+          nextButton.style.visibility = 'hidden';
+        }
+      }
+
+      if (submitButton) {
+        if (step === totalSteps) {
+          submitButton.style.display = 'inline-flex';
+          submitButton.style.visibility = 'visible';
+        } else {
+          submitButton.style.display = 'none';
+          submitButton.style.visibility = 'hidden';
+        }
+      }
+
+      currentStep = step;
+    }
+
+    // Use event delegation for button clicks to handle dynamically rendered content
+    document.addEventListener('click', function(e) {
+      // Handle next button
+      const nextButton = e.target.closest('#next-button');
+      if (nextButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (currentStep < totalSteps) {
+          // Validate current step before proceeding
+          const currentContent = document.querySelector(`.step-content[data-step="${currentStep}"]`);
+          if (currentContent) {
+            const requiredFields = currentContent.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+              if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('input-error');
+              } else {
+                field.classList.remove('input-error');
+              }
+            });
+
+            if (isValid) {
+              showStep(currentStep + 1, false);
+            } else {
+              alert('请填写所有必填项');
+            }
+          }
+        }
+        return false;
+      }
+
+      // Handle prev button
+      const prevButton = e.target.closest('#prev-button');
+      if (prevButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (currentStep > 1) {
+          showStep(currentStep - 1, false);
+        }
+        return false;
+      }
+    });
+
+    // Initialize step based on current state when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        showStep(currentStep, true);
+      });
+    } else {
+      // DOM already loaded
+      showStep(currentStep, true);
+    }
+  })();
+</script>

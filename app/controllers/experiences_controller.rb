@@ -1,0 +1,112 @@
+class ExperiencesController < ApplicationController
+  include MarkdownRenderable
+
+  allow_unauthenticated_access
+
+  EXPERIENCES_DIR = Rails.root.join("docs", "experiences").freeze
+
+  def index
+    @experiences = load_experiences
+    # 按日期倒序排列（最新的在前）
+    @experiences.sort_by! { |exp| exp[:date] || Date.new(1970, 1, 1) }.reverse!
+  end
+
+  def show
+    # before_action 已经处理了 format，将文件扩展名合并到 id 中
+    # 例如：/experiences/highlight.js -> params[:id] = "highlight.js" (已处理)
+    experience_id = params[:id]
+
+    @experience = load_experience(experience_id)
+
+    unless @experience
+      raise ActiveRecord::RecordNotFound, "经验记录不存在: #{params[:id]}"
+    end
+
+    experience_file = EXPERIENCES_DIR.join("#{experience_id}.md")
+
+    unless File.exist?(experience_file)
+      raise ActiveRecord::RecordNotFound, "经验文件不存在: #{experience_file}"
+    end
+
+    # 获取文件修改时间用于缓存版本控制
+    file_mtime = File.mtime(experience_file)
+    file_mtime_int = file_mtime.to_i
+    cache_key = "experience:#{experience_id}:#{file_mtime_int}"
+
+    # 使用 stale? 检查请求是否过期
+    if stale?(
+      last_modified: file_mtime,
+      etag: cache_key,
+      public: true
+    )
+      @html_content = Rails.cache.fetch(cache_key) do
+        markdown_content = File.read(experience_file)
+        # 去掉 markdown 顶部的 YAML front matter（如果有）
+        markdown_content = remove_front_matter(markdown_content)
+        # 修复列表格式
+        markdown_content = fix_list_formatting(markdown_content)
+        markdown_to_html(markdown_content)
+      end
+    end
+  end
+
+  private
+
+  def load_experiences
+    experiences = []
+
+    Dir.glob(EXPERIENCES_DIR.join("*.md")).each do |file_path|
+      next if File.basename(file_path) == "README.md"
+
+      # 获取完整的文件名（不含扩展名）
+      # 例如：highlight.js.md -> highlight.js
+      id = File.basename(file_path, ".md")
+      experience = load_experience(id)
+      experiences << experience if experience
+    end
+
+    experiences
+  end
+
+  def load_experience(id)
+    file_path = EXPERIENCES_DIR.join("#{id}.md")
+    return nil unless File.exist?(file_path)
+
+    content = File.read(file_path)
+
+    # 解析元数据
+    metadata = parse_metadata(content)
+
+    {
+      id: id,
+      title: metadata[:title] || id.humanize,
+      date: metadata[:date],
+      problem_type: metadata[:problem_type],
+      file_path: file_path
+    }
+  end
+
+  def parse_metadata(content)
+    metadata = {}
+
+    # 提取标题（第一个 # 开头的行）
+    title_match = content.match(/^#\s+(.+)$/)
+    metadata[:title] = title_match[1].strip if title_match
+
+    # 提取日期
+    date_match = content.match(/\*\*日期\*\*[：:]\s*(\d{4}-\d{2}-\d{2})/)
+    if date_match
+      begin
+        metadata[:date] = Date.parse(date_match[1])
+      rescue Date::Error
+        # 忽略日期解析错误
+      end
+    end
+
+    # 提取问题类型
+    type_match = content.match(/\*\*问题类型\*\*[：:]\s*(.+)$/)
+    metadata[:problem_type] = type_match[1].strip if type_match
+
+    metadata
+  end
+end

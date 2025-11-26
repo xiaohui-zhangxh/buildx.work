@@ -1,6 +1,6 @@
 ---
 description: 认证系统开发规则和参考
-alwaysApply: true
+alwaysApply: false
 ---
 
 # 认证系统开发规则
@@ -16,6 +16,7 @@ alwaysApply: true
 ### 1. 开发者文档
 **文件位置**：`docs/DEVELOPER_GUIDE.md`
 **用途**：
+
 - 查看认证系统的架构设计
 - 了解 Warden 集成方式
 - 查看 API 认证策略设计
@@ -24,6 +25,7 @@ alwaysApply: true
 ### 2. Rails Security Guide
 **链接**：https://guides.rubyonrails.org/security.html#authentication
 **用途**：
+
 - 了解 Rails 8 Authentication Generator 的使用方法
 - 查看安全最佳实践
 - 参考密码重置、邮箱确认等功能的实现
@@ -31,6 +33,7 @@ alwaysApply: true
 ### 3. Warden 配置文件
 **文件位置**：`config/initializers/warden.rb`
 **用途**：
+
 - 查看 Warden 的配置
 - 了解认证策略的注册方式
 - 查看身份获取的配置
@@ -38,6 +41,7 @@ alwaysApply: true
 ### 4. 认证策略实现
 **文件位置**：`lib/warden/strategies/`
 **用途**：
+
 - 查看现有认证策略的实现
 - 参考如何实现新的认证策略
 - 了解策略的注册和使用方式
@@ -45,6 +49,7 @@ alwaysApply: true
 ### 5. 认证辅助方法
 **文件位置**：`app/controllers/concerns/authenticatable.rb`
 **用途**：
+
 - 查看 `current_user`、`user_signed_in?` 等方法的实现
 - 了解认证相关的 before_action
 - 参考如何在控制器中使用认证功能
@@ -52,6 +57,7 @@ alwaysApply: true
 ### 6. User 模型
 **文件位置**：`app/models/user.rb`
 **用途**：
+
 - 查看用户模型的定义
 - 了解密码加密、邮箱确认等功能的实现
 - 参考用户相关的验证和方法
@@ -59,6 +65,7 @@ alwaysApply: true
 ### 7. 路由配置
 **文件位置**：`config/routes.rb`
 **用途**：
+
 - 查看认证相关的路由定义
 - 了解 RESTful 路由的命名规范
 

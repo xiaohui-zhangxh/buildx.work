@@ -1,0 +1,239 @@
+---
+description: MCP (Model Context Protocol) 开发规则和最佳实践。包含描述信息编写规范、Tool/Resource/Prompt 开发规范、AI 感知机制说明等。开发 MCP 服务器、工具、资源和提示词时参考此规则。
+alwaysApply: false
+---
+
+# MCP 开发规则
+
+## 核心原则
+
+1. **所有描述信息 AI 都能感知**：服务器描述、Tool 描述、参数描述、Resource 描述、Prompt 描述等都会被 AI 读取和理解
+2. **描述信息决定 AI 行为**：清晰的描述帮助 AI 正确理解功能、选择工具、填写参数
+3. **优化描述信息三原则**：清晰性、完整性、一致性
+4. **参考官方文档**：基于 [MCP 官方文档](https://modelcontextprotocol.io/docs/getting-started/intro) 开发
+
+## 开发 MCP 功能时的参考文件
+
+### 1. MCP 官方文档
+**链接**：https://modelcontextprotocol.io/docs/getting-started/intro
+**用途**：
+
+- 了解 MCP 协议规范
+- 查看架构设计
+- 参考服务器实现示例
+
+### 3. MCP 配置文件
+**文件位置**：`~/.cursor/mcp.json`
+**用途**：
+
+- 查看 MCP 服务器配置
+- 了解服务器描述格式
+- 参考配置示例
+
+## 描述信息编写规范
+
+### ⚠️ 重要：AI 感知的描述信息
+
+以下描述信息 AI 都能感知并利用：
+
+1. **MCP 服务器描述**（`mcp.json` 中的 `description`）
+2. **Tool 描述**（`description` 字段）
+3. **Tool 参数描述**（`inputSchema` 中的参数 `description`）
+4. **Resource 描述**（`description` 字段）
+5. **Prompt 描述**（`description` 字段）
+6. **返回内容描述**
+
+### 描述信息优化原则
+
+#### 清晰性
+- ✅ 使用简洁、明确的语言
+- ✅ 避免技术术语，或提供解释
+- ✅ 使用主动语态（"搜索文章" 而非 "文章被搜索"）
+
+#### 完整性
+- ✅ 说明工具的主要功能
+- ✅ 说明输入参数的含义和格式
+- ✅ 说明返回数据的结构
+- ✅ 说明使用场景和限制条件
+- ✅ 说明错误情况和处理方式
+
+#### 一致性
+- ✅ 使用统一的描述风格
+- ✅ 使用统一的术语和命名规范
+- ✅ 保持格式的一致性
+
+## Tool 开发规范
+
+### Tool 描述示例
+
+```json
+{
+  "name": "kb_search_articles",
+  "description": "在指定知识库中搜索文章。支持关键词搜索、标签筛选和集合筛选。返回匹配的文章列表，包括文章ID（hashid格式）、标题、摘要等信息。",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "搜索关键词，支持模糊匹配。如果为空，则返回所有文章。"
+      },
+      "article_id": {
+        "type": "string",
+        "description": "文章ID（hashid格式，例如 'abc123'）。注意：必须使用hashid格式，不能使用数字ID如 1、25 等。"
+      }
+    },
+    "required": ["query"]
+  }
+}
+```
+
+### Tool 开发要点
+
+- ✅ 使用描述性的工具名称（如 `kb_search_articles` 而非 `search`）
+- ✅ 提供详细的工具描述，说明功能、输入、输出
+- ✅ 为每个参数提供清晰的描述，说明格式要求和限制
+- ✅ 说明参数的默认值和限制
+- ✅ 标记必需参数
+
+## Resource 开发规范
+
+### Resource 描述示例
+
+```json
+{
+  "uri": "knowledge-base://article/abc123",
+  "name": "文章：如何开始使用 MCP",
+  "description": "知识库文章的完整内容，包括标题、正文（HTML格式）、标签、创建时间、更新时间等信息。可用于查看和修改文章。注意：文章ID使用hashid格式（字符串），不能使用数字ID。",
+  "mimeType": "application/json"
+}
+```
+
+### Resource 开发要点
+
+- ✅ 使用清晰的资源名称
+- ✅ 说明资源的内容类型和格式
+- ✅ 说明资源的用途和使用场景
+- ✅ 说明特殊要求和限制
+
+## Prompt 开发规范
+
+### Prompt 描述示例
+
+```json
+{
+  "name": "code_review_template",
+  "description": "代码审查提示词模板。用于生成代码审查报告，包括代码质量评估、潜在问题识别、改进建议等。适用于审查 Pull Request 或代码变更。",
+  "arguments": [
+    {
+      "name": "code",
+      "description": "要审查的代码内容。可以是单个文件的内容，也可以是多个文件的代码片段。"
+    },
+    {
+      "name": "language",
+      "description": "编程语言（如 'ruby'、'javascript'、'python'）。用于选择合适的代码审查规则和最佳实践。"
+    }
+  ]
+}
+```
+
+### Prompt 开发要点
+
+- ✅ 说明提示词的用途和使用场景
+- ✅ 说明适用的情况和限制
+- ✅ 为每个参数提供清晰的描述
+
+## MCP 配置文件规范
+
+### 配置示例
+
+```json
+{
+  "mcpServers": {
+    "baklib-desk-local": {
+      "type": "httpPost",
+      "url": "http://tanmer.lvh.me:3000/mcp/desk?token=xxx",
+      "description": "Baklib 探码组织的 MCP Server。提供知识库、资源库、站点管理等功能的工具和资源。"
+    }
+  }
+}
+```
+
+### 配置要点
+
+- ✅ 为每个服务器提供清晰的 `description`
+- ✅ 说明服务器的主要功能和使用场景
+- ✅ 说明服务器提供的工具和资源类型
+
+## 常见任务
+
+### 开发新的 MCP Tool
+
+1. **设计 Tool 接口**：
+   - 确定工具名称（使用描述性名称）
+   - 设计输入参数（明确类型、格式、限制）
+   - 设计返回数据结构
+
+2. **编写描述信息**：
+   - 编写清晰的 Tool 描述
+   - 为每个参数编写详细的描述
+   - 说明格式要求和限制（如 hashid、枚举值等）
+
+3. **实现 Tool 逻辑**：
+   - 实现工具功能
+   - 处理错误情况
+   - 返回清晰的错误消息
+
+4. **测试和优化**：
+   - 使用 AI 助手测试工具调用
+   - 验证 AI 是否能正确理解工具功能
+   - 验证 AI 是否能正确填写参数
+   - 根据反馈优化描述信息
+
+### 开发新的 MCP Resource
+
+1. **设计 Resource 结构**：
+   - 确定资源 URI 格式
+   - 设计资源数据结构
+   - 确定内容类型（mimeType）
+
+2. **编写描述信息**：
+   - 编写清晰的 Resource 描述
+   - 说明资源的内容类型和格式
+   - 说明资源的用途和使用场景
+
+3. **实现 Resource 逻辑**：
+   - 实现资源读取逻辑
+   - 处理错误情况
+
+### 开发新的 MCP Prompt
+
+1. **设计 Prompt 模板**：
+   - 确定提示词用途
+   - 设计提示词参数
+   - 编写提示词内容
+
+2. **编写描述信息**：
+   - 编写清晰的 Prompt 描述
+   - 说明提示词的用途和使用场景
+   - 为每个参数编写描述
+
+## 注意事项
+
+1. **描述信息是 AI 的唯一信息来源**：AI 依赖描述信息来理解工具、资源和提示词，必须确保描述清晰、准确、完整
+
+2. **参数描述特别重要**：AI 需要根据参数描述来填写参数值，必须说明格式要求、限制条件、默认值等
+
+3. **使用示例说明格式要求**：对于特殊格式（如 hashid），在描述中提供示例（如 "例如 'abc123'"）
+
+4. **说明限制和约束**：明确说明不能做什么（如 "不能使用数字ID"），避免 AI 错误使用
+
+5. **测试描述信息的有效性**：使用 AI 助手测试，验证 AI 是否能正确理解和使用
+
+6. **持续优化**：根据 AI 使用反馈，持续优化描述信息
+
+## 相关文件索引
+
+- MCP 配置文件：`~/.cursor/mcp.json`
+- MCP 官方文档：https://modelcontextprotocol.io/docs/getting-started/intro
+- MCP 规范：https://modelcontextprotocol.io/specification
+- MCP 中文文档：https://docs.mcpcn.org/

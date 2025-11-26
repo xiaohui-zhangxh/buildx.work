@@ -23,6 +23,12 @@ class SessionsController < ApplicationController
 
     # Authenticate user
     if user && user.authenticate(password)
+      # Check if email is confirmed
+      unless user.confirmed?
+        redirect_to new_session_path, alert: "请先确认您的邮箱地址。我们已向您的邮箱发送了确认链接。"
+        return
+      end
+
       # Authentication successful - reset failed login attempts
       user.update!(failed_login_attempts: 0, locked_at: nil)
 

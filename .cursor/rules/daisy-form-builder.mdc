@@ -1,0 +1,261 @@
+---
+description: DaisyFormBuilder 前端表单开发规则和最佳实践。使用 DaisyUI 5 组件库开发表单时参考此规则。包含表单构建器使用方法、local 参数使用场景、表单样式规范等。
+alwaysApply: false
+---
+
+# DaisyFormBuilder 前端表单开发规则
+
+## 核心原则
+
+1. **统一使用 DaisyFormBuilder**：所有表单应使用 `daisy_form_with` 而不是 `form_with`
+2. **保留 Rails 原有逻辑**：FormBuilder 默认保留 Rails 原有的渲染逻辑，只自动应用默认样式类
+3. **明确指定 label**：只有当明确指定 `label_text` 时，才会自动添加 label 和 wrapper
+4. **根据场景选择 local 参数**：使用 `redirect_to` 的控制器建议使用 `local: true`
+
+## 开发相关功能时的参考文件
+
+### 1. 主要文档
+
+**文件位置**：`docs/experiences/daisy-form-builder.md`
+**用途**：DaisyFormBuilder 的完整使用指南，包含所有功能说明、示例代码和迁移指南
+
+**文件位置**：`docs/experiences/form-local-parameter.md`
+**用途**：表单 `local: true` 参数的使用指南，说明何时使用和不使用 `local: true`
+
+### 2. 相关代码
+
+**文件位置**：`app/helpers/daisy_form_builder.rb`
+**用途**：DaisyFormBuilder 的实现代码，包含所有表单字段方法和样式类
+
+**文件位置**：`app/helpers/application_helper.rb`
+**用途**：`daisy_form_with` helper 方法的定义
+
+## 开发规范
+
+### 基本表单结构
+
+**标准表单结构**（推荐）：
+
+```erb
+<div class="max-w-2xl mx-auto">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <%= daisy_form_with model: @model, local: true, class: "space-y-5" do |form| %>
+        <%= form.error_messages %>
+        <!-- 表单字段 -->
+        <%= form.card_actions submit_text: "保存", cancel_text: "取消", cancel_url: models_path %>
+      <% end %>
+    </div>
+  </div>
+</div>
+```
+
+**关键要点**：
+- ✅ 简单表单（字段少于 5 个）使用 `max-w-2xl mx-auto` 限制宽度
+- ✅ 表单容器使用 `class: "space-y-5"` 统一字段间距
+- ✅ 使用 `card` 和 `card-body` 包装表单内容
+
+### local 参数使用规范
+
+**使用 `local: true` 的场景**（推荐）：
+
+```erb
+<%= daisy_form_with model: @model, local: true, class: "space-y-5" do |form| %>
+  <!-- 表单内容 -->
+<% end %>
+```
+
+**适用场景**：
+- ✅ 控制器使用 `redirect_to` 重定向
+- ✅ 需要显示 flash 消息（notice/alert）
+- ✅ 搜索/筛选表单（GET 请求）
+- ✅ 需要完整页面刷新的场景
+
+**不使用 `local: true` 的场景**：
+- ❌ 使用 Turbo 进行部分更新
+- ❌ 单页应用（SPA）场景
+- ❌ 需要无刷新更新的表单
+
+**详细说明**：参考 `docs/experiences/form-local-parameter.md`
+
+### label_text 选项使用
+
+**三种用法**：
+
+1. **不指定**（默认）：保留 Rails 原有行为，只应用默认样式类
+```erb
+<%= form.text_field :username %>
+<!-- 不输出 label，只应用默认样式类 -->
+```
+
+2. **指定字符串**：使用指定的文字作为 label
+```erb
+<%= form.text_field :username, label_text: "用户名" %>
+<!-- 输出 label，文字为 "用户名" -->
+```
+
+3. **指定 true**：使用 human attribute name 作为 label
+```erb
+<%= form.text_field :username, label_text: true %>
+<!-- 输出 label，使用 User.human_attribute_name(:username) -->
+```
+
+4. **指定 false**：自动添加 wrapper，但不显示 label
+```erb
+<%= form.text_field :search, label_text: false, placeholder: "搜索..." %>
+```
+
+### 表单字段规范
+
+**文本字段**：
+
+```erb
+<%= form.text_field :name, label_text: "姓名", placeholder: "请输入姓名" %>
+```
+
+**邮箱字段**：
+
+```erb
+<%= form.email_field :email_address, label_text: "邮箱地址", placeholder: "example@email.com" %>
+```
+
+**密码字段**：
+
+```erb
+<%= form.password_field :password, label_text: "密码", placeholder: "至少 8 位字符" %>
+```
+
+**文本区域**：
+
+```erb
+<%= form.text_area :description, label_text: "描述", rows: 5, placeholder: "请输入描述" %>
+```
+
+**下拉选择**：
+
+```erb
+<%= form.select :role, [["管理员", "admin"], ["用户", "user"]], label_text: "角色" %>
+```
+
+**复选框**：
+
+```erb
+<%= form.check_box :remember_me, label_text: "记住我" %>
+```
+
+### 错误提示
+
+**自动显示错误**：
+
+```erb
+<%= form.error_messages %>
+<!-- 或自定义标题 -->
+<%= form.error_messages title: "请修复以下错误：" %>
+```
+
+**字段级别错误**：如果字段有错误且使用了 `label_text`，错误会自动显示在字段下方。
+
+### 按钮和操作
+
+**提交按钮**：
+
+```erb
+<%= form.submit "保存" %>
+<%= form.submit "保存", size: "lg", full_width: true %>
+```
+
+**表单操作（按钮组）**：
+
+```erb
+<%= form.actions submit_text: "保存", cancel_text: "取消", cancel_url: models_path %>
+```
+
+**卡片操作（右对齐按钮）**（推荐）：
+
+```erb
+<%= form.card_actions submit_text: "更新", cancel_text: "取消", cancel_url: admin_system_configs_path %>
+```
+
+## 常见任务
+
+### 任务 1：创建新的表单页面
+
+**步骤**：
+
+1. 创建视图文件（如 `app/views/admin/roles/new.html.erb`）
+2. 使用标准表单结构：
+   ```erb
+   <div class="max-w-2xl mx-auto">
+     <div class="card bg-base-100 shadow">
+       <div class="card-body">
+         <%= daisy_form_with model: [ :admin, @role ], local: true, class: "space-y-5" do |form| %>
+           <%= form.error_messages %>
+           <%= form.text_field :name, label_text: "名称" %>
+           <%= form.text_area :description, label_text: "描述" %>
+           <%= form.card_actions submit_text: "保存", cancel_text: "取消", cancel_url: admin_roles_path %>
+         <% end %>
+       </div>
+     </div>
+   </div>
+   ```
+3. 确保控制器使用 `redirect_to` 重定向（如果使用 `local: true`）
+
+### 任务 2：从标准表单迁移到 DaisyFormBuilder
+
+**迁移步骤**：
+
+1. 将 `form_with` 改为 `daisy_form_with`
+2. 添加 `local: true`（如果控制器使用 `redirect_to`）
+3. 使用 `form.error_messages` 替换手动错误提示
+4. 为字段添加 `label_text` 选项（如果需要）
+5. 使用 `form.card_actions` 替换手动按钮代码
+
+**详细示例**：参考 `docs/experiences/daisy-form-builder.md` 的"迁移指南"章节
+
+### 任务 3：创建搜索/筛选表单
+
+**步骤**：
+
+1. 使用 `local: true`（因为是 GET 请求）
+2. 使用 `url` 而不是 `model`：
+   ```erb
+   <%= daisy_form_with url: admin_users_path, method: :get, local: true, class: "space-y-5" do |form| %>
+     <%= form.text_field :search, label_text: false, placeholder: "搜索..." %>
+     <%= form.submit "搜索" %>
+   <% end %>
+   ```
+
+## 注意事项
+
+1. **必须使用 `daisy_form_with`**：不要使用 `form_with`，否则无法使用 FormBuilder 功能
+2. **表单容器建议使用 `space-y-5`**：统一字段间距
+3. **简单表单使用最大宽度限制**：字段少于 5 个的表单建议使用 `max-w-2xl mx-auto`
+4. **FormBuilder 保留 Rails 原有逻辑**：默认情况下不会自动添加 label 和 wrapper，只自动应用默认样式类
+5. **使用 `label_text` 选项**：只有当明确指定 `label_text` 时，才会自动添加 label 和 wrapper
+6. **错误提示自动显示**：使用 `form.error_messages` 显示表单级别错误，字段级别错误自动显示在字段下方
+7. **local 参数选择**：对于使用 `redirect_to` 重定向的控制器，建议使用 `local: true`
+8. **所有字段方法都支持标准 Rails 选项**：可以传递任何标准的 Rails 表单字段选项
+
+## 默认样式类
+
+FormBuilder 会自动应用以下默认样式：
+
+- **输入框**: `input input-bordered w-full focus:input-primary`
+- **文本区域**: `textarea textarea-bordered w-full`
+- **下拉选择**: `select select-bordered w-full`
+- **复选框**: `checkbox checkbox-primary`
+- **单选按钮**: `radio radio-primary`
+
+如果需要覆盖默认样式，可以使用 `no_default_classes` 选项：
+
+```erb
+<%= form.text_field :name, no_default_classes: true, class: "input input-ghost" %>
+```
+
+## 相关文件索引
+
+- **使用指南**：`docs/experiences/daisy-form-builder.md`
+- **local 参数指南**：`docs/experiences/form-local-parameter.md`
+- **FormBuilder 实现**：`app/helpers/daisy_form_builder.rb`
+- **Helper 方法**：`app/helpers/application_helper.rb`
+- **DaisyUI 规则**：`.cursor/rules/daisy-ui.mdc`

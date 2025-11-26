@@ -49,6 +49,7 @@
 ## ✅ 第一阶段已完成
 
 所有核心功能已实现并测试通过：
+
 - ✅ 用户认证系统（邮箱注册/登录、密码找回、记住我）
 - ✅ 安全功能（登录失败限制、账户锁定、密码强度验证、密码过期检查）
 - ✅ 用户管理（列表、详情、编辑）
@@ -65,13 +66,14 @@
 - [x] 账户锁定机制测试（已实现基础功能，测试已完成）
 
 ### 测试
-- [x] 模型测试（已完成，包括 User 和 Session 模型的完整测试，覆盖率 100%）
-- [x] 控制器测试（已完成，包括 UsersController、SessionsController、PasswordsController 的完整测试，覆盖率 100%）
+- [x] 模型测试（已完成，包括 User 和 Session 模型的完整测试，各文件覆盖率 100%）
+- [x] 控制器测试（已完成，包括 UsersController、SessionsController、PasswordsController 的完整测试，各文件覆盖率 100%）
 - [x] 个人中心控制器测试（已完成，包括 My::DashboardController、My::ProfileController、My::SecurityController、My::SessionsController 的完整测试，34 个测试用例）
-- [x] 邮件测试（已完成 PasswordsMailer 测试，覆盖率 100%）
-- [x] Authentication concern 测试（已完成，覆盖率 89.36%，128 个测试）
+- [x] 邮件测试（已完成 PasswordsMailer 测试，该文件覆盖率 100%）
+- [x] Authentication concern 测试（已完成，覆盖率 89.36%，128 个测试，已达到当前可测试的最大覆盖率）
 - [x] ApplicationCable::Connection 测试（已添加基础测试，覆盖率 68%，已排除在覆盖率计算外）
-- [x] User 模型密码过期功能测试（已完成，13 个测试用例，覆盖率 100%）
+- [x] User 模型密码过期功能测试（已完成，13 个测试用例，相关代码覆盖率 100%）
+- **注意**：整体项目覆盖率要求是 85%（配置在 `test/test_helper.rb`），特定文件的 100% 覆盖率只是理想目标，不是强制要求
 
 ## 📝 备注
 

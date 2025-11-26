@@ -11,14 +11,10 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      # Create session and authenticate user
-      session_record = @user.sessions.create!(
-        user_agent: request.user_agent,
-        ip_address: request.remote_ip
-      )
-      warden.set_user(session_record)
+      # Send confirmation email
+      @user.send_confirmation_email
 
-      redirect_to root_path, notice: "Account created successfully!"
+      redirect_to new_session_path, notice: "注册成功！请检查您的邮箱并点击确认链接以激活账户。"
     else
       render :new, status: :unprocessable_entity
     end

@@ -1,7 +1,7 @@
 <div class="text-center mb-8">
   <%= link_to root_path, class: "inline-block" do %>
     <div class="flex flex-col items-center gap-3">
-      <%= image_tag "logo.svg", alt: "Tanmer Egg", class: "h-16 w-16" %>
+      <%= image_tag "logo.svg", alt: site_name, class: "h-16 w-16" %>
 
       <h1
         class="
@@ -9,7 +9,7 @@
           bg-clip-text text-transparent
         "
       >
-        Tanmer Egg
+        <%= site_name %>
       </h1>
     </div>
   <% end %>
@@ -65,17 +65,11 @@
       Enter your email address and we'll send you reset instructions.
     </p>
 
-    <%= form_with url: passwords_path, class: "space-y-5" do |form| %>
-      <div class="form-control">
-        <%= form.label :email_address, class: "label" do %>
-          <span class="label-text font-medium">Email address</span>
-        <% end %>
-
-        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "input input-bordered w-full focus:input-primary" %>
-      </div>
+    <%= daisy_form_with url: passwords_path, local: true, class: "space-y-5" do |form| %>
+      <%= form.email_field :email_address, label_text: "Email address", required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %>
 
       <div class="form-control mt-6">
-        <%= form.submit "Send reset instructions", class: "btn btn-primary w-full btn-lg shadow-lg" %>
+        <%= form.submit "Send reset instructions", full_width: true, size: "lg" %>
       </div>
 
       <div class="text-center mt-6">

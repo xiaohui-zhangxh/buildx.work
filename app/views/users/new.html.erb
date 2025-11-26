@@ -1,7 +1,7 @@
 <div class="text-center mb-8">
   <%= link_to root_path, class: "inline-block" do %>
     <div class="flex flex-col items-center gap-3">
-      <%= image_tag "logo.svg", alt: "Tanmer Egg", class: "h-16 w-16" %>
+      <%= image_tag "logo.svg", alt: site_name, class: "h-16 w-16" %>
 
       <h1
         class="
@@ -9,7 +9,7 @@
           bg-clip-text text-transparent
         "
       >
-        Tanmer Egg
+        <%= site_name %>
       </h1>
     </div>
   <% end %>
@@ -63,75 +63,46 @@
       Create a new account to get started.
     </p>
 
-    <%= form_with model: @user, url: users_path, class: "space-y-5" do |form| %>
-      <% if @user.errors.any? %>
-        <div role="alert" class="alert alert-error mb-4 shadow-lg">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+    <%= daisy_form_with model: @user, url: users_path, local: true, class: "space-y-5" do |form| %>
+      <%= form.error_messages %>
 
-          <div>
-            <h3 class="font-bold">Please fix the following errors:</h3>
+      <%= form.text_field :name, label_text: "Name (optional)", placeholder: "Enter your name" %>
 
-            <ul class="list-disc list-inside text-sm">
-              <% @user.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      <% end %>
+      <%= form.email_field :email_address, label_text: "Email address", required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address" %>
 
-      <div class="form-control">
-        <%= form.label :name, class: "label" do %>
-          <span class="label-text font-medium">Name (optional)</span>
-        <% end %>
-
-        <%= form.text_field :name, placeholder: "Enter your name", class: "input input-bordered w-full focus:input-primary" %>
-      </div>
-
-      <div class="form-control">
-        <%= form.label :email_address, class: "label" do %>
-          <span class="label-text font-medium">Email address</span>
-        <% end %>
-
-        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", class: "input input-bordered w-full focus:input-primary" %>
-      </div>
-
-      <div class="form-control">
+      <div class="form-control" data-controller="password-strength">
         <%= form.label :password, class: "label" do %>
           <span class="label-text font-medium">Password</span>
         <% end %>
 
-        <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "Enter your password (min 8 characters)", maxlength: 72, class: "input input-bordered w-full focus:input-primary" %>
+        <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "Enter your password (min 8 characters)", maxlength: 72, no_default_classes: true, class: "input input-bordered w-full focus:input-primary", data: { password_strength_target: "input", action: "input->password-strength#updateStrength" } %>
+
+        <div
+          class="w-full bg-base-200 rounded-full h-2 mt-2"
+          style="display: none;"
+          data-password-strength-target="indicatorContainer"
+        >
+          <div
+            class="h-2 rounded-full transition-all duration-300"
+            data-password-strength-target="indicator"
+            style="width: 0%;"
+          ></div>
+        </div>
 
         <label class="label">
-          <span class="label-text-alt text-base-content/60">
+          <span
+            class="label-text-alt text-base-content/60"
+            data-password-strength-target="feedback"
+          >
             At least 8 characters, including letters and numbers
           </span>
         </label>
       </div>
 
-      <div class="form-control">
-        <%= form.label :password_confirmation, class: "label" do %>
-          <span class="label-text font-medium">Password confirmation</span>
-        <% end %>
-
-        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Confirm your password", maxlength: 72, class: "input input-bordered w-full focus:input-primary" %>
-      </div>
+      <%= form.password_field :password_confirmation, label_text: "Password confirmation", required: true, autocomplete: "new-password", placeholder: "Confirm your password", maxlength: 72 %>
 
       <div class="form-control mt-6">
-        <%= form.submit "Sign up", class: "btn btn-primary w-full btn-lg shadow-lg" %>
+        <%= form.submit "Sign up", full_width: true, size: "lg" %>
       </div>
 
       <div class="text-center mt-6 space-y-2">

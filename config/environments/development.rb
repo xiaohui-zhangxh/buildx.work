@@ -26,7 +26,7 @@ Rails.application.configure do
   end
 
   # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  config.cache_store = :solid_cache_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -38,6 +38,8 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
+  # Note: This will be overridden by config/initializers/200_action_mailer.rb
+  # if site_domain is configured in SystemConfig (e.g., "localhost:3001")
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   # Use letter_opener for email preview in development

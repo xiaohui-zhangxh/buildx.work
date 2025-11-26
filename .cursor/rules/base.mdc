@@ -1,262 +1,344 @@
 ---
-description: 项目基础规则和文档索引
+description: 通用基础规则。包含文档更新规范、常用工具使用方法等通用规则，适用于所有项目。
 alwaysApply: true
 ---
 
-# Tanmer Egg 项目基础规则
+# 通用基础规则
 
-## 📚 文档结构总览
+本文档包含适用于所有项目的通用规则。项目特定规则请参考 `workspace.mdc`。
 
-本项目采用分阶段文档管理方式，所有文档按功能模块和开发阶段组织。
+## 🤖 AI 对话行为规范
 
-### 根目录文档
+### 对话开始时的行为
 
-- **README.md** - 项目概览、快速开始、技术栈（精简版，详细内容在其他文档）
-- **CURRENT_WORK.md** - 当前工作状态和待办事项（每日更新）
+**重要**：当开始与用户对话时，如果任务不明确或与项目无关，AI 应该：
 
-### 文档目录 (docs/)
+1. **主动提醒用户可以做什么**：
+   - 列出可用的指令和功能
+   - 说明工作区的项目结构（如适用）
+   - 提供帮助和指导
 
-所有项目文档都统一放在 `docs/` 目录下：
+2. **列出可用指令**：
+   - 查看 `.cursor/commands/` 目录下的指令文件
+   - 向用户说明如何使用这些指令
+   - 提供指令的使用示例
 
-- **docs/README.md** - 文档索引，所有文档的导航
-- **docs/FEATURES.md** - 完整的功能清单（所有功能的详细列表）
-- **docs/DEVELOPMENT_PLAN.md** - 开发计划总览（指向各阶段详细文档）
-- **docs/DEVELOPER_GUIDE.md** - 开发者指南（技术决策、架构设计、开发规范）
+3. **说明工作区结构**（如适用）：
+   - 介绍工作区中的项目或子项目（如果存在）
+   - 说明每个项目的主要任务
+   - 提供项目文档链接
 
-### 阶段文档 (docs/phase-*)
+### 可用指令列表
 
-每个开发阶段都有独立的文档目录，包含：
+**指令文件位置**：`.cursor/commands/`
 
-- **README.md** - 阶段概览、目标、主要功能
-- **plan.md** - 详细的开发计划和任务清单
-- **progress.md** - 开发进度跟踪（已完成、进行中、待开始）
-- **notes.md** - 开发笔记、问题记录、技术决策
+**在 Cursor 中执行指令**：使用斜线命令，例如 `/continue-project-work`
 
-**当前阶段**：
-- `docs/phase-1-authentication/` - 第一阶段：用户认证系统（进行中）
-- `docs/phase-2-authorization/` - 第二阶段：权限系统（计划中）
-- `docs/phase-3-multi-tenant/` - 第三阶段：多租户支持（计划中）
-- `docs/phase-4-advanced/` - 第四阶段：高级功能（计划中）
+当前可用的指令：
 
-## 🗺️ 文档查找指南
+1. 🚀 **继续完成项目工作** (`continue-project-work.md`)
+   - **用途**：继续完成指定项目的下一步工作
+   - **使用方式**：
+     - **Cursor 斜线命令**：`/continue-project-work [项目：项目名]`
+     - **直接描述**：`继续完成项目工作，项目：[项目名]`
+     - **不指定项目**：`/continue-project-work` 或 `继续完成项目工作`（AI 会列出所有项目让你选择）
+   - **说明**：通用指令，适用于所有项目
 
-### 当需要了解项目整体情况时
+2. 🤖 **自主工作** (`autonomous-work.md`)
+   - **用途**：AI 自主完成项目工作
+   - **使用方式**：`/autonomous-work`
 
-1. **项目概览**：查看 `README.md`
-2. **当前工作状态**：查看 `CURRENT_WORK.md`（了解正在做什么）
-3. **功能清单**：查看 `docs/FEATURES.md`
-4. **开发计划**：查看 `docs/DEVELOPMENT_PLAN.md` 或 `docs/README.md`
+3. 📝 **日报管理** (`daily-report.md`)
+   - **用途**：创建、查看、更新日报
+   - **使用方式**：`/daily-report`
 
-### 当需要了解技术决策和架构时
+4. 📚 **其他指令**：
+   - 查看 `.cursor/commands/` 目录了解所有可用指令
+   - 使用斜线命令执行：`/指令文件名`（不含 .md 扩展名）
 
-1. **技术架构**：查看 `docs/DEVELOPER_GUIDE.md`
-2. **认证系统设计**：查看 `docs/DEVELOPER_GUIDE.md` 的认证系统章节
-3. **Warden 集成**：查看 `docs/DEVELOPER_GUIDE.md` 的身份管理章节
+### 提示用户的标准格式
 
-### 当需要开发某个功能时
+**重要**：当任务不明确或与项目无关时，AI 必须使用 emoji 图标来提高内容的辨识度和可读性。所有提示内容都应该适当使用 emoji，包括但不限于：
+- 使用 🤔 表示思考/询问
+- 使用 📋 表示列表/指令
+- 使用 📁 表示项目/工作区
+- 使用 💡 表示提示/建议
+- 使用 📖 表示文档/参考
+- 使用 ✅ 表示可执行的任务
+- 使用 🚀、🤖、📝 等表示不同类型的指令
 
-1. **查看阶段概览**：`docs/phase-{阶段名}/README.md`
-2. **查看详细计划**：`docs/phase-{阶段名}/plan.md`
-3. **查看开发进度**：`docs/phase-{阶段名}/progress.md`
-4. **查看开发笔记**：`docs/phase-{阶段名}/notes.md`
+当任务不明确或与项目无关时，AI 应该使用以下格式提示用户（**必须包含 emoji**）：
 
-### 当需要了解认证相关功能时
+```
+🤔 任务不明确，我可以帮你：
 
-1. **认证规则**：查看 `.cursor/rules/authentication.mdc`
-2. **认证架构**：查看 `docs/DEVELOPER_GUIDE.md` 的认证系统章节
-3. **开发计划**：查看 `docs/phase-1-authentication/plan.md`
-4. **Rails 官方文档**：https://guides.rubyonrails.org/security.html#authentication
+📋 **可用指令**：
+1. 🚀 继续完成项目工作
+   - **Cursor 斜线命令**：`/continue-project-work [项目：项目名]`
+   - **直接描述**：`继续完成项目工作，项目：[项目名]`
+   - **不指定项目**：`/continue-project-work` 或 `继续完成项目工作`（我会列出所有项目让你选择）
+   - **指令文件**：`.cursor/commands/continue-project-work.md`
 
-### 当需要了解 UI 组件时
+2. 🤖 自主工作
+   - **Cursor 斜线命令**：`/autonomous-work`
+   - **说明**：AI 自主完成项目工作
 
-1. **DaisyUI 规则**：查看 `.cursor/rules/daisy-ui.mdc`
-2. **DaisyUI 文档**：https://daisyui.com/
+3. 📝 日报管理
+   - **Cursor 斜线命令**：`/daily-report`
+   - **说明**：创建、查看、更新日报
 
-## 📋 核心开发原则
+📁 **工作区项目**：
+[根据 workspace.mdc 中的项目列表动态生成，如适用]
 
-### 1. 文档先行
-- 重要技术决策先记录在文档中
-- 开发前先查看相关文档
-- 开发过程中及时更新文档
+💡 **我可以帮你**：
+- ✅ 继续完成项目的下一步工作（使用指令：继续完成项目工作）
+- ✅ 更新项目文档和进度
+- ✅ 管理任务清单和状态
+- ✅ 创建或管理日报
+- ✅ 其他项目相关任务
 
-### 2. 分阶段开发
-- 按阶段逐步实现功能
-- 每个阶段完成后才进入下一阶段
-- 阶段文档独立管理
+📖 **查看指令详情**：
+- 🚀 继续完成项目工作：`.cursor/commands/continue-project-work.md`（如果存在）
+- 🤖 自主工作：`.cursor/commands/autonomous-work.md`
+- 📝 日报管理：`.cursor/commands/daily-report.md`
 
-### 3. 代码规范
-- 遵循 Rails 社区最佳实践
-- 使用 RuboCop 进行代码检查
-- **测试用例规范**：
-  - **全面覆盖**：测试用例需要根据功能情况，尽可能覆盖所有场景，避免遗漏
-    - 包括正常流程、边界条件、异常情况、错误处理等
-    - 对于控制器，需要测试所有 action 的成功和失败场景
-    - 对于模型，需要测试所有验证规则、关联关系、业务逻辑
-    - 对于视图，需要测试不同状态下的显示效果
-  - **代码与测试冲突处理**：当被测试的代码和测试用例产生冲突时，需要深度思考冲突问题，决定以哪边为基准
-    - **分析冲突原因**：理解冲突的根本原因，是代码逻辑错误还是测试用例设计不当
-    - **以功能需求为准**：优先考虑实际业务需求和功能设计意图
-    - **测试驱动开发（TDD）场景**：如果采用 TDD，测试用例定义了预期行为，代码应该符合测试
-    - **代码重构场景**：如果是重构现有代码，需要更新测试用例以反映新的实现
-    - **记录决策过程**：在 `notes.md` 中记录冲突分析和决策过程，便于后续维护
-  - **测试质量要求**：
-    - 每个功能都要有对应的测试
-    - 测试应该独立、可重复、快速执行
-    - 使用 Rails 测试框架（Minitest）编写测试
-    - 测试命名清晰，能够表达测试意图
-    - **测试覆盖率要求**：代码测试覆盖率至少达到 85%
-      - 使用 SimpleCov 等工具测量测试覆盖率
-      - 覆盖率报告应包含在 CI/CD 流程中
-      - 新功能开发时，确保相关代码的测试覆盖率达标
-      - 重构代码时，不应降低现有测试覆盖率
-      - **指定文件覆盖率检查**：支持通过环境变量 `COVERAGE_FILES` 指定只检查某些文件的测试覆盖率
-        - 使用方法：`COVERAGE_FILES=app/models/user.rb bin/rails test test/models/user_test.rb`
-        - 多个文件用逗号分隔：`COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rails test`
-        - 支持部分路径匹配：`COVERAGE_FILES=app/models bin/rails test test/models/`
-        - 详细说明请查看 `docs/DEVELOPER_GUIDE.md` 的测试规范章节
-- **添加 Gem 时记录版本号**：在 Gemfile 中明确指定版本号，并在相关文档中记录，避免以后出现兼容问题
-  - **必须使用最新版本**：添加 Gem 时，版本号必须是当下最新的稳定版本
-  - 可以通过 `gem search <gem_name>` 或访问 https://rubygems.org/gems/<gem_name> 查看最新版本
-- **图片资源管理**：
-  - **必须使用 `app/assets/images/` 目录**：所有图片文件必须放在 `app/assets/images/` 目录下
-  - **禁止使用 `public/` 目录**：不要将图片放在 `public/` 目录，否则无法通过 Rails Asset Pipeline 正确加载和显示
-  - **引用方式**：在视图中使用 `image_tag` 或 `image_path` 辅助方法引用图片
-  - **示例**：
-    - ✅ 正确：`app/assets/images/logo.png` → `<%= image_tag "logo.png" %>`
-    - ❌ 错误：`public/logo.png` → 无法正确显示
+请告诉我你想做什么，或者使用上面的指令。
+```
 
-### 4. 技术栈选择
-- **认证系统**：Rails 8 Authentication Generator + Warden
-- **前端**：Tailwind CSS 4 + DaisyUI 5
-- **身份管理**：Warden（支持多种认证策略）
-- **部署**：Kamal + Docker
+### 判断任务是否明确的标准
 
-## 🔍 常见任务文档查找
+**任务明确的情况**：
+- 用户明确指定了要执行的具体任务
+- 用户指定了项目和具体工作
+- 用户的问题与项目直接相关
 
-### 添加新功能
-1. 查看 `docs/FEATURES.md` 确认功能是否已规划
-2. 查看对应阶段的 `plan.md` 了解开发计划
-3. 查看 `docs/DEVELOPER_GUIDE.md` 了解技术规范
-4. 更新对应阶段的 `progress.md`
+**任务不明确的情况**：
+- 用户只是打招呼或询问"你好"
+- 用户的问题与项目无关
+- 用户没有指定要做什么
+- 用户询问"我能做什么"或"你可以做什么"
 
-### 添加新的 Gem 依赖
-1. **查找最新版本**：
-   - 使用命令：`gem search <gem_name>` 或 `gem info <gem_name>`
-   - 或访问：https://rubygems.org/gems/<gem_name>
-   - 确保获取的是最新稳定版本
-2. **在 Gemfile 中明确指定版本号**：
-   - 必须使用最新版本（如 `gem "warden", "~> 1.2.9"`）
-   - 不要使用过时的版本号
-3. 运行 `bundle install` 安装依赖
-4. **在相关文档中记录 Gem 名称和版本号**：
-   - 技术栈说明：更新 `README.md` 或 `docs/DEVELOPER_GUIDE.md`
-   - 开发笔记：更新对应阶段的 `notes.md`
-5. 记录添加原因和使用场景，便于后续维护
+**与项目无关的情况**：
+- 问题与当前工作区项目无关
+- 问题是一般性的编程或技术问题（与当前项目无关）
+- 问题是闲聊或无关话题
 
-### 解决技术问题
-1. 查看 `docs/phase-{阶段名}/notes.md` 是否有类似问题
-2. 查看 `docs/DEVELOPER_GUIDE.md` 了解技术决策
-3. 查看相关 Cursor 规则文件（如 `authentication.mdc`）
-
-### 更新开发进度
-1. 更新对应阶段的 `progress.md`
-2. 在 `notes.md` 中记录遇到的问题和解决方案
-3. 如有技术决策，更新 `docs/DEVELOPER_GUIDE.md`
-
-### 了解项目状态
-1. 查看 `CURRENT_WORK.md` 了解当前正在做什么
-2. 查看 `docs/DEVELOPMENT_PLAN.md` 了解整体进度
-3. 查看各阶段的 `progress.md` 了解详细进度
-4. 查看 `docs/FEATURES.md` 了解功能完成情况
-
-### 运行测试和查看覆盖率
-1. **运行测试**：`bin/rails test`
-2. **查看覆盖率报告**：`open coverage/index.html`
-3. **检查特定文件覆盖率**：使用 `COVERAGE_FILES` 环境变量（详见 `docs/DEVELOPER_GUIDE.md` 测试规范章节）
-4. **测试覆盖率要求**：至少 85%（配置在 `test/test_helper.rb`）
+---
 
 ## 📝 文档更新规范
 
 ### 何时更新文档
 
-1. **技术决策**：更新 `docs/DEVELOPER_GUIDE.md`
-2. **开发进度**：更新对应阶段的 `progress.md`
-3. **开发笔记**：更新对应阶段的 `notes.md`
-4. **功能完成**：更新 `docs/FEATURES.md` 和 `README.md`
+1. **技术决策**：记录重要的技术选择和架构决策
+2. **开发进度**：更新项目进度和里程碑
+3. **开发笔记**：记录遇到的问题和解决方案
+4. **功能完成**：更新功能状态和完成情况
 
 ### 如何更新文档
 
-1. **阶段内文档**：在对应阶段的文件夹中更新
-2. **跨阶段文档**：在 `docs/` 根目录更新
-3. **技术决策**：更新 `docs/DEVELOPER_GUIDE.md`
-4. **功能清单**：更新 `docs/FEATURES.md`
+1. **模块内文档**：在对应模块的文件夹中更新相关文档
+2. **跨模块文档**：在文档根目录或共享位置更新
+3. **技术决策**：记录在技术文档或开发者指南中
+4. **项目状态**：及时更新项目状态和进度信息
 
-## 🎯 项目目标
+**注意**：更新日志文件创建和管理规范请参考 `.cursor/rules/changelog.mdc`。
 
-- **标准化开发**：提供统一的基础功能实现
-- **快速启动**：跳过重复的基础开发工作
-- **最佳实践**：集成 Rails 社区推荐的最佳实践
-- **开箱即用**：包含企业级功能模块
+---
 
-## 🔗 重要链接
-
-- **项目主页**：`README.md`
-- **当前工作**：`CURRENT_WORK.md` ⭐ 每日必看
-- **文档索引**：`docs/README.md`
-- **功能清单**：`docs/FEATURES.md`
-- **开发计划**：`docs/DEVELOPMENT_PLAN.md`
-- **开发者指南**：`docs/DEVELOPER_GUIDE.md`
-- **认证规则**：`.cursor/rules/authentication.mdc`
-- **DaisyUI 规则**：`.cursor/rules/daisy-ui.mdc`
-
-## ⚠️ 注意事项
-
-1. **每日更新 CURRENT_WORK.md**：开始工作时查看，完成工作后更新
-2. **不要重复文档内容**：README.md 保持精简，详细内容在其他文档
-3. **及时更新进度**：开发过程中及时更新 progress.md 和 CURRENT_WORK.md
-4. **记录技术决策**：重要决策记录在 DEVELOPER_GUIDE.md 和对应阶段的 notes.md
-5. **遵循开发顺序**：按阶段顺序开发，不要跳跃
-
-## 📖 快速参考
-
-### 当前开发阶段
-- **阶段**：第一阶段 - 用户认证系统
-- **状态**：进行中
-- **文档位置**：`docs/phase-1-authentication/`
-- **详细计划**：`docs/phase-1-authentication/plan.md`
-
-### 技术栈核心
-- **Ruby**: 3.3.5
-- **Rails**: 8.1.1
-- **认证**: Rails 8 Authentication Generator + Warden
-- **前端**: Tailwind CSS 4 + DaisyUI 5
-- **部署**: Kamal + Docker
-
-### 开发规范
-- 遵循 Rails 最佳实践
-- 使用 RuboCop 代码检查
-- 编写测试覆盖（覆盖率要求 85%）
-- 文档先行原则
-
-### 测试覆盖率快速命令
-- **查看覆盖率报告**：`open coverage/index.html`
-- **检查单个文件**：`COVERAGE_FILES=app/models/user.rb bin/rails test test/models/user_test.rb`
-- **检查多个文件**：`COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rails test`
-- **检查目录**：`COVERAGE_FILES=app/models bin/rails test test/models/`
+## 🛠️ 常用工具
 
 ### 获取当前时间
-当需要获取当前系统时间时，可以通过执行 Ruby 代码获取：
+
+当需要获取当前系统时间时，可以根据操作系统和已安装的工具选择合适的方法：
+
+#### macOS/Linux（使用 date 命令）
+
+- **日期**：`date +%Y-%m-%d`
+- **完整时间**：`date "+%Y-%m-%d %H:%M:%S"`
+- **ISO 格式**：`date -u +%Y-%m-%dT%H:%M:%SZ` 或 `date -Iseconds`（GNU date）
+
+#### Windows（使用 PowerShell）
+
+- **日期**：`powershell -Command "Get-Date -Format 'yyyy-MM-dd'"`
+- **完整时间**：`powershell -Command "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"`
+- **ISO 格式**：`powershell -Command "Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ'"`
+
+#### Python（如果已安装）
+
+- **日期**：`python -c "from datetime import datetime; print(datetime.now().strftime('%Y-%m-%d'))"`
+- **完整时间**：`python -c "from datetime import datetime; print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))"`
+- **ISO 格式**：`python -c "from datetime import datetime; print(datetime.now().isoformat())"`
+
+#### Ruby（如果已安装）
+
 - **日期**：`ruby -e "puts Time.now.strftime('%Y-%m-%d')"`
 - **完整时间**：`ruby -e "puts Time.now.strftime('%Y-%m-%d %H:%M:%S')"`
 - **ISO 格式**：`ruby -e "puts Time.now.iso8601"`
 
+**建议**：优先使用系统自带的命令（macOS/Linux 的 `date` 或 Windows 的 PowerShell），这些命令在所有系统上都可用。
+
 常用于更新文档中的"最后更新"日期等场景。
 
-### 浏览器调试工具
-当需要查看界面效果、验证 UI 实现或调试前端问题时，可以使用浏览器工具进行调试：
-- 使用 `browser_navigate` 导航到页面
-- 使用 `browser_snapshot` 查看页面快照
-- 使用 `browser_take_screenshot` 截图
-- 使用 `browser_click`、`browser_type` 等工具进行交互测试
+#### 获取其他日期格式
 
-这在开发视图、验证 DaisyUI 组件效果、调试前端问题时特别有用。
+- **周数**：`date +"%Y-W%V"`（格式：YYYY-WXX，如 2025-W01）
+- **季度**：根据月份计算（1-3月=Q1，4-6月=Q2，7-9月=Q3，10-12月=Q4）
+- **月份**：`date +"%Y-%m"`（格式：YYYY-MM）
+
+#### 执行规则
+
+1. **必须执行命令**：需要日期/时间时，必须运行命令获取真实值
+2. **不要假设**：不要使用记忆中的日期或假设当前日期
+3. **格式统一**：使用标准格式（YYYY-MM-DD）确保一致性
+4. **时区考虑**：使用系统默认时区，如需特定时区可指定（如 `TZ=Asia/Shanghai date`）
+
+### 操作者身份获取规则（重要）
+
+**重要**：当需要知道操作者本人是谁时，必须通过 git 命令获取提交人身份信息，而不是使用假设或记忆中的信息。
+
+#### 获取操作者身份
+
+- **命令**：`git config user.name`（获取用户名）
+- **命令**：`git config user.email`（获取用户邮箱）
+- **使用场景**：
+  - 需要记录操作者信息时
+  - 需要在文档中标注作者时
+  - 需要了解当前操作者身份时
+  - 需要在更新日志中记录操作者时
+
+#### 获取 Git 提交历史中的操作者信息
+
+- **命令**：`git log -1 --pretty=format:"%an <%ae>"`（获取最后一次提交的作者）
+- **命令**：`git log -1 --pretty=format:"%cn <%ce>"`（获取最后一次提交的提交者）
+- **使用场景**：
+  - 查看最近的提交者信息
+  - 了解项目的操作历史
+  - 确认操作者身份
+
+#### 执行规则
+
+1. **必须执行命令**：需要操作者身份时，必须运行 git 命令获取真实值
+2. **不要假设**：不要使用记忆中的信息或假设操作者身份
+3. **优先使用配置**：优先使用 `git config` 获取当前配置的身份信息
+4. **备用方案**：如果 git config 没有配置，可以查看最近的提交历史
+
+### 浏览器调试工具
+
+当需要查看界面效果、验证 UI 实现或调试前端问题时，如果已配置了浏览器控制相关的 MCP 服务，可以考虑使用浏览器工具进行调试。
+
+**可用的工具示例**（具体工具取决于已配置的 MCP 服务）：
+
+- 导航到页面
+- 查看页面快照
+- 截图功能
+- 页面交互（点击、输入等）
+
+**注意**：不同的 MCP 服务可能提供不同的工具和功能，请根据实际配置的 MCP 服务使用相应的工具。如果未配置浏览器控制相关的 MCP 服务，可以使用其他方式（如手动打开浏览器）进行调试。
+
+---
+
+## 📋 通用开发规范
+
+### 代码质量
+
+- 遵循语言和框架的最佳实践
+- 使用代码检查工具（如 RuboCop、ESLint 等）
+- 编写测试覆盖
+- 文档先行原则
+
+### 文档管理
+
+- 保持文档结构清晰
+- 及时更新文档
+- 记录技术决策和问题解决方案
+- 避免重复文档内容
+
+---
+
+## 文件操作规范
+
+### 创建新内容文件
+
+1. 确认当前项目目录
+2. 确认文件保存路径（根据项目规范）
+3. 检查文件是否已存在，避免重复
+4. 创建文件时，在文件头部添加元数据（根据项目规范）
+
+**注意**：具体的文件操作规范请参考 `workspace.mdc` 中的项目特定规则。
+
+### 更新进度文件
+
+1. 确认当前项目目录
+2. 打开项目的进度文件（根据项目规范，如 `PROGRESS.md`、`TODO.md` 等）
+3. 找到对应任务行
+4. 更新状态、完成日期等信息
+5. 更新统计数据部分（如适用）
+
+**注意**：具体的进度文件名称和格式请参考 `workspace.mdc` 中的项目特定规则。
+
+### 创建任务计划
+
+1. 确认当前项目目录
+2. 在项目的任务计划目录创建对应计划文件（如适用）
+3. 参考 `[项目目录]/README.md` 中的内容清单（如适用）
+4. 根据优先级和时间安排任务
+5. 在计划文件中标注任务来源（如适用）
+
+**注意**：具体的任务计划规范请参考 `workspace.mdc` 中的项目特定规则。
+
+---
+
+## 任务状态定义
+
+通用任务状态包括：
+
+- **待开始**：任务已规划，尚未开始
+- **进行中**：任务正在执行中
+- **已完成**：任务已完成
+- **已暂停**：任务暂时停止
+- **已取消**：任务取消，不再执行
+
+**可选状态**（根据项目需要）：
+- **已发布**：内容已发布到目标平台（适用于需要发布的项目）
+
+**注意**：具体的任务状态定义和管理规则请参考 `workspace.mdc` 中的项目特定规则。
+
+---
+
+## 重要提醒
+
+1. **必须遵守文件位置规范**：所有文件必须保存在指定位置（根据项目规范）
+2. **及时更新进度**：每次任务状态变化都要更新进度记录（如适用）
+3. **保持文件同步**：确保记录文件与内容文件一致
+4. **定期检查**：定期检查文件结构和记录
+5. **备份重要文件**：定期备份重要文件和记录
+
+## 相关规则文件
+
+### 通用脚本目录
+
+- **位置**：`.scripts/`（根目录隐藏文件夹）
+- **说明**：存放所有项目通用的脚本工具
+- **使用**：参考 `.scripts/README.md`
+
+### 临时文件目录
+
+- **位置**：`tmp/`（根目录）
+- **说明**：用于存储临时文件、临时脚本、临时进度等
+- **重要**：此目录不会被提交到 git（已添加到 .gitignore）
+- **使用场景**：
+  - 临时执行脚本
+  - 临时保存数据文件
+  - 临时保存工作进度
+  - 测试文件
+- **清理建议**：定期清理临时文件，避免占用过多空间
+
+---
+
+**规则版本**：v3.3  
+**最后更新**：2025-11-26  
+**变更说明**：
+- v3.0：重构规则文件，将项目特定规则提取到 `workspace.mdc`，`base.mdc` 仅保留通用规则
+- v3.1：精简通用规则，融合新规则（文档更新规范、常用工具、通用开发规范），移除项目特定内容（内容质量复查、配图管理等）
+- v3.2：进一步通用化，移除对多项目结构的假设，使规则适用于单项目和多项目工作区
+- 项目特定规则请参考 `workspace.mdc`

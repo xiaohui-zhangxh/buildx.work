@@ -2,7 +2,7 @@
 
 <div class="w-full">
   <!-- Hero Section -->
-  <div class="hero min-h-[85vh] relative overflow-hidden">
+  <div class="hero h-screen relative overflow-hidden">
     <!-- Animated Background Gradient -->
     <div
       class="
@@ -45,7 +45,7 @@
         </div>
 
         <div class="flex flex-col items-center gap-6 mb-6 animate-fade-in-up">
-          <%= image_tag "logo.svg", alt: "Tanmer Egg", class: "h-24 w-24 md:h-32 md:w-32" %>
+          <%= image_tag "logo.svg", alt: site_name, class: "h-24 w-24 md:h-32 md:w-32" %>
 
           <h1
             class="
@@ -54,7 +54,7 @@
               text-transparent
             "
           >
-            Tanmer Egg
+            <%= site_name %>
           </h1>
         </div>
 
@@ -64,7 +64,7 @@
             animate-fade-in-up animation-delay-200
           "
         >
-          企业级 Ruby on Rails 应用脚手架
+          <%= site_name %> - 企业级 Ruby on Rails 应用脚手架
         </p>
 
         <p
@@ -189,10 +189,12 @@
         </div>
       </div>
 
-      <div
+      <a
+        href="<%= tech_stack_rule_path('daisy-ui') %>"
         class="
           card bg-base-100 shadow-xl hover:shadow-2xl transition-all
           duration-300 hover:-translate-y-2 border border-base-300
+          cursor-pointer
         "
       >
         <div class="card-body items-center text-center p-6">
@@ -201,7 +203,7 @@
           <div class="text-3xl font-bold text-accent mb-2">DaisyUI</div>
           <div class="text-sm text-base-content/60 font-medium">5.x</div>
         </div>
-      </div>
+      </a>
 
       <div
         class="
@@ -230,6 +232,81 @@
           <div class="text-sm text-base-content/60 font-medium">Docker</div>
         </div>
       </div>
+
+      <a
+        href="<%= tech_stack_rule_path('action-policy') %>"
+        class="
+          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
+          duration-300 hover:-translate-y-2 border border-base-300
+          cursor-pointer
+        "
+      >
+        <div class="card-body items-center text-center p-6">
+          <div
+            class="
+              h-12 w-12 mb-3 flex items-center justify-center
+              bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+          </div>
+
+          <div class="text-2xl font-bold text-primary mb-2">Action Policy</div>
+          <div class="text-sm text-base-content/60 font-medium">授权框架</div>
+        </div>
+      </a>
+
+      <a
+        href="<%= tech_stack_rule_path('authentication') %>"
+        class="
+          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
+          duration-300 hover:-translate-y-2 border border-base-300
+          cursor-pointer
+        "
+      >
+        <div class="card-body items-center text-center p-6">
+          <div
+            class="
+              h-12 w-12 mb-3 flex items-center justify-center
+              bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-lg
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-secondary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+          </div>
+
+          <div class="text-xl font-bold text-secondary mb-2">认证系统</div>
+
+          <div class="text-sm text-base-content/60 font-medium">
+            Warden + Rails
+          </div>
+        </div>
+      </a>
     </div>
   </div>
 
@@ -540,7 +617,7 @@
           from-primary to-secondary bg-clip-text text-transparent
         "
       >
-        为什么选择 Tanmer Egg
+        为什么选择 <%= site_name %>
       </h2>
 
       <p class="text-xl text-base-content/70">标准化、快速、安全、开箱即用</p>

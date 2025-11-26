@@ -1,0 +1,32 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold"><%= @policy[:name] %></h1>
+  <p class="text-base-content/60"><%= @policy[:description] %></p>
+</div>
+
+<div class="card bg-base-100 shadow">
+  <div class="card-body">
+    <h2 class="card-title mb-4">权限规则</h2>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>操作</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @policy[:rules].each do |rule| %>
+            <tr>
+              <td><code class="badge badge-outline"><%= rule[:action] %></code></td>
+              <td><%= rule[:description] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-6">
+      <%= link_to "返回列表", admin_policies_path, class: "btn btn-ghost" %>
+    </div>
+  </div>
+</div>
+

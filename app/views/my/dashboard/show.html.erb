@@ -76,7 +76,7 @@
           <% if @user.password_changed_at.present? %>
             <% if @user.password_expired? %>
               已过期
-              <%= @user.days_since_password_change - User::PASSWORD_EXPIRATION_DAYS %>
+              <%= @user.days_since_password_change - @user.password_expiration_days %>
               天
             <% elsif @user.password_expires_soon? %>
               <%= @user.days_until_password_expires %>

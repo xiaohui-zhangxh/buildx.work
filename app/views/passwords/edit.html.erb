@@ -1,7 +1,7 @@
 <div class="text-center mb-8">
   <%= link_to root_path, class: "inline-block" do %>
     <div class="flex flex-col items-center gap-3">
-      <%= image_tag "logo.svg", alt: "Tanmer Egg", class: "h-16 w-16" %>
+      <%= image_tag "logo.svg", alt: site_name, class: "h-16 w-16" %>
 
       <h1
         class="
@@ -9,7 +9,7 @@
           bg-clip-text text-transparent
         "
       >
-        Tanmer Egg
+        <%= site_name %>
       </h1>
     </div>
   <% end %>
@@ -63,31 +63,40 @@
       Enter your new password below.
     </p>
 
-    <%= form_with url: password_path(params[:token]), method: :put, class: "space-y-5" do |form| %>
-      <div class="form-control">
+    <%= daisy_form_with url: password_path(params[:token]), method: :put, local: true, class: "space-y-5" do |form| %>
+      <div class="form-control" data-controller="password-strength">
         <%= form.label :password, class: "label" do %>
           <span class="label-text font-medium">New password</span>
         <% end %>
 
-        <%= form.password_field :password, required: true, autofocus: true, autocomplete: "new-password", placeholder: "Enter new password (min 8 characters)", maxlength: 72, class: "input input-bordered w-full focus:input-primary" %>
+        <%= form.password_field :password, required: true, autofocus: true, autocomplete: "new-password", placeholder: "Enter new password (min 8 characters)", maxlength: 72, no_default_classes: true, class: "input input-bordered w-full focus:input-primary", data: { password_strength_target: "input", action: "input->password-strength#updateStrength" } %>
+
+        <div
+          class="w-full bg-base-200 rounded-full h-2 mt-2"
+          style="display: none;"
+          data-password-strength-target="indicatorContainer"
+        >
+          <div
+            class="h-2 rounded-full transition-all duration-300"
+            data-password-strength-target="indicator"
+            style="width: 0%;"
+          ></div>
+        </div>
 
         <label class="label">
-          <span class="label-text-alt text-base-content/60">
+          <span
+            class="label-text-alt text-base-content/60"
+            data-password-strength-target="feedback"
+          >
             At least 8 characters, including letters and numbers
           </span>
         </label>
       </div>
 
-      <div class="form-control">
-        <%= form.label :password_confirmation, class: "label" do %>
-          <span class="label-text font-medium">Confirm new password</span>
-        <% end %>
-
-        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Confirm new password", maxlength: 72, class: "input input-bordered w-full focus:input-primary" %>
-      </div>
+      <%= form.password_field :password_confirmation, label_text: "Confirm new password", required: true, autocomplete: "new-password", placeholder: "Confirm new password", maxlength: 72 %>
 
       <div class="form-control mt-6">
-        <%= form.submit "Update password", class: "btn btn-primary w-full btn-lg shadow-lg" %>
+        <%= form.submit "Update password", full_width: true, size: "lg" %>
       </div>
 
       <div class="text-center mt-6">

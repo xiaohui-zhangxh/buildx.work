@@ -49,6 +49,13 @@ module ActiveSupport
     # Include Warden test helpers
     include Warden::Test::Helpers
 
+    # Setup: Ensure system is installed by default (unless test explicitly needs uninstalled state)
+    setup do
+      # Set installation_completed to "1" by default for all tests
+      # Tests that need uninstalled state should explicitly set it to "0"
+      SystemConfig.set("installation_completed", "1", description: "安装完成标志", category: "system") unless SystemConfig.get("installation_completed") == "1"
+    end
+
     # Reset Warden after each test
     teardown do
       Warden.test_reset!

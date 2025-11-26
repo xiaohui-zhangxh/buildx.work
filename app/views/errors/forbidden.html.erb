@@ -1,0 +1,17 @@
+<div class="hero min-h-screen bg-base-200">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <h1 class="text-9xl font-bold text-error">403</h1>
+      <h2 class="mb-5 text-5xl font-bold">访问被拒绝</h2>
+
+      <p class="mb-5 text-lg">
+        抱歉，您没有权限访问此页面或执行此操作。
+      </p>
+
+      <div class="flex gap-4 justify-center">
+        <%= link_to "返回首页", root_path, class: "btn btn-primary" %>
+        <%= link_to "返回上一页", :back, class: "btn btn-outline" %>
+      </div>
+    </div>
+  </div>
+</div>

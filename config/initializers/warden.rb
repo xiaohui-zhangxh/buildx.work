@@ -41,17 +41,23 @@ Warden::Manager.after_set_user do |session_record, auth, opts|
 end
 
 Warden::Manager.after_authentication do |session_record, auth, opts|
-  # 可以记录 session 的最后活动时间
-  # TODO: 如果需要记录最后活动时间，可以在这里更新 session 的 updated_at
-  # session_record.touch if session_record.is_a?(Session)
+  # 登录时更新最后活动时间
+  if session_record.is_a?(Session) && session_record.active?
+    session_record.update_column(:last_activity_at, Time.current)
+  end
 end
 
 # After Warden fetches user from session, update Current.session
 # This handles session restoration on each request
+# Also updates last_activity_at every 1 minute to avoid excessive database writes
 Warden::Manager.after_fetch do |session_record, auth, opts|
   if session_record.is_a?(Session)
     if session_record.active?
       Current.session = session_record
+      # 每1分钟更新一次最后活动时间，避免频繁更新数据库
+      if session_record.last_activity_at.nil? || session_record.last_activity_at < 1.minute.ago
+        session_record.update_column(:last_activity_at, Time.current)
+      end
     else
       auth.logout
       Current.session = nil

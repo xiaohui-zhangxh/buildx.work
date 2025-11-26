@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+admin:
+  name: admin
+  description: System administrator with all permissions
+
+user:
+  name: user
+  description: Regular user with basic permissions

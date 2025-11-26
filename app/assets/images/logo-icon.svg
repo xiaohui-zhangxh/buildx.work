@@ -1,21 +1,21 @@
-<svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="64" height="64" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Gradient for the egg shape -->
-    <linearGradient id="eggGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    <!-- Primary gradient - Blue to Purple -->
+    <linearGradient id="buildGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
     </linearGradient>
     
-    <!-- Gradient for AI circuit lines -->
-    <linearGradient id="circuitGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+    <!-- Accent gradient -->
+    <linearGradient id="accentGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95" />
       <stop offset="100%" style="stop-color:#a5b4fc;stop-opacity:0.6" />
     </linearGradient>
     
     <!-- Glow effect -->
     <filter id="glowIcon">
-      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -23,22 +23,28 @@
     </filter>
   </defs>
   
-  <!-- Egg shape with gradient -->
-  <ellipse cx="32" cy="40" rx="22" ry="28" fill="url(#eggGradientIcon)" opacity="0.95"/>
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="58" fill="url(#buildGradientIcon)" opacity="0.95"/>
   
-  <!-- Inner highlight for depth -->
-  <ellipse cx="28" cy="36" rx="14" ry="18" fill="url(#circuitGradientIcon)" opacity="0.3"/>
-  
-  <!-- Simplified AI Circuit pattern -->
-  <g stroke="url(#circuitGradientIcon)" stroke-width="0.8" fill="none" opacity="0.7">
-    <path d="M 20 28 Q 24 26, 28 28 T 36 28" filter="url(#glowIcon)"/>
-    <path d="M 18 38 Q 24 36, 30 38 T 42 38" filter="url(#glowIcon)"/>
-    <circle cx="24" cy="28" r="1.2" fill="url(#circuitGradientIcon)"/>
-    <circle cx="32" cy="38" r="1.5" fill="url(#circuitGradientIcon)"/>
+  <!-- Main X shape - simplified for icon -->
+  <g transform="translate(64, 64)">
+    <!-- Left diagonal -->
+    <rect x="-3" y="-24" width="6" height="48" rx="3" fill="url(#accentGradientIcon)" opacity="0.95" transform="rotate(-45 0 0)" filter="url(#glowIcon)"/>
+    <!-- Right diagonal -->
+    <rect x="-3" y="-24" width="6" height="48" rx="3" fill="url(#accentGradientIcon)" opacity="0.95" transform="rotate(45 0 0)" filter="url(#glowIcon)"/>
   </g>
   
-  <!-- AI nodes -->
-  <circle cx="24" cy="28" r="1.8" fill="#ffffff" filter="url(#glowIcon)" opacity="0.9"/>
-  <circle cx="32" cy="38" r="2" fill="#a5b4fc" filter="url(#glowIcon)" opacity="0.9"/>
+  <!-- Simplified building blocks -->
+  <g transform="translate(64, 64)" opacity="0.85">
+    <!-- Top block -->
+    <rect x="-10" y="-28" width="20" height="10" rx="2" fill="url(#accentGradientIcon)" opacity="0.8" filter="url(#glowIcon)"/>
+    <!-- Middle blocks -->
+    <rect x="-16" y="-6" width="14" height="14" rx="2" fill="url(#accentGradientIcon)" opacity="0.7" filter="url(#glowIcon)"/>
+    <rect x="2" y="-6" width="14" height="14" rx="2" fill="url(#accentGradientIcon)" opacity="0.7" filter="url(#glowIcon)"/>
+    <!-- Bottom block -->
+    <rect x="-6" y="10" width="12" height="18" rx="2" fill="url(#accentGradientIcon)" opacity="0.8" filter="url(#glowIcon)"/>
+  </g>
+  
+  <!-- Center highlight -->
+  <circle cx="64" cy="64" r="3" fill="#ffffff" opacity="0.9" filter="url(#glowIcon)"/>
 </svg>
-

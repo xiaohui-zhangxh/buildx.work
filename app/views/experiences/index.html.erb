@@ -1,0 +1,210 @@
+<div class="container mx-auto px-5 py-8 max-w-6xl">
+  <!-- Header -->
+  <div class="mb-10">
+    <div class="flex items-center gap-4 mb-6">
+      <%= link_to root_path, class: "btn btn-ghost btn-sm" do %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+        返回首页
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-6 mb-6">
+      <div
+        class="
+          h-20 w-20 flex items-center justify-center bg-gradient-to-br
+          from-primary/20 to-primary/10 rounded-2xl shadow-lg
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-12 w-12 text-primary"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+          />
+        </svg>
+      </div>
+
+      <div class="flex-1">
+        <h1 class="text-5xl font-bold text-base-content mb-3">
+          开发经验记录
+        </h1>
+
+        <p class="text-lg text-base-content/70 leading-relaxed">
+          记录开发过程中遇到的疑难问题和解决方案，便于后续遇到类似问题时快速参考
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experiences List -->
+  <% if @experiences.any? %>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <% @experiences.each_with_index do |experience, index| %>
+        <%
+          # 根据索引循环使用不同的颜色主题
+          color_themes = [
+            { bg: "from-primary/20 to-primary/10", icon: "text-primary" },
+            { bg: "from-secondary/20 to-secondary/10", icon: "text-secondary" },
+            { bg: "from-accent/20 to-accent/10", icon: "text-accent" },
+            { bg: "from-info/20 to-info/10", icon: "text-info" },
+            { bg: "from-success/20 to-success/10", icon: "text-success" },
+            { bg: "from-warning/20 to-warning/10", icon: "text-warning" }
+          ]
+          theme = color_themes[index % color_themes.length]
+        %>
+
+        <%= link_to experience_path(experience[:id]), 
+            class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-base-300/50 group" do %>
+          <div class="card-body p-6">
+            <!-- Icon and Title -->
+            <div class="flex items-start gap-4 mb-4">
+              <div class="shrink-0">
+                <div class="h-14 w-14 flex items-center justify-center bg-gradient-to-br <%= theme[:bg] %> rounded-xl group-hover:scale-110 transition-transform duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 <%= theme[:icon] %>"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <h2
+                  class="
+                    card-title text-xl mb-2 group-hover:text-primary
+                    transition-colors line-clamp-2
+                  "
+                >
+                  <%= experience[:title] %>
+                </h2>
+              </div>
+            </div>
+
+            <!-- Date and Tags -->
+            <div class="space-y-3 mb-4">
+              <% if experience[:date] %>
+                <div class="flex items-center gap-2 text-sm text-base-content/60">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+
+                  <span><%= experience[:date].strftime("%Y年%m月%d日") %></span>
+                </div>
+              <% end %>
+
+              <% if experience[:problem_type] %>
+                <div class="flex flex-wrap gap-2">
+                  <% experience[:problem_type].split(/[、,]/).each do |type| %>
+                    <span
+                      class="
+                        badge badge-outline badge-sm hover:badge-primary
+                        transition-colors
+                      "
+                    >
+                      <%= type.strip %>
+                    </span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Action Button -->
+            <div
+              class="
+                card-actions justify-end mt-auto pt-4 border-t
+                border-base-300/50
+              "
+            >
+              <span
+                class="
+                  btn btn-primary btn-sm group-hover:btn-outline
+                  transition-all
+                "
+              >
+                查看详情
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card bg-base-100 shadow-xl border border-base-300/50">
+      <div class="card-body text-center py-16">
+        <div class="flex justify-center mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-16 w-16 text-base-content/20"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        </div>
+
+        <p class="text-base-content/60 text-lg">暂无经验记录</p>
+        <p class="text-base-content/40 text-sm mt-2">开始记录你的开发经验吧</p>
+      </div>
+    </div>
+  <% end %>
+</div>

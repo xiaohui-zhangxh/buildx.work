@@ -1,0 +1,40 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold">系统配置</h1>
+  <p class="text-base-content/60">管理系统配置项</p>
+</div>
+
+<% @configs_by_category.each do |category, configs| %>
+  <div class="card bg-base-100 shadow mb-6">
+    <div class="card-body">
+      <h2 class="card-title mb-4"><%= category || "未分类" %></h2>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>键 / 描述</th>
+              <th>值</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% configs.each do |config| %>
+              <tr>
+                <td>
+                  <div class="flex flex-col gap-1">
+                    <code class="badge badge-outline"><%= config.key %></code>
+                    <span class="text-sm text-base-content/60"><%= config.description || "-" %></span>
+                  </div>
+                </td>
+                <td><%= truncate(config.value, length: 50) %></td>
+                <td>
+                  <%= link_to "编辑", edit_admin_system_config_path(config), class: "btn btn-sm btn-ghost" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>
+

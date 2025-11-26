@@ -29,7 +29,7 @@ export default class extends Controller {
   toggle() {
     const html = document.documentElement
     const currentTheme = html.getAttribute("data-theme")
-    const newTheme = currentTheme === "dracula" ? "lofi" : "dracula"
+    const newTheme = currentTheme === "dark" ? "light" : "dark"
 
     // Update theme
     html.setAttribute("data-theme", newTheme)
@@ -41,7 +41,7 @@ export default class extends Controller {
 
   initializeTheme() {
     // Get saved theme or use default
-    const savedTheme = localStorage.getItem("theme") || "lofi"
+    const savedTheme = localStorage.getItem("theme") || "light"
     const html = document.documentElement
 
     // Apply theme
@@ -56,7 +56,7 @@ export default class extends Controller {
     const icons = document.querySelectorAll("[data-theme-target='icon']")
 
     icons.forEach((icon) => {
-      if (theme === "dracula") {
+      if (theme === "dark") {
         // Moon icon for dark mode
         icon.innerHTML =
           '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />'

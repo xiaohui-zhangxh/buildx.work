@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t tanmer_egg .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name tanmer_egg tanmer_egg
+# docker build -t buildx .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name buildx buildx
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 

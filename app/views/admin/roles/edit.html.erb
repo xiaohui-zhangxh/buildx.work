@@ -1,0 +1,19 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold">编辑角色</h1>
+</div>
+
+<div class="max-w-2xl mx-auto">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <%= daisy_form_with model: [ :admin, @role ], local: true, class: "space-y-5" do |form| %>
+        <%= form.error_messages %>
+
+        <%= form.text_field :name, label_text: "名称", placeholder: "请输入角色名称" %>
+
+        <%= form.text_area :description, label_text: "描述", placeholder: "请输入角色描述", rows: 3 %>
+
+        <%= form.card_actions submit_text: "更新", cancel_text: "取消", cancel_url: admin_role_path(@role) %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <h1 class="text-3xl font-bold">角色管理</h1>
+      <p class="text-base-content/60">管理系统中的所有角色</p>
+    </div>
+    <%= link_to "新建角色", new_admin_role_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<!-- Search Form -->
+<div class="card bg-base-100 shadow mb-6">
+  <div class="card-body">
+    <%= form_with url: admin_roles_path, method: :get, local: true, class: "flex gap-4 items-end" do |form| %>
+      <div class="form-control flex-1 min-w-[200px]">
+        <%= form.label :search, "搜索（名称/描述）", class: "label" %>
+        <%= form.text_field :search, value: params[:search], placeholder: "输入角色名称或描述...", class: "input input-bordered" %>
+      </div>
+      <div class="form-control">
+        <%= form.submit "搜索", class: "btn btn-primary" %>
+        <%= link_to "重置", admin_roles_path, class: "btn btn-ghost" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="card bg-base-100 shadow">
+  <div class="card-body">
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>描述</th>
+            <th>用户数</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @roles.any? %>
+            <% @roles.each do |role| %>
+              <tr>
+                <td><%= role.id %></td>
+                <td><span class="badge badge-primary"><%= role.name %></span></td>
+                <td><%= role.description || "-" %></td>
+                <td><%= role.users.count %></td>
+                <td><%= role.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td>
+                  <div class="flex gap-2">
+                    <%= link_to "查看", admin_role_path(role), class: "btn btn-sm btn-ghost" %>
+                    <%= link_to "编辑", edit_admin_role_path(role), class: "btn btn-sm btn-ghost" %>
+                    <%= button_to "删除", admin_role_path(role), method: :delete, 
+                        class: "btn btn-sm btn-error", 
+                        data: { confirm: "确定要删除此角色吗？" } %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="6" class="text-center text-base-content/60">暂无角色</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

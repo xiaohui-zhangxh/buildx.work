@@ -46,4 +46,32 @@ module ApplicationHelper
       end
     end
   end
+
+  # Get site name from system config, with fallback to default
+  def site_name
+    if SystemConfig.installation_completed?
+      SystemConfig.get("site_name").presence || "BuildX.work"
+    else
+      "BuildX.work"
+    end
+  end
+
+  # Create a form with DaisyFormBuilder
+  # Usage:
+  #   <%= daisy_form_with model: @user do |form| %>
+  #     <%= form.text_field :name %>
+  #     <%= form.submit %>
+  #   <% end %>
+  def daisy_form_with(model: nil, scope: nil, url: nil, format: nil, **options, &block)
+    options[:builder] = DaisyFormBuilder
+    # form_with requires model to be an object or false, not nil
+    # If url or scope is provided, we don't need model
+    # If model is nil and no scope/url provided, use false to indicate no model
+    if url.present? || scope.present?
+      form_with(scope: scope, url: url, format: format, **options, &block)
+    else
+      form_model = model || false
+      form_with(model: form_model, format: format, **options, &block)
+    end
+  end
 end

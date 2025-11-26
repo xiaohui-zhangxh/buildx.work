@@ -1,0 +1,551 @@
+---
+description: Rails 缓存开发规则和最佳实践。开发缓存功能、优化应用性能时参考此规则。
+alwaysApply: false
+---
+# Rails 缓存开发规则
+
+## 概述
+
+Rails 提供了多种缓存策略来提升应用性能。缓存是将请求-响应周期中生成的内容存储起来，在响应类似请求时重复使用。
+
+**官方文档**：https://guides.rubyonrails.org/caching_with_rails.html
+
+## 快速参考
+
+### 最常用的缓存模式
+
+**1. Fragment Caching（视图片段缓存）**
+```ruby
+<% cache @product do %>
+  <%= render @product %>
+<% end %>
+```
+
+**2. Low-Level Caching（低级缓存）**
+```ruby
+Rails.cache.fetch("key", expires_in: 1.hour) do
+  expensive_computation
+end
+```
+
+**3. HTTP 缓存（使用 stale? 避免不必要开销）**
+```ruby
+def show
+  @resource = Resource.find(params[:id])
+  if stale?(@resource)
+    @data = expensive_computation
+    respond_to { |format| format.html { render } }
+  end
+end
+```
+
+**4. 文件修改时间缓存（文件内容缓存）**
+```ruby
+file_mtime = File.mtime(file_path)
+cache_key = "content:#{file_mtime.to_i}"
+@content = Rails.cache.fetch(cache_key) do
+  process_file(file_path)
+end
+```
+
+### 关键原则
+
+- ✅ **使用 `stale?` 而不是 `fresh_when`**：只有在请求过期时才执行代码块
+- ✅ **使用文件修改时间作为缓存版本**：文件更新后缓存自动失效
+- ✅ **设置合理的过期时间**：短期（5分钟）、中期（1小时）、长期（1天）
+- ✅ **使用 touch 管理依赖**：`belongs_to :article, touch: true`
+
+## 缓存类型
+
+### 1. Fragment Caching（片段缓存）
+
+缓存视图中的部分内容：
+
+```ruby
+<% @products.each do |product| %>
+  <% cache product do %>
+    <%= render product %>
+  <% end %>
+<% end %>
+```
+
+**缓存键格式**：`views/products/index:bea67108094918eeba42cd4a6e786901/products/1`
+
+**自动失效**：
+
+- 模板内容变化时，digest 变化，缓存自动失效
+- 记录被 touch 时，缓存版本变化，缓存自动失效
+
+### 2. Russian Doll Caching（俄罗斯套娃缓存）
+
+嵌套缓存，父缓存失效时子缓存也失效：
+
+```ruby
+<% cache @article do %>
+  <%= render @article.comments %>
+  <% @article.comments.each do |comment| %>
+    <% cache comment do %>
+      <%= render comment %>
+    <% end %>
+  <% end %>
+<% end %>
+```
+
+### 3. Low-Level Caching（低级缓存）
+
+使用 `Rails.cache` 直接缓存数据：
+
+```ruby
+class Product < ApplicationRecord
+  def competing_price
+    Rails.cache.fetch("#{cache_key_with_version}/competing_price", expires_in: 12.hours) do
+      Competitor::API.find_price(id)
+    end
+  end
+end
+```
+
+### 4. SQL Caching
+
+Rails 自动缓存同一请求中的 SQL 查询结果：
+
+```ruby
+class ProductsController < ApplicationController
+  def index
+    # 第一次查询，执行 SQL
+    @products = Product.all
+    
+    # 第二次查询，使用缓存，不执行 SQL
+    @products = Product.all
+  end
+end
+```
+
+## 缓存存储
+
+### Solid Cache（项目使用）
+
+数据库支持的缓存存储，持久化到数据库：
+
+```ruby
+# config/environments/development.rb
+config.cache_store = :solid_cache_store
+
+# config/cache.yml
+development:
+  database: cache
+  store_options:
+    max_size: <%= 256.megabytes %>
+    namespace: <%= Rails.env %>
+```
+
+**优势**
+持久化：重启后缓存仍然有效
+- 简单：无需额外服务（如 Redis、Memcached）
+- 适合中小型应用
+
+### 其他缓存存储
+
+```ruby
+# 内存缓存（开发/测试环境）
+config.cache_store = :memory_store
+
+# 文件缓存
+config.cache_store = :file_store, "/path/to/cache/directory"
+
+# Memcached
+config.cache_store = :mem_cache_store, "cache-1.example.com"
+
+# Redis
+config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"] }
+
+# 空缓存（开发环境，禁用缓存）
+config.cache_store = :null_store
+```
+
+## 缓存键
+
+### 基本使用
+
+```ruby
+# 简单键
+Rails.cache.fetch("user_#{user.id}") { user.name }
+
+# 使用模型
+Rails.cache.fetch(user) { user.name }
+
+# 使用数组和哈希
+Rails.cache.read(site: "mysite", owners: [owner_1, owner_2])
+```
+
+### 缓存键方法
+
+```ruby
+# Active Record 自动提供
+user.cache_key           # => "users/1-20240101120000"
+user.cache_key_with_version  # => "users/1-20240101120000/v1"
+
+# 自定义缓存键
+class Product < ApplicationRecord
+  def cache_key
+    "#{super}/#{updated_at.to_i}"
+  end
+end
+```
+
+## Conditional GET 支持（HTTP 缓存）
+
+### fresh_when
+
+设置 HTTP 缓存头，如果内容未更新，返回 304 Not Modified：
+
+```ruby
+class ProductsController < ApplicationController
+  def show
+    @product = Product.find(params[:id])
+    
+    # 使用模型的 updated_at 和 cache_key_with_version
+    fresh_when(@product)
+    
+    # 或显式指定
+    fresh_when last_modified: @product.updated_at.utc, 
+               etag: @product.cache_key_with_version,
+               public: true
+  end
+end
+```
+
+**工作原理**：
+1. 设置 `Last-Modified` 和 `ETag` 响应头
+2. 浏览器再次请求时发送 `If-Modified-Since` 或 `If-None-Match`
+3. 如果内容未更新，返回 304，浏览器使用本地缓存
+
+**重要提示**：即使返回 304，后续的耗时操作（如数据库查询、复杂计算）仍会执行。如果需要避免不必要的开销，应该使用 `stale?` 方法。
+
+### stale?
+
+检查请求是否过期，**只有在过期时才执行代码块**：
+
+```ruby
+class ProductsController < ApplicationController
+  def show
+    @product = Product.find(params[:id])
+    
+    # 只有在请求过期时才执行代码块
+    # 如果请求是新鲜的，直接返回 304，不会执行 if 块内的代码
+    if stale?(@product)
+      # 这些代码只在请求过期时执行
+      @expensive_data = expensive_computation(@product)
+      
+      respond_to do |format|
+        format.html { render }
+        format.json { render json: @product }
+      end
+    end
+    # 如果请求是新鲜的，自动返回 304，不会执行上面的代码
+  end
+end
+```
+
+**与 `fresh_when` 的区别**
+✅ **`stale?`**：只有在请求过期时才执行代码块，避免不必要的开销
+- ❌ **`fresh_when`**：设置缓存头，但不会阻止后续代码执行，可能导致不必要的开销
+
+### http_cache_forever
+
+永久缓存（谨慎使用）：
+
+```ruby
+class HomeController < ApplicationController
+  def index
+    http_cache_forever(public: true) do
+      render
+    end
+  end
+end
+```
+
+**注意**：除非强制清除浏览器缓存，否则无法失效。
+
+### Strong vs Weak ETags
+
+**Weak ETags（默认）**
+格式：`W/"618bbc92e2d35ea1945008b42799b0e7"`
+- 语义相同的内容可以有相同的 ETag，即使内容不完全相同
+- 适合大多数场景
+
+**Strong ETags**
+格式：`"618bbc92e2d35ea1945008b42799b0e7"`
+- 内容必须完全一致（字节级）
+- 适合大文件（视频、PDF）的范围请求
+
+```ruby
+# 使用 Strong ETag
+fresh_when last_modified: @product.updated_at.utc, strong_etag: @product
+
+# 或直接设置
+response.strong_etag = response.body
+```
+
+## 缓存依赖管理
+
+### 隐式依赖
+
+Rails 自动检测模板依赖：
+
+```ruby
+<% cache @product do %>
+  <%= render @product.comments %>
+<% end %>
+```
+
+当 `@product.comments` 变化时，缓存自动失效。
+
+### 显式依赖
+
+手动指定依赖：
+
+```ruby
+<% cache @product, expires_in: 1.hour do %>
+  <%= render @product %>
+<% end %>
+
+# 或使用 touch 方法
+class Comment < ApplicationRecord
+  belongs_to :article, touch: true  # 评论更新时，article 缓存失效
+end
+```
+
+### 外部依赖
+
+缓存外部数据变化：
+
+```ruby
+<% cache @product, expires_in: 1.hour do %>
+  <%= render @product %>
+  <%# 外部 API 数据 %>
+  <%= external_api_data %>
+<% end %>
+```
+
+## 项目中的使用
+
+### 配置
+
+**开发环境**：
+```ruby
+# config/environments/development.rb
+config.cache_store = :solid_cache_store
+
+# 启用缓存（默认关闭）
+# 运行 bin/rails dev:cache 或设置
+config.action_controller.perform_caching = true
+```
+
+**生产环境**：
+```ruby
+# config/environments/production.rb
+config.action_controller.perform_caching = true
+config.cache_store = :solid_cache_store
+```
+
+### 实际应用示例
+
+**1. 技术栈规则页面缓存（最优方案）**：
+
+```ruby
+class TechStackController < ApplicationController
+  def show
+    rule_file = Rails.root.join(".cursor", "rules", "#{@tech_stack}.mdc")
+    file_mtime = File.mtime(rule_file)
+    file_mtime_int = file_mtime.to_i
+    cache_key = "tech_stack_rule:#{@tech_stack}:#{file_mtime_int}"
+    
+    # 使用 stale? 检查请求是否过期
+    # 只有在请求过期时才执行代码块，避免不必要的文件读取和渲染
+    if stale?(
+      last_modified: file_mtime,
+      etag: cache_key,
+      public: true
+    )
+      # 这些代码只在请求过期时执行（文件已更新或首次请求）
+      # 如果请求是新鲜的（返回 304），不会执行这里的代码
+      @html_content = Rails.cache.fetch(cache_key) do
+        markdown_to_html(File.read(rule_file))
+      end
+    end
+    # 如果请求是新鲜的，自动返回 304，上面的代码不会执行
+  end
+end
+```
+
+**优化说明**
+✅ **使用 stale? 而不是 fresh_when**：只有在请求过期时才执行代码块，避免不必要的开销
+- ✅ **移除 expires_in**：文件修改时间已经在缓存键中，文件更新后缓存键变化，旧缓存自然失效
+- ✅ **添加 ETag**：同时使用 `last_modified` 和 `etag`，提供更精确的 HTTP 缓存控制
+- ✅ **避免不必要的操作**：返回 304 时，不会执行文件读取、markdown 渲染和缓存查询
+
+**2. 系统配置缓存**：
+
+```ruby
+class SystemConfig < ApplicationRecord
+  def self.get(key, default: nil)
+    Rails.cache.fetch("system_config:#{key}", expires_in: 1.hour) do
+      find_by(key: key)&.value || default
+    end
+  end
+end
+```
+
+## 最佳实践
+
+### 1. 使用合适的缓存策略
+
+- **静态内容**：使用 `http_cache_forever` 或长期 HTTP 缓存
+- **动态内容**：使用 Fragment Caching 或 Low-Level Caching
+- **数据库查询**：使用 Low-Level Caching 缓存查询结果
+
+### 2. 设置合理的过期时间
+
+```ruby
+# 短期缓存（频繁变化）
+Rails.cache.fetch("key", expires_in: 5.minutes) { ... }
+
+# 中期缓存（适度变化）
+Rails.cache.fetch("key", expires_in: 1.hour) { ... }
+
+# 长期缓存（很少变化）
+Rails.cache.fetch("key", expires_in: 1.day) { ... }
+```
+
+### 3. 使用文件修改时间作为缓存版本
+
+```ruby
+# 文件更新后缓存自动失效
+file_mtime = File.mtime(file_path)
+cache_key = "content:#{file_mtime.to_i}"
+
+# 不需要 expires_in，因为文件修改时间已经在缓存键中
+# 文件更新后，缓存键变化，旧缓存自然失效
+Rails.cache.fetch(cache_key) { ... }
+
+# 如果同时使用 HTTP 缓存，可以添加 ETag
+fresh_when(
+  last_modified: file_mtime,
+  etag: cache_key,
+  public: true
+)
+```
+
+### 4. 结合 HTTP 缓存和服务器缓存
+
+**❌ 错误示例（会导致不必要的开销）**：
+
+```ruby
+def show
+  @resource = Resource.find(params[:id])
+  
+  # ❌ 问题：即使返回 304，后续代码仍会执行
+  fresh_when(@resource)
+  
+  # 这些代码在返回 304 时仍然会执行，造成不必要的开销
+  @data = Rails.cache.fetch("resource:#{@resource.id}") do
+    expensive_computation(@resource)  # 即使返回 304，这里仍会执行
+  end
+end
+```
+
+**✅ 正确示例（使用 stale? 避免不必要的开销）**：
+
+```ruby
+def show
+  @resource = Resource.find(params[:id])
+  
+  # ✅ 只有在请求过期时才执行代码块
+  if stale?(@resource)
+    # 这些代码只在请求过期时执行，返回 304 时不会执行
+    @data = Rails.cache.fetch("resource:#{@resource.id}") do
+      expensive_computation(@resource)
+    end
+    
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @resource }
+    end
+  end
+  # 如果请求是新鲜的，直接返回 304，上面的代码不会执行
+end
+```
+
+**✅ 另一种方案（使用 fresh_when 但检查响应状态）**：
+
+```ruby
+def show
+  @resource = Resource.find(params[:id])
+  
+  # 设置缓存头
+  fresh_when(@resource)
+  
+  # 如果已经返回 304，不执行后续代码
+  return if response.status == 304
+  
+  # 只有在需要返回完整响应时才执行
+  @data = Rails.cache.fetch("resource:#{@resource.id}") do
+    expensive_computation(@resource)
+  end
+end
+```
+
+**推荐使用 `stale?`**，因为它更符合 Rails 的惯用法，代码更清晰。
+
+### 5. 使用 touch 管理依赖
+
+```ruby
+class Comment < ApplicationRecord
+  belongs_to :article, touch: true  # 评论更新时，article 缓存失效
+end
+
+# 手动 touch
+article.touch  # 更新 updated_at，使缓存失效
+```
+
+## 注意事项
+
+1. **开发环境缓存**：默认关闭，运行 `bin/rails dev:cache` 启用
+2. **缓存键唯一性**：确保缓存键唯一，避免冲突
+3. **缓存失效**：确保缓存能正确失效，避免显示过期数据
+4. **内存使用**：注意缓存大小，避免内存溢出
+5. **测试环境**：使用 `:null_store` 避免测试干扰
+
+## 调试缓存
+
+### 查看缓存键
+
+```ruby
+# 在 Rails console 中
+Rails.cache.read("key")
+Rails.cache.fetch("key") { "value" }
+```
+
+### 清除缓存
+
+```ruby
+# 清除所有缓存
+Rails.cache.clear
+
+# 清除特定键
+Rails.cache.delete("key")
+```
+
+### 缓存日志
+
+```ruby
+# config/environments/development.rb
+config.action_controller.enable_fragment_cache_logging = true
+```
+
+## 相关资源
+
+- **官方文档**：https://guides.rubyonrails.org/caching_with_rails.html
+- **Solid Cache**：https://github.com/rails/solid_cache
+- **Rails 缓存指南**：https://guides.rubyonrails.org/caching_with_rails.html

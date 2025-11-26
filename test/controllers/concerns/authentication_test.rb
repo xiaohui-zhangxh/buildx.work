@@ -184,7 +184,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     assert_not_nil session
     assert_not_nil session.remember_token
 
-    # Terminate session (logout)
+    # Terminate session (logout) - this calls terminate_session which calls warden.logout
     delete session_path
 
     assert_redirected_to new_session_path

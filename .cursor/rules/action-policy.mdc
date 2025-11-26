@@ -1,0 +1,635 @@
+---
+description: Action Policy 授权框架开发规则和最佳实践。开发权限管理、Policy 类、授权检查等功能时参考此规则。
+alwaysApply: false
+---
+
+# Action Policy 开发规则
+
+## 概述
+
+Action Policy 是用于 Ruby/Rails 应用的授权框架，提供灵活且可扩展的权限管理。它不强制使用特定的授权模型，只回答一个问题：**如何验证访问？**
+
+**官方文档**：https://actionpolicy.evilmartians.io/
+
+## 快速开始
+
+### 安装
+
+```bash
+gem "action_policy"
+rails g action_policy:install  # 生成 ApplicationPolicy
+rails g action_policy:policy Article  # 为模型生成 Policy
+```
+
+### 基本使用
+
+```ruby
+# 1. 创建 Policy
+class ArticlePolicy < ApplicationPolicy
+  def show?
+    true
+  end
+  
+  def edit?
+    user == record.user
+  end
+end
+
+# 2. 在控制器中使用
+class ArticlesController < ApplicationController
+  include ActionPolicy::Controller
+  
+  def update
+    @article = Article.find(params[:id])
+    authorize! @article, to: :update?
+  end
+end
+
+# 3. 在视图中使用
+<% if allowed_to?(:edit?, @article) %>
+  <%= link_to "编辑", edit_article_path(@article) %>
+<% end %>
+```
+
+## 核心概念
+
+### Policy 类
+
+每个资源对应一个 Policy 类，命名规范为 `ResourcePolicy`，继承自 `ActionPolicy::Base` 或 `ApplicationPolicy`。
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  # 规则方法以 ? 结尾
+  def show?
+    user.present?
+  end
+  
+  def edit?
+    user == record.user
+  end
+end
+```
+
+**重要**：
+
+- 规则必须是**公共方法**，不能是私有方法
+- 规则方法名通常对应控制器动作，以 `?` 结尾
+- 不推荐手动初始化 Policy 对象（测试除外），使用 `authorize!` 或 `allowed_to?`
+
+### 授权上下文
+
+Policy 需要授权上下文（默认包含 `user`）：
+
+```ruby
+# 在 Policy 中配置额外上下文
+class ArticlePolicy < ActionPolicy::Base
+  authorize :account  # 必需
+  authorize :account, allow_nil: true  # 允许 nil
+  authorize :account, optional: true  # 可选
+end
+
+# 在控制器中配置
+class ApplicationController < ActionController::Base
+  include ActionPolicy::Controller
+  authorize :account, through: :current_account
+  # 或使用 proc
+  authorize :account, through: -> { Current.account }
+end
+
+# 显式覆盖上下文
+authorize! @article, to: :edit?, context: { user: different_user }
+```
+
+**嵌套 Policy**：所有可能一起使用的 Policy 必须共享相同的授权上下文集合。
+
+## 在控制器中使用
+
+### 基本集成
+
+```ruby
+class ApplicationController < ActionController::Base
+  include ActionPolicy::Controller
+  
+  # 处理未授权异常
+  rescue_from ActionPolicy::Unauthorized, with: :handle_unauthorized
+  
+  # 确保所有 action 都调用了 authorize!
+  verify_authorized
+  skip_verify_authorized only: [:index]
+  
+  private
+  
+  def handle_unauthorized(exception)
+    respond_to do |format|
+      format.html { render "errors/forbidden", status: :forbidden }
+      format.json { render json: { error: "Forbidden" }, status: :forbidden }
+    end
+  end
+end
+```
+
+### authorize! 方法
+
+```ruby
+# 基本用法
+authorize! @article, to: :show?
+
+# 资源级别（自动推断）
+authorize! to: :show?  # 从控制器名称推断 ArticlePolicy
+
+# 指定 Policy 类
+authorize! @article, to: :show?, with: CustomPolicy
+
+# 指定命名空间
+authorize! @article, to: :show?, namespace: Admin
+```
+
+### 配置授权上下文
+
+```ruby
+# config/application.rb
+config.action_policy.controller_authorize_current_user = false
+
+# 或在控制器中
+authorize :user, through: :current_user
+authorize :user, through: -> { Current.user }
+```
+
+## 在视图中使用
+
+```erb
+<% if allowed_to?(:edit?, @article) %>
+  <%= link_to "编辑", edit_article_path(@article) %>
+<% end %>
+
+<% authorized(Article.all).each do |article| %>
+  <%= article.title %>
+<% end %>
+```
+
+## 高级特性
+
+### 1. Pre-Check（预检查）
+
+提取公共条件：
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  pre_check :ensure_user_present, except: [:index, :show]
+  pre_check :ensure_admin, only: [:destroy]
+
+  def edit?
+    user == record.user
+  end
+
+  private
+
+  def ensure_user_present
+    deny! if user.nil?  # 必须返回 allow! 或 deny!
+  end
+
+  def ensure_admin
+    allow! if user&.admin?
+  end
+end
+```
+
+### 2. 别名（Aliases）
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  alias_rule :update?, :edit?, to: :change?
+  alias_rule :destroy?, to: :remove?
+
+  def change?
+    user == record.user
+  end
+end
+
+# 使用
+authorize! @article, to: :change?  # 等同于 :update? 或 :edit?
+```
+
+**规则解析顺序**
+子类中的具体规则方法
+2. 匹配的别名（子类覆盖父类）
+3. 父类中的具体规则方法
+4. 默认规则（默认是 `manage?`）
+5. 如果默认规则为 `nil`，抛出 `ActionPolicy::UnknownRule`
+
+### 3. 默认规则
+
+```ruby
+class ApplicationPolicy < ActionPolicy::Base
+  default_rule manage?: false  # 最小权限原则
+end
+
+class ArticlePolicy < ApplicationPolicy
+  default_rule :manage?  # 当规则不存在时使用
+  
+  def manage?
+    user.admin?
+  end
+end
+```
+
+### 4. Scoping（作用域）
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  relation_scope do |relation|
+    relation.where(user_id: user.id)
+  end
+end
+
+# 在控制器中使用
+def index
+  @articles = authorized(Article.all)
+end
+```
+
+### 5. Caching（缓存）
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  cache do
+    [user, record]  # 缓存键
+  end
+
+  def show?
+    expensive_check?  # 会被缓存
+  end
+end
+```
+
+### 6. Namespaces（命名空间）
+
+```ruby
+# app/policies/admin/article_policy.rb
+module Admin
+  class ArticlePolicy < ApplicationPolicy
+    def show?
+      user.admin?
+    end
+  end
+end
+
+# 自动查找（在 Admin::ArticlesController 中）
+authorize! @article, to: :show?  # 自动使用 Admin::ArticlePolicy
+
+# 显式指定
+authorize! @article, to: :show?, namespace: Admin
+```
+
+### 7. Failure Reasons（失败原因）
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  def edit?
+    return deny!(:not_owner) unless user == record.user
+    return deny!(:locked, detail: { locked_at: record.locked_at }) if record.locked?
+    true
+  end
+end
+
+# 获取失败原因
+result = allowed_to?(:edit?, @article)
+if result.failure?
+  result.reason   # => :not_owner
+  result.details  # => { locked_at: ... }
+  result.all_detail  # 包括嵌套 Policy 的原因
+end
+
+# 在异常中
+rescue ActionPolicy::Unauthorized => ex
+  ex.result.reason
+  ex.result.details
+end
+```
+
+### 8. 在 Policy 中调用其他 Policy
+
+```ruby
+class ArticlePolicy < ActionPolicy::Base
+  def publish?
+    allowed_to?(:edit?) && record.draft?
+  end
+
+  def moderate?
+    check?(:manage?, record.comments)  # check? 是 allowed_to? 的别名
+  end
+end
+```
+
+## Policy Lookup（查找链）
+
+自动推断 Policy 类的顺序
+如果目标是 Symbol：尝试 `"#{target.to_s.camelize}Policy"` 或 `"#{target.to_s.classify}Policy"`
+2. 如果目标响应 `policy_class`：使用它
+3. 如果目标的类响应 `policy_class`：使用它
+4. 如果目标响应 `policy_name`：使用它（必须以 `Policy` 结尾）
+5. 否则：使用 `#{target.class.name}Policy`
+
+```ruby
+# 手动查找
+ActionPolicy.lookup(record, options)
+```
+
+## 测试
+
+### Minitest
+
+```ruby
+class ArticlePolicyTest < ActiveSupport::TestCase
+  def setup
+    @user = users(:one)
+    @article = articles(:one)
+    @policy = ArticlePolicy.new(article: @article, user: @user)
+  end
+
+  test "user can view own article" do
+    assert @policy.apply(:show?)  # 使用 apply 而不是直接调用
+  end
+end
+```
+
+### RSpec
+
+```ruby
+RSpec.describe ArticlePolicy do
+  subject { described_class.new(article: article, user: user) }
+  
+  describe "#edit?" do
+    it { is_expected.to be_allowed_to(:edit?) }
+  end
+end
+```
+
+**重要**：测试中使用 `apply` 方法，它会包装规则方法，包括缓存、pre-check 等功能。
+
+## Rails 集成
+
+### 生成器
+
+```bash
+rails g action_policy:install  # 创建 ApplicationPolicy
+rails g action_policy:policy Article  # 生成 Policy 和测试
+rails g action_policy:policy Article --parent=BasePolicy
+```
+
+### Action Cable
+
+```ruby
+class ChatChannel < ApplicationCable::Channel
+  include ActionPolicy::Controller
+
+  def speak(data)
+    authorize! ChatRoom.find(params[:room]), to: :speak?
+    # ...
+  end
+end
+```
+
+### API/Metal 控制器
+
+```ruby
+class Api::V1::ArticlesController < ActionController::API
+  include ActionPolicy::Controller
+end
+```
+
+## I18n 支持
+
+```yaml
+# config/locales/policies.yml
+en:
+  action_policy:
+    unauthorized: "You are not authorized to perform this action"
+    policy:
+      article:
+        edit?: "You cannot edit this article"
+        not_owner: "You cannot edit article #%{article_id}"
+```
+
+翻译查找顺序
+`action_policy.policy.#{klass.identifier}.#{rule}`
+2. 对每个祖先类重复步骤 1
+3. `action_policy.#{rule}`
+4. `action_policy.unauthorized`
+5. 默认消息
+
+## 自定义基础 Policy
+
+如果默认配置不适合，可以从头编写：
+
+```ruby
+class ApplicationPolicy
+  include ActionPolicy::Policy::Core  # 必需
+  include ActionPolicy::Policy::PreCheck
+  include ActionPolicy::Policy::Aliases
+  include ActionPolicy::Policy::Reasons
+  include ActionPolicy::Policy::Scoping
+  include ActionPolicy::Policy::Cache
+  
+  authorize :user, optional: true
+  default_rule manage?: false
+end
+```
+
+## Instrumentation（监控）
+
+```ruby
+# 订阅事件
+ActiveSupport::Notifications.subscribe("action_policy.apply_rule") do |name, start, finish, id, payload|
+  # payload[:policy], [:rule], [:value], [:cached]
+end
+
+ActiveSupport::Notifications.subscribe("action_policy.authorize") do |name, start, finish, id, payload|
+  # 只在 authorize! 时触发
+end
+
+ActiveSupport::Notifications.subscribe("action_policy.init") do |name, start, finish, id, payload|
+  # Policy 对象初始化时触发
+end
+
+# 关闭监控
+config.action_policy.instrumentation_enabled = false
+```
+
+## Debugging（调试）
+
+需要 `pp`（Ruby 3.3+）和 `method_source` gem：
+
+```ruby
+class ArticlePolicy < ApplicationPolicy
+  def edit?
+    binding.pry
+    pp(:edit?)  # 打印规则的详细分解
+  end
+end
+```
+
+## GraphQL 集成
+
+```ruby
+module Types
+  class ArticleType < Types::BaseObject
+    field :content, String, null: false
+    
+    def content
+      authorize! object, to: :show?
+      object.content
+    end
+    
+    field :can_edit, Boolean, null: false
+    def can_edit
+      allowed_to?(:edit?, object)
+    end
+  end
+end
+```
+
+## 从 Pundit 迁移
+
+### 阶段 1：兼容模式
+
+```ruby
+# 控制器
+class ApplicationController < ActionController::Base
+  include ActionPolicy::Controller
+  authorize :current_user, as: :user
+  
+  def policy(record)
+    ActionPolicy.lookup(record).new(record, user: current_user)
+  end
+  
+  def policy_scope(scope)
+    ActionPolicy.lookup(scope).new(user: current_user).apply_scope(scope, type: :active_record_relation)
+  end
+end
+
+# Policy
+class ApplicationPolicy
+  include ActionPolicy::Policy::Core
+  
+  def initialize(record, user: nil)
+    @record = record
+    @user = user
+  end
+end
+```
+
+### 阶段 2：完全迁移
+
+1. 让 `ApplicationPolicy` 继承 `ActionPolicy::Base`
+2. 迁移视图辅助方法（`policy` → `allowed_to?`，`policy_scope` → `authorized`）
+3. 重写测试
+4. 使用 Reasons、I18n、缓存等功能
+
+## 处理 Decorator
+
+```ruby
+class ApplicationController < ActionController::Base
+  include ActionPolicy::Controller
+  
+  private
+  
+  def policy_for(record:, **options)
+    if record.respond_to?(:model)  # Draper
+      super(record: record.model, **options)
+    else
+      super(record: record, **options)
+    end
+  end
+end
+```
+
+## Non-Rails 使用
+
+```ruby
+class MyService
+  include ActionPolicy::Behaviour
+  
+  authorize :user, through: :current_user
+  
+  def call
+    authorize! some_record, to: :show?
+  end
+end
+
+# 配置 I18n
+require "i18n"
+I18n.load_path << "path/to/locales/policies.yml"
+
+# 配置监控
+require "action_policy/instrumentation"
+ActionPolicy::Instrumentation.setup
+```
+
+## 最佳实践
+
+1. **最小权限原则**：`default_rule manage?: false`
+2. **使用 ApplicationPolicy**：定义共享逻辑（`owner?`、`admin?` 等）
+3. **使用 Pre-Check**：提取公共条件
+4. **使用别名**：简化相关操作
+5. **使用 verify_authorized**：确保所有 action 都授权
+6. **统一异常处理**：在 `ApplicationController` 中处理
+7. **使用 Scoping**：过滤集合
+8. **测试使用 apply**：不要直接调用规则方法
+
+## 常见模式
+
+```ruby
+# 基于角色
+class ArticlePolicy < ApplicationPolicy
+  def edit?
+    admin? || owner?
+  end
+  
+  private
+  
+  def admin?
+    user&.has_role?(:admin)
+  end
+  
+  def owner?
+    record.user_id == user&.id
+  end
+end
+
+# 基于状态
+class ArticlePolicy < ApplicationPolicy
+  def edit?
+    return false if record.published?
+    owner?
+  end
+end
+```
+
+## 注意事项
+
+1. **不要手动初始化 Policy**（测试除外）：使用 `authorize!` 或 `allowed_to?` 方法
+2. **规则必须是公共方法**：私有方法不能作为规则使用
+3. **测试时使用 apply 方法**：不要直接调用规则方法，使用 `apply(:rule_name?)` 以包含缓存、pre-check 等功能 
+
+## 项目中的使用
+
+### 当前实现
+
+- `app/policies/application_policy.rb` - 基础 Policy 类
+- `app/policies/user_policy.rb` - 用户 Policy
+- `app/controllers/application_controller.rb` - 包含 ActionPolicy::Controller
+
+### 开发新 Policy 的步骤
+
+1. `rails g action_policy:policy ModelName`
+2. 定义规则方法
+3. 在控制器中使用 `authorize!`
+4. 在视图中使用 `allowed_to?`
+5. 编写测试
+
+## 相关资源
+
+- **官方文档**：https://actionpolicy.evilmartians.io/
+- **GitHub**：https://github.com/palkan/action_policy
+- **Rails Conf 2018 演讲**：https://www.youtube.com/watch?v=NVwx0DARDis

@@ -1,5 +1,10 @@
 {
+  "name": "buildx",
   "dependencies": {
-    "daisyui": "^5.5.5"
+    "daisyui": "^5.5.5",
+    "github-markdown-css": "^5.8.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19"
   }
 }

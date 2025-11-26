@@ -18,6 +18,7 @@ docs/
 ```
 
 每个阶段包含：
+
 - `README.md` - 阶段概览
 - `plan.md` - 详细开发计划
 - `progress.md` - 开发进度跟踪
@@ -29,6 +30,7 @@ docs/
 **状态**：进行中  
 **文档**：[docs/phase-1-authentication/](docs/phase-1-authentication/)  
 **主要内容**：
+
 - 邮箱注册/登录
 - 密码找回
 - 基础用户管理
@@ -38,6 +40,7 @@ docs/
 **状态**：计划中  
 **文档**：[docs/phase-2-authorization/](docs/phase-2-authorization/)  
 **主要内容**：
+
 - 角色管理系统（RBAC）
 - 权限控制系统
 - 资源级权限
@@ -47,6 +50,7 @@ docs/
 **状态**：计划中  
 **文档**：[docs/phase-3-multi-tenant/](docs/phase-3-multi-tenant/)  
 **主要内容**：
+
 - 租户隔离
 - 组织架构
 - 团队管理
@@ -55,6 +59,7 @@ docs/
 **状态**：计划中  
 **文档**：[docs/phase-4-advanced/](docs/phase-4-advanced/)  
 **主要内容**：
+
 - Webhook 系统
 - 通知系统
 - API 支持

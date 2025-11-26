@@ -11,6 +11,9 @@ docs/
 ├── DEVELOPMENT_PLAN.md          # 开发计划总览
 ├── DEVELOPER_GUIDE.md           # 开发者指南（技术决策、架构设计）
 │
+├── experiences/                  # 开发经验记录 ⭐
+│   └── highlight.js.md          # Highlight.js 集成问题
+│
 ├── phase-1-authentication/      # 第一阶段：用户认证系统
 │   ├── README.md               # 阶段概览
 │   ├── plan.md                 # 详细开发计划
@@ -47,6 +50,12 @@ docs/
   - API 认证策略
   - 开发规范
 
+
+- **experiences/**：开发经验记录目录
+  - 记录开发过程中遇到的疑难问题和解决方案
+  - 包含问题描述、原因分析、解决步骤和关键经验
+  - 便于后续遇到类似问题时快速参考
+
 ### 阶段文档
 
 每个阶段包含以下文档：
@@ -62,6 +71,7 @@ docs/
 **状态**：🚧 进行中  
 **文档位置**：`docs/phase-1-authentication/`  
 **主要内容**：
+
 - 邮箱注册/登录
 - 密码找回
 - 基础用户管理
@@ -71,6 +81,7 @@ docs/
 **状态**：📋 计划中  
 **文档位置**：`docs/phase-2-authorization/`  
 **主要内容**：
+
 - 角色管理
 - 权限控制
 - 资源权限
@@ -79,6 +90,7 @@ docs/
 **状态**：📋 计划中  
 **文档位置**：`docs/phase-3-multi-tenant/`  
 **主要内容**：
+
 - 租户隔离
 - 组织架构
 - 团队管理
@@ -87,6 +99,7 @@ docs/
 **状态**：📋 计划中  
 **文档位置**：`docs/phase-4-advanced/`  
 **主要内容**：
+
 - Webhook 系统
 - 通知系统
 - API 支持
@@ -98,11 +111,13 @@ docs/
 2. **跨阶段文档**：在 `docs/` 根目录添加
 3. **技术决策**：更新 `DEVELOPER_GUIDE.md`
 4. **开发进度**：更新对应阶段的 `progress.md`
+5. **开发经验**：在 `experiences/` 目录添加新的问题解决文档
 
 ## 🔗 相关链接
 
 - [主 README](../README.md)
 - [当前工作状态](../CURRENT_WORK.md) ⭐ 每日必看
 - [开发者指南](./DEVELOPER_GUIDE.md)
+- [MCP 开发规则](../.cursor/rules/mcp.mdc) ⭐ MCP 服务开发必读（AI 自动参考）
 - [Cursor 规则](../.cursor/rules/)
 

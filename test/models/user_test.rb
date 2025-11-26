@@ -267,4 +267,289 @@ class UserTest < ActiveSupport::TestCase
     assert_not_nil user.password_changed_at
     assert_in_delta user.created_at, user.password_changed_at, 1.second
   end
+
+  # Permission check tests
+  test "can? returns true when user has permission" do
+    admin = users(:one)
+    admin.add_role("admin") unless admin.has_role?("admin")
+    regular_user = users(:two)
+
+    # Admin can index users (use User class for collection actions)
+    assert admin.can?(:index, User)
+    # Admin can show any user
+    assert admin.can?(:show, regular_user)
+    # Regular user cannot index users
+    assert_not regular_user.can?(:index, User)
+  end
+
+  test "can? returns false when user does not have permission" do
+    regular_user = users(:two)
+    other_user = User.create!(
+      email_address: "other@example.com",
+      password: "password123",
+      name: "Other User"
+    )
+
+    # Regular user cannot show other users
+    assert_not regular_user.can?(:show, other_user)
+    # Regular user cannot destroy users
+    assert_not regular_user.can?(:destroy, other_user)
+  end
+
+  test "can? returns true when user can perform action on themselves" do
+    regular_user = users(:two)
+
+    # User can show themselves
+    assert regular_user.can?(:show, regular_user)
+    # User can update themselves
+    assert regular_user.can?(:update, regular_user)
+  end
+
+  test "can? returns false for invalid action" do
+    admin = users(:one)
+    admin.add_role("admin") unless admin.has_role?("admin")
+
+    # Invalid action should return false (NoMethodError)
+    assert_not admin.can?(:invalid_action, User)
+  end
+
+  test "can? handles nil record for collection actions" do
+    admin = users(:one)
+    admin.add_role("admin") unless admin.has_role?("admin")
+
+    # Admin can index (collection action with User class)
+    assert admin.can?(:index, User)
+  end
+
+  # HasRoles concern tests
+  test "has_role? returns true when user has the role" do
+    user = users(:one)
+    user.add_role("admin")
+
+    assert user.has_role?("admin")
+    assert user.has_role?(:admin) # Should work with symbol too
+  end
+
+  test "has_role? returns false when user does not have the role" do
+    user = users(:one)
+
+    assert_not user.has_role?("admin")
+    assert_not user.has_role?("user")
+  end
+
+  test "add_role creates role if it does not exist" do
+    user = users(:one)
+    assert_difference "Role.count", 1 do
+      user.add_role("new_role")
+    end
+
+    assert user.has_role?("new_role")
+  end
+
+  test "add_role does not create duplicate user_roles" do
+    user = users(:one)
+    user.add_role("admin")
+    initial_count = user.user_roles.count
+
+    user.add_role("admin") # Add same role again
+
+    assert_equal initial_count, user.user_roles.count
+    assert user.has_role?("admin")
+  end
+
+  test "remove_role removes role from user" do
+    user = users(:one)
+    user.add_role("admin")
+    assert user.has_role?("admin")
+
+    user.remove_role("admin")
+
+    assert_not user.has_role?("admin")
+  end
+
+  test "remove_role does nothing if role does not exist" do
+    user = users(:one)
+    initial_count = user.user_roles.count
+
+    user.remove_role("non_existent_role")
+
+    assert_equal initial_count, user.user_roles.count
+  end
+
+  test "remove_role does nothing if user does not have the role" do
+    user = users(:one)
+    initial_count = user.user_roles.count
+
+    user.remove_role("admin")
+
+    assert_equal initial_count, user.user_roles.count
+  end
+
+  # EmailConfirmation concern tests
+  test "confirmed? returns false when confirmed_at is nil" do
+    user = User.new(email_address: "test@example.com", password: "password123")
+    assert_not user.confirmed?
+  end
+
+  test "confirmed? returns true when confirmed_at is present" do
+    user = users(:one)
+    user.update!(confirmed_at: Time.current)
+
+    assert user.confirmed?
+  end
+
+  test "confirm! sets confirmed_at and clears confirmation_token" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    token = user.confirmation_token
+    assert_not_nil token
+    assert_not user.confirmed?
+
+    result = user.confirm!
+
+    assert_equal true, result
+    assert user.confirmed?
+    assert_nil user.reload.confirmation_token
+  end
+
+  test "confirm! returns true if already confirmed" do
+    user = users(:one)
+    user.update!(confirmed_at: Time.current)
+    assert user.confirmed?
+
+    result = user.confirm!
+
+    assert_equal true, result
+    assert user.confirmed?
+  end
+
+  test "send_confirmation_email updates confirmation_sent_at" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    assert_nil user.confirmation_sent_at
+
+    user.send_confirmation_email
+
+    assert_not_nil user.reload.confirmation_sent_at
+  end
+
+  test "send_confirmation_email does not send if already confirmed" do
+    user = users(:one)
+    user.update!(confirmed_at: Time.current)
+    initial_sent_at = user.confirmation_sent_at
+
+    user.send_confirmation_email
+
+    assert_equal initial_sent_at, user.reload.confirmation_sent_at
+  end
+
+  test "confirmation_token_valid? returns true for valid token" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    token = user.confirmation_token
+
+    assert user.confirmation_token_valid?(token)
+  end
+
+  test "confirmation_token_valid? returns false for invalid token" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+
+    assert_not user.confirmation_token_valid?("invalid_token")
+  end
+
+  test "confirmation_token_expired? returns true when confirmation_sent_at is nil" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+
+    assert user.confirmation_token_expired?
+  end
+
+  test "confirmation_token_expired? returns true when token is expired" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    user.update_column(:confirmation_sent_at, 25.hours.ago)
+
+    assert user.confirmation_token_expired?
+  end
+
+  test "confirmation_token_expired? returns false when token is not expired" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    user.update_column(:confirmation_sent_at, 1.hour.ago)
+
+    assert_not user.confirmation_token_expired?
+  end
+
+  test "confirmation_token_expired? respects custom expires_in parameter" do
+    user = User.create!(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    user.update_column(:confirmation_sent_at, 2.hours.ago)
+
+    # With default 24 hours, should not be expired
+    assert_not user.confirmation_token_expired?
+    # With 1 hour, should be expired
+    assert user.confirmation_token_expired?(expires_in: 1.hour)
+  end
+
+  test "generate_confirmation_token creates token before create" do
+    user = User.new(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User"
+    )
+    assert_nil user.confirmation_token
+
+    user.save!
+
+    assert_not_nil user.confirmation_token
+    assert user.confirmation_token.length > 20 # Should be a long random token
+  end
+
+  test "generate_confirmation_token does not create token if already confirmed" do
+    user = User.new(
+      email_address: "test@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User",
+      confirmed_at: Time.current
+    )
+
+    user.save!
+
+    assert_nil user.confirmation_token
+  end
 end

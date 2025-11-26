@@ -1,5 +1,5 @@
 ---
-description: DaisyUI 前端界面 tailwindcss UI组件库
+description: DaisyUI 5 前端 UI 组件库开发规则。使用 Tailwind CSS 4 和 DaisyUI 5 开发界面、组件时参考此规则。
 alwaysApply: false
 ---
 # daisyUI 5
@@ -17,11 +17,13 @@ daisyUI 5 provides class names for common UI components
 2. `tailwind.config.js` file is deprecated in Tailwind CSS v4. do not use `tailwind.config.js`. Tailwind CSS v4 only needs `@import "tailwindcss";` in the CSS file if it's a node dependency.
 3. daisyUI 5 can be installed using `npm i -D daisyui@latest` and then adding `@plugin "daisyui";` to the CSS file
 4. daisyUI is suggested to be installed as a dependency but if you really want to use it from CDN, you can use Tailwind CSS and daisyUI CDN files:
+
 ```html
 <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 ```
 5. A CSS file with Tailwind CSS and daisyUI looks like this (if it's a node dependency)
+
 ```css
 @import "tailwindcss";
 @plugin "daisyui";
@@ -52,19 +54,65 @@ daisyUI 5 class names are one of the following categories. These type names are 
 - `modifier`: modifies the component or part in a specific way
 - `variant`: prefixes for utility classes that conditionally apply styles. syntax is `variant:utility-class`
 
+## 常用组件快速参考
+
+### 布局组件
+- **navbar**：导航栏 `<div class="navbar">`，使用 `navbar-start`、`navbar-center`、`navbar-end` 定位
+- **drawer**：侧边栏抽屉 `<div class="drawer">`，使用 `drawer-toggle`、`drawer-content`、`drawer-side`
+- **footer**：页脚 `<footer class="footer">`，使用 `footer-center`、`footer-horizontal`、`footer-vertical`
+
+### 表单组件
+- **input**：输入框 `<input class="input">`，支持 `input-ghost`、颜色、尺寸修饰符
+- **textarea**：多行输入 `<textarea class="textarea">`，支持颜色、尺寸修饰符
+- **select**：下拉选择 `<select class="select">`，支持颜色、尺寸修饰符
+- **checkbox**：复选框 `<input type="checkbox" class="checkbox">`，支持颜色、尺寸修饰符
+- **radio**：单选按钮 `<input type="radio" class="radio">`，支持颜色、尺寸修饰符
+- **button**：按钮 `<button class="btn">`，支持 `btn-primary`、`btn-outline`、`btn-ghost`、尺寸等
+
+### 内容展示组件
+- **card**：卡片 `<div class="card">`，使用 `card-title`、`card-body`、`card-actions`
+- **alert**：提示框 `<div class="alert">`，支持 `alert-info`、`alert-success`、`alert-warning`、`alert-error`
+- **badge**：徽章 `<span class="badge">`，支持颜色、尺寸修饰符
+- **table**：表格 `<table class="table">`，支持 `table-zebra`、`table-pin-rows`、尺寸修饰符
+
+### 交互组件
+- **modal**：模态框 `<dialog class="modal">`，使用 `modal-box`、`modal-backdrop`
+- **dropdown**：下拉菜单 `<details class="dropdown">`，使用 `dropdown-content`
+- **collapse**：折叠面板 `<div class="collapse">`，使用 `collapse-title`、`collapse-content`
+- **tabs**：标签页 `<div class="tabs">`，使用 `tab`、`tab-active`
+
+### 反馈组件
+- **loading**：加载动画 `<span class="loading loading-spinner">`，支持多种样式和尺寸
+- **progress**：进度条 `<progress class="progress">`，支持颜色修饰符
+- **toast**：提示消息 `<div class="toast">`，支持位置修饰符
+
+### 常用颜色类
+- `btn-primary`、`btn-secondary`、`btn-accent`、`btn-neutral`
+- `alert-info`、`alert-success`、`alert-warning`、`alert-error`
+- `badge-primary`、`badge-success`、`badge-warning`、`badge-error`
+
+### 常用尺寸类
+- `btn-xs`、`btn-sm`、`btn-md`、`btn-lg`、`btn-xl`
+- `input-xs`、`input-sm`、`input-md`、`input-lg`、`input-xl`
+
+**提示**：更多组件和详细用法请查看下方"daisyUI 5 components"部分。
+
 ## Config
 daisyUI 5 config docs: https://daisyui.com/docs/config/
 daisyUI without config:
+
 ```css
 @plugin "daisyui";
 ```
 daisyUI config with `light` theme only:
+
 ```css
 @plugin "daisyui" {
   themes: light --default;
 }
 ```
 daisyUI with all the default configs:
+
 ```css
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
@@ -79,6 +127,7 @@ An example config:
 In below config, all the built-in themes are enabled while bumblebee is the default theme and synthwave is the prefersdark theme (default dark mode)
 All the other themes are enabled and can be used by adding `data-theme="THEME_NAME"` to the `<html>` element
 root scrollbar gutter is excluded. `daisy-` prefix is used for all daisyUI classes and console.log is disabled
+
 ```css
 @plugin "daisyui" {
   themes: light, dark, cupcake, bumblebee --default, emerald, corporate, synthwave --prefersdark, retro, cyberpunk, valentine, halloween, garden, forest, aqua, lofi, pastel, fantasy, wireframe, black, luxury, dracula, cmyk, autumn, business, acid, lemonade, night, coffee, winter, dim, nord, sunset, caramellatte, abyss, silk;
@@ -127,6 +176,7 @@ root scrollbar gutter is excluded. `daisy-` prefix is used for all daisyUI class
 
 ### daisyUI custom theme with custom colors
 A CSS file with Tailwind CSS, daisyUI and a custom daisyUI theme looks like this:
+
 ```css
 @import "tailwindcss";
 @plugin "daisyui";
@@ -816,6 +866,7 @@ File Input is a an input field for uploading files
 [file-input docs](https://daisyui.com/components/file-input/)
 
 #### Class Names:
+
 - Component: `file-input`
 - Style: `file-input-ghost`
 - Color: `file-input-neutral`, `file-input-primary`, `file-input-secondary`, `file-input-accent`, `file-input-info`, `file-input-success`, `file-input-warning`, `file-input-error`
@@ -1094,6 +1145,7 @@ List is a vertical layout to display information in rows
 [list docs](https://daisyui.com/components/list/)
 
 #### Class Names:
+
 - Component: `list`, `list-row`
 - Modifier: `list-col-wrap`, `list-col-grow`
 
@@ -1487,6 +1539,7 @@ Stack visually puts elements on top of each other
 [stack docs](https://daisyui.com/components/stack/)
 
 #### Class Names:
+
 - Component: `stack`
 - Modifier: `stack-top`, `stack-bottom`, `stack-start`, `stack-end`
 
@@ -1527,6 +1580,7 @@ Status is a really small icon to visually show the current status of an element,
 [status docs](https://daisyui.com/components/status/)
 
 #### Class Names:
+
 - Component: `status`
 - Color: `status-neutral`, `status-primary`, `status-secondary`, `status-accent`, `status-info`, `status-success`, `status-warning`, `status-error`
 - Size: `status-xs`, `status-sm`, `status-md`, `status-lg`, `status-xl`
@@ -1546,6 +1600,7 @@ Steps can be used to show a list of steps in a process
 [steps docs](https://daisyui.com/components/steps/)
 
 #### Class Names:
+
 - Component: `steps`
 - Part: `step`, `step-icon`
 - Color: `step-neutral`, `step-primary`, `step-secondary`, `step-accent`, `step-info`, `step-success`, `step-warning`, `step-error`
@@ -1570,6 +1625,7 @@ Swap allows you to toggle the visibility of two elements using a checkbox or a c
 [swap docs](https://daisyui.com/components/swap/)
 
 #### Class Names:
+
 - Component: `swap`
 - Part: `swap-on`, `swap-off`, `swap-indeterminate`
 - Modifier: `swap-active`
@@ -1604,6 +1660,7 @@ Tabs can be used to show a list of links in a tabbed format
 [tab docs](https://daisyui.com/components/tab/)
 
 #### Class Names:
+
 - Component: `tabs`
 - Part: `tab`, `tab-content`
 - Style: `tabs-box`, `tabs-border`, `tabs-lift`
@@ -1636,6 +1693,7 @@ Table can be used to show a list of data in a table format
 [table docs](https://daisyui.com/components/table/)
 
 #### Class Names:
+
 - Component: `table`
 - Modifier: `table-zebra`, `table-pin-rows`, `table-pin-cols`
 - Size: `table-xs`, `table-sm`, `table-md`, `table-lg`, `table-xl`
@@ -1668,6 +1726,7 @@ Text Rotate can show up to 6 lines of text, one at a time, with a an infinite lo
 [textarea docs](https://daisyui.com/components/text-rotate/)
 
 #### Class Names:
+
 - Component: `text-rotate`
 
 #### Syntax
@@ -1729,13 +1788,13 @@ Custom line height in case you have a tall font or need more vertical spacing be
 - Total duration of the loop is 10000 milliseconds by default
 - You can set custom duration using `duration-{value}` utility class, where value is in milliseconds (e.g. `duration-12000` for 12 seconds)
 
-
 ### textarea
 Textarea allows users to enter text in multiple lines
 
 [textarea docs](https://daisyui.com/components/textarea/)
 
 #### Class Names:
+
 - Component: `textarea`
 - Style: `textarea-ghost`
 - Color: `textarea-neutral`, `textarea-primary`, `textarea-secondary`, `textarea-accent`, `textarea-info`, `textarea-success`, `textarea-warning`, `textarea-error`
@@ -1771,6 +1830,7 @@ Timeline component shows a list of events in chronological order
 [timeline docs](https://daisyui.com/components/timeline/)
 
 #### Class Names:
+
 - Component: `timeline`
 - Part: `timeline-start`, `timeline-middle`, `timeline-end`
 - Modifier: `timeline-snap-icon`, `timeline-box`, `timeline-compact`
@@ -1799,6 +1859,7 @@ Toast is a wrapper to stack elements, positioned on the corner of page
 [toast docs](https://daisyui.com/components/toast/)
 
 #### Class Names:
+
 - Component: `toast`
 - Placement: `toast-start`, `toast-center`, `toast-end`, `toast-top`, `toast-middle`, `toast-bottom`
 
@@ -1816,6 +1877,7 @@ Toggle is a checkbox that is styled to look like a switch button
 [toggle docs](https://daisyui.com/components/toggle/)
 
 #### Class Names:
+
 - Component: `toggle`
 - Color: `toggle-primary`, `toggle-secondary`, `toggle-accent`, `toggle-neutral`, `toggle-success`, `toggle-warning`, `toggle-info`, `toggle-error`
 - Size: `toggle-xs`, `toggle-sm`, `toggle-md`, `toggle-lg`, `toggle-xl`
