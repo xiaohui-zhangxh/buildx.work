@@ -6,13 +6,39 @@
 
 **BuildX.work** 是一个功能完整的 Rails 应用模板，用于生成不同业务网站。通过提供一套经过验证的企业级功能模块，帮助开发者快速启动新项目，避免因复制代码而遗漏关键功能。
 
-**品牌说明**：
-- **品牌名**：BuildX（简洁，用于技术文档和 Logo）
-- **产品/平台名**：BuildX.work（完整，用于网站标题和营销材料）
+### 🎯 项目定位：基础设施模板
 
-**域名规划**：
-- **buildx.work** - 主平台（用于生成不同业务网站）
-- **buildx.run** - 业务站点（生产出来的业务使用 buildx.run 的二级域名）
+**BuildX.work** 的设计目标是作为**基础设施模板**，为所有业务项目提供统一的基础功能。每个新项目都应该基于此模板创建，然后专注于业务逻辑开发。
+
+#### 为什么选择这种方式？
+
+我们考虑过多种集成方式，最终选择了 **Fork + Module 扩展** 的方案，原因如下：
+
+**❌ 为什么不使用 Rails Engine？**
+- Engine 适合需要独立版本管理和发布为 Gem 的场景
+- 对于内部项目，Engine 的配置和加载机制过于复杂
+- 代码调试不够直观，脱离了 Rails 的最佳实践
+- 开发体验不够友好，需要处理各种 Engine 特有的配置
+
+**❌ 为什么不使用文件复制？**
+- 更新困难：需要手动复制文件，容易遗漏
+- 合并冲突多：基础设施更新时，每个子项目都要处理大量冲突
+- 维护成本高：多个项目需要同步更新，容易产生代码分歧
+
+**✅ 为什么选择 Fork + Module 扩展？**
+- **简单直接**：符合 Rails 约定，代码可见，调试方便
+- **版本控制清晰**：通过 Git 追踪变更，可以追溯每个项目的修改历史
+- **更新可控**：通过 `git merge` 处理冲突，比手动复制更可控
+- **扩展灵活**：通过 Module/Concern 扩展功能，减少合并冲突
+- **维护成本低**：基础设施代码保持稳定，子项目通过扩展机制添加业务功能
+
+#### 如何使用？
+
+1. **创建新项目**：Fork 或克隆此项目作为起点
+2. **扩展功能**：通过 Module/Concern 扩展基础设施功能，而不是直接修改
+3. **更新基础设施**：定期通过 `git merge` 同步基础设施更新
+
+📖 [查看详细使用指南](docs/USAGE_GUIDE.md) - 包含完整的创建、扩展、更新流程
 
 ### 🎯 核心特性
 
@@ -58,8 +84,8 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/xiaohui-zhangxh/buildx.git
-cd buildx
+git clone https://github.com/xiaohui-zhangxh/buildx.work.git
+cd buildx.work
 
 # 安装依赖
 bundle install
@@ -125,6 +151,7 @@ bin/kamal console
 
 所有详细文档都在 `docs/` 目录下：
 
+- [使用指南](docs/USAGE_GUIDE.md) ⭐ - 如何创建子项目、如何扩展、如何更新
 - [功能清单](docs/FEATURES.md) - 完整的功能列表
 - [开发计划](docs/DEVELOPMENT_PLAN.md) - 开发路线图
 - [开发者指南](docs/DEVELOPER_GUIDE.md) - 技术决策和架构设计
@@ -159,7 +186,7 @@ bin/kamal console
 
 ## 📧 联系方式
 
-- 提交 [Issue](https://github.com/xiaohui-zhangxh/buildx/issues)
+- 提交 [Issue](https://github.com/xiaohui-zhangxh/buildx.work/issues)
 - 查看 [开发文档](docs/README.md)
 
 ---

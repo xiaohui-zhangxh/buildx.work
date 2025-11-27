@@ -112,6 +112,50 @@ COVERAGE_FILES=app/models bin/rails test test/models/
 
 > 📖 **详细规范**：请参考 [资源管理规则](../.cursor/rules/assets-management.mdc) ⭐
 
+## 🔌 扩展机制
+
+### 自动加载扩展模块
+
+BuildX.work 提供了自动加载扩展模块的机制，允许子项目通过 Module/Concern 扩展基础设施功能。
+
+#### 工作原理
+
+扩展机制通过 `config/initializers/extensions.rb` 实现：
+
+1. **使用 `config.to_prepare`**：确保开发环境中的代码重载正常工作
+2. **自动检测扩展文件**：检查是否存在扩展模块文件
+3. **动态加载**：使用 `require_dependency` 加载扩展模块
+4. **自动包含**：使用 `class_eval` 和 `include` 将扩展模块包含到基础设施类中
+
+#### 支持的扩展点
+
+- **User 模型**：`app/models/concerns/user_extensions.rb` → `UserExtensions`
+- **ApplicationController**：`app/controllers/concerns/application_controller_extensions.rb` → `ApplicationControllerExtensions`
+- **ApplicationHelper**：`app/helpers/application_helper_extensions.rb` → `ApplicationHelperExtensions`
+- **ApplicationMailer**：`app/mailers/concerns/mailer_extensions.rb` → `MailerExtensions`
+
+#### 扩展示例
+
+```ruby
+# app/models/concerns/user_extensions.rb
+module UserExtensions
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :workspaces, dependent: :destroy
+  end
+end
+```
+
+扩展模块会自动加载，无需手动引入。
+
+#### 设计原则
+
+1. **约定优于配置**：使用固定的文件位置和命名规范
+2. **自动加载**：子项目只需创建扩展文件，无需额外配置
+3. **开发友好**：支持开发环境的热重载
+4. **向后兼容**：如果扩展文件不存在，不影响基础设施功能
+
 ## 📝 开发备忘
 
 ### 常用命令
