@@ -59,6 +59,10 @@ gem "redcarpet", "~> 3.6.1"
 # SEO meta tags management for TDK (Title, Description, Keywords)
 gem "meta-tags", "~> 2.22", ">= 2.22.2"
 
+# Pagination library
+gem "pagy", "~> 9.3", ">= 9.3.4"
+gem "unicode-display_width", "~> 2.5"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

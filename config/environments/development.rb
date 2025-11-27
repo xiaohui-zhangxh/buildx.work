@@ -40,7 +40,9 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   # Note: This will be overridden by config/initializers/200_action_mailer.rb
   # if site_domain is configured in SystemConfig (e.g., "localhost:3001")
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  # Use PORT environment variable if set, otherwise default to 3000
+  port = ENV.fetch("PORT", "3000").to_i
+  config.action_mailer.default_url_options = { host: "localhost", port: port }
 
   # Use letter_opener for email preview in development
   config.action_mailer.delivery_method = :letter_opener

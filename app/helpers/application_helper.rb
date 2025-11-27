@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Frontend
+
   # Format time for display with automatic format selection based on time distance
   # - Today: shows time only (e.g., "14:30")
   # - This week: shows weekday and time (e.g., "Monday 14:30" or "周一 14:30")
@@ -65,13 +67,18 @@ module ApplicationHelper
   def daisy_form_with(model: nil, scope: nil, url: nil, format: nil, **options, &block)
     options[:builder] = DaisyFormBuilder
     # form_with requires model to be an object or false, not nil
-    # If url or scope is provided, we don't need model
-    # If model is nil and no scope/url provided, use false to indicate no model
-    if url.present? || scope.present?
+    # Priority: model > scope > url
+    # If model is provided, use it to wrap parameters (even if url is also provided)
+    # If scope is provided (without model), use scope
+    # If only url is provided (without model or scope), use url
+    if model.present?
+      form_with(model: model, url: url, format: format, **options, &block)
+    elsif scope.present?
       form_with(scope: scope, url: url, format: format, **options, &block)
+    elsif url.present?
+      form_with(url: url, format: format, **options, &block)
     else
-      form_model = model || false
-      form_with(model: form_model, format: format, **options, &block)
+      form_with(model: false, format: format, **options, &block)
     end
   end
 end
