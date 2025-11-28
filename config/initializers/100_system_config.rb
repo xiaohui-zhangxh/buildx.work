@@ -12,6 +12,7 @@ Rails.application.config.after_initialize do
 
   # Only set default configs if the table exists (skip during migrations)
   next unless ActiveRecord::Base.connection.table_exists?("system_configs")
+  next unless ActiveRecord::Base.connection.table_exists?("users")
 
   # Set default configs
   # SystemConfig.set handles race conditions internally, so we can call it safely
