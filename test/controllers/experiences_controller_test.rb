@@ -39,4 +39,3 @@ class ExperiencesControllerTest < ActionDispatch::IntegrationTest
     # Should load experiences from docs/experiences directory
   end
 end
-

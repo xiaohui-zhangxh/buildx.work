@@ -59,4 +59,3 @@ class UsersMailerTest < ActionMailer::TestCase
     assert_match /confirmations/, mailer.text_part.body.to_s + mailer.html_part.body.to_s
   end
 end
-

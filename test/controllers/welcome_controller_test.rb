@@ -42,4 +42,3 @@ class WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal new_session_path, response.location
   end
 end
-

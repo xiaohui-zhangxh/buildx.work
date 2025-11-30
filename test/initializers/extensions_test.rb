@@ -178,4 +178,3 @@ class ExtensionsTest < ActiveSupport::TestCase
     end
   end
 end
-

@@ -92,5 +92,44 @@ module Admin
       get admin_roles_url
       assert_response :forbidden
     end
+
+    test "should search roles by name" do
+      sign_in_as(@admin)
+      get admin_roles_url, params: { search: @role.name }
+      assert_response :success
+      assert_match @role.name, response.body
+    end
+
+    test "should search roles by description" do
+      @role.update!(description: "Test Description")
+      sign_in_as(@admin)
+      get admin_roles_url, params: { search: "Test Description" }
+      assert_response :success
+      assert_match @role.name, response.body
+    end
+
+    test "should render new form with errors when create fails" do
+      sign_in_as(@admin)
+      post admin_roles_url, params: {
+        role: {
+          name: "", # Invalid: empty name
+          description: "Test"
+        }
+      }
+      assert_response :unprocessable_entity
+      assert_select "form"
+    end
+
+    test "should render edit form with errors when update fails" do
+      sign_in_as(@admin)
+      patch admin_role_url(@role), params: {
+        role: {
+          name: "", # Invalid: empty name
+          description: "Test"
+        }
+      }
+      assert_response :unprocessable_entity
+      assert_select "form"
+    end
   end
 end

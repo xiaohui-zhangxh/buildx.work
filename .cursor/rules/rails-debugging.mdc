@@ -523,11 +523,13 @@ grep("\(.*ms\)", path: "log/development.log")
 - `app/controllers/sessions_controller.rb`
 - `app/models/user.rb`
 - `app/policies/user_policy.rb`
+- `config/initializers/warden.rb`
 
 **常见问题**：
 - 登录失败：检查密码验证、用户状态
 - 权限不足：检查权限策略、角色配置
 - Session 问题：检查 session 配置、cookie 设置
+- **API 控制器返回 401 被 Warden 拦截**：API 控制器返回 401 状态码时，Warden 中间件会拦截响应并重定向到登录页面。需要在控制器中调用 `request.env["warden"]&.custom_failure!` 来告诉 Warden 不要处理认证失败，让控制器自己处理响应。详见 `docs/experiences/warden-custom-failure.md`
 
 ### 邮件系统调试
 

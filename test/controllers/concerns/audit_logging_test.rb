@@ -30,7 +30,7 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     # Follow redirect to ensure response is successful
     follow_redirect! if response.redirect?
     assert_response :success
-    
+
     # Check AuditLog was created
     assert_equal initial_count + 1, AuditLog.count, "AuditLog should be created after successful role creation"
     log = AuditLog.last
@@ -66,7 +66,7 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     assert_equal user.id, log.resource_id
     assert_equal @admin, log.user
     assert_not_nil log.changes_data
-    
+
     # Verify redirect happened
     assert_redirected_to admin_user_path(user)
   end
@@ -102,7 +102,7 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     assert_not_nil log.changes_data
     # changes_data is JSON serialized, so use string keys
     assert_equal 2, log.changes_data["count"] || log.changes_data[:count]
-    
+
     # Verify redirect happened
     assert_redirected_to admin_users_path
   end
@@ -133,7 +133,7 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     assert_not_nil log.changes_data
     # changes_data is JSON serialized, so use string keys
     assert_equal role.name, log.changes_data["role_name"] || log.changes_data[:role_name]
-    
+
     # Verify redirect happened
     assert_redirected_to admin_users_path
   end
@@ -165,7 +165,7 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     assert_not_nil log.changes_data
     # changes_data is JSON serialized, so use string keys
     assert_equal role.name, log.changes_data["role_name"] || log.changes_data[:role_name]
-    
+
     # Verify redirect happened
     assert_redirected_to admin_users_path
   end
@@ -208,9 +208,8 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     assert_equal "User", log.resource_type
     assert_equal user.id, log.resource_id
     assert_equal @admin, log.user
-    
+
     # Verify redirect happened
     assert_redirected_to admin_users_path
   end
 end
-

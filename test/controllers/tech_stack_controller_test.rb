@@ -50,4 +50,3 @@ class TechStackControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 end
-

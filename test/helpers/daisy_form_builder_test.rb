@@ -12,7 +12,7 @@ class DaisyFormBuilderTest < ActionView::TestCase
     # Create a user without validation errors
     valid_user = User.new(name: "Test", email_address: "test@example.com", password: "password123", password_confirmation: "password123")
     valid_user.valid? # Trigger validations
-    
+
     # form_with returns form HTML, not block result
     # So we test by checking the form doesn't contain error alert when there are no errors
     form_html = form_with(model: valid_user, builder: DaisyFormBuilder) do |f|
@@ -206,4 +206,3 @@ class DaisyFormBuilderTest < ActionView::TestCase
     assert_match(/text-error/, field_html)
   end
 end
-

@@ -170,6 +170,36 @@ end
 3. 创建 `api_tokens` 表存储 Token
 4. 在 API 控制器中使用 `authenticate_user!`
 
+### API 控制器返回 401 时避免 Warden 拦截
+
+**问题**：API 控制器返回 401 状态码时，Warden 中间件会拦截响应并重定向到登录页面，而不是返回 JSON 格式的响应。
+
+**解决方案**：在控制器中添加 `before_action`，调用 `custom_failure!`：
+
+```ruby
+class AuthController < ActionController::API
+  # 告诉 Warden 不要处理认证失败，让控制器自己处理响应
+  before_action -> { request.env["warden"]&.custom_failure! }
+  
+  def create
+    # 返回 JSON 格式的 401 响应，不会被 Warden 拦截
+    render json: { allowed: false }, status: :unauthorized
+  end
+end
+```
+
+**使用场景**：
+- API 控制器需要返回 JSON 格式的 401 响应
+- 不需要用户身份验证的控制器（如 CDN 回源鉴权 API）
+- 需要自定义错误响应格式
+
+**注意事项**：
+- 只有需要自定义错误处理的控制器才需要使用 `custom_failure!`
+- 对于需要用户身份验证的控制器，应该让 Warden 正常处理认证失败
+- 使用安全导航操作符 `&.` 避免 `warden` 为 `nil` 时的错误
+
+**详细说明**：参考 `docs/experiences/warden-custom-failure.md`
+
 ### 实现 OAuth 登录
 1. 安装 omniauth gem
 2. 创建 `lib/warden/strategies/oauth.rb`
@@ -183,6 +213,7 @@ end
 3. **遵循 RESTful 路由**：使用标准的 Rails 路由命名
 4. **添加测试**：所有认证功能都要有对应的测试
 5. **安全第一**：参考 Rails Security Guide 确保实现的安全性
+6. **API 控制器返回 401**：如果 API 控制器需要返回 401 状态码，应该调用 `custom_failure!` 避免被 Warden 拦截（详见上方"API 控制器返回 401 时避免 Warden 拦截"部分）
 
 ## 相关文件索引
 
@@ -193,3 +224,4 @@ end
 - User 模型：`app/models/user.rb`
 - 路由配置：`config/routes.rb`
 - Rails Security Guide：https://guides.rubyonrails.org/security.html#authentication
+- Warden custom_failure! 使用经验：`docs/experiences/warden-custom-failure.md`

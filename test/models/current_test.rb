@@ -59,4 +59,3 @@ class CurrentTest < ActiveSupport::TestCase
     Current.session = nil
   end
 end
-

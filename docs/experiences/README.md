@@ -16,6 +16,13 @@
   - SSL 证书验证问题
   - Importmap HTTPS 连接
 
+### 后端逻辑 / 认证系统
+
+- [Warden custom_failure! 使用经验](./warden-custom-failure.md) (2025-11-29)
+  - API 控制器返回 401 时避免 Warden 拦截
+  - custom_failure! 的使用场景和注意事项
+  - ActionController::API 与 Warden 的配合
+
 ## 📝 如何添加新经验
 
 1. 在 `experiences/` 目录下创建新的 Markdown 文件

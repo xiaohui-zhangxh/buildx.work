@@ -86,4 +86,3 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_match(/name="session\[email_address\]"/, form_html)
   end
 end
-

@@ -24,7 +24,7 @@
 Rails.application.config.to_prepare do
   # Load User model extensions
   if defined?(User) && User < ApplicationRecord
-    user_extensions_file = Rails.root.join('app', 'models', 'concerns', 'user_extensions.rb')
+    user_extensions_file = Rails.root.join("app", "models", "concerns", "user_extensions.rb")
     if File.exist?(user_extensions_file)
       require_dependency user_extensions_file.to_s
       if defined?(UserExtensions)
@@ -37,7 +37,7 @@ Rails.application.config.to_prepare do
 
   # Load ApplicationController extensions
   if defined?(ApplicationController) && ApplicationController < ActionController::Base
-    app_controller_extensions_file = Rails.root.join('app', 'controllers', 'concerns', 'application_controller_extensions.rb')
+    app_controller_extensions_file = Rails.root.join("app", "controllers", "concerns", "application_controller_extensions.rb")
     if File.exist?(app_controller_extensions_file)
       require_dependency app_controller_extensions_file.to_s
       if defined?(ApplicationControllerExtensions)
@@ -50,7 +50,7 @@ Rails.application.config.to_prepare do
 
   # Load ApplicationHelper extensions
   if defined?(ApplicationHelper)
-    app_helper_extensions_file = Rails.root.join('app', 'helpers', 'application_helper_extensions.rb')
+    app_helper_extensions_file = Rails.root.join("app", "helpers", "application_helper_extensions.rb")
     if File.exist?(app_helper_extensions_file)
       require_dependency app_helper_extensions_file.to_s
       if defined?(ApplicationHelperExtensions)
@@ -63,7 +63,7 @@ Rails.application.config.to_prepare do
 
   # Load Mailer extensions (if ActionMailer is available)
   if defined?(ActionMailer) && defined?(ApplicationMailer)
-    mailer_extensions_file = Rails.root.join('app', 'mailers', 'concerns', 'mailer_extensions.rb')
+    mailer_extensions_file = Rails.root.join("app", "mailers", "concerns", "mailer_extensions.rb")
     if File.exist?(mailer_extensions_file)
       require_dependency mailer_extensions_file.to_s
       if defined?(MailerExtensions)
@@ -74,4 +74,3 @@ Rails.application.config.to_prepare do
     end
   end
 end
-

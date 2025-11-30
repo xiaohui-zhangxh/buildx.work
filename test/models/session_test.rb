@@ -218,7 +218,7 @@ class SessionTest < ActiveSupport::TestCase
 
     assert_not_nil result
     assert result.is_a?(String)
-    assert ["Mobile", "Windows", "Mac", "Linux", "Unknown"].include?(result)
+    assert [ "Mobile", "Windows", "Mac", "Linux", "Unknown" ].include?(result)
   end
 
   test "device_info_detailed handles parsing errors with fallback" do

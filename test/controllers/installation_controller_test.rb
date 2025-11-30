@@ -264,7 +264,7 @@ class InstallationControllerTest < ActionDispatch::IntegrationTest
     # Step 3: Try to login again
     # Need to ensure admin is confirmed before login attempt
     admin.update!(confirmed_at: Time.current) unless admin.confirmed?
-    
+
     post session_path, params: {
       email_address: "admin@example.com",
       password: "password123"
