@@ -36,7 +36,7 @@ alwaysApply: true
 
 当前可用的指令：
 
-1. 🚀 **继续完成项目工作** (`continue-project-work.md`)
+1. 🚀 **继续完成项目工作** (`00-continue.md`)
    - **用途**：继续完成指定项目的下一步工作
    - **使用方式**：
      - **Cursor 斜线命令**：`/continue-project-work [项目：项目名]`
@@ -44,15 +44,26 @@ alwaysApply: true
      - **不指定项目**：`/continue-project-work` 或 `继续完成项目工作`（AI 会列出所有项目让你选择）
    - **说明**：通用指令，适用于所有项目
 
-2. 🤖 **自主工作** (`autonomous-work.md`)
+2. 🎯 **智能继续工作** (`01-smart-go.md`)
+   - **用途**：智能继续执行当前任务，自主决定下一步工作
+   - **使用方式**：`/smart-go`
+   - **说明**：直接继续工作，不需要制定计划或等待确认
+
+3. 🤖 **自主工作** (`02-autonomous-work.md`)
    - **用途**：AI 自主完成项目工作
    - **使用方式**：`/autonomous-work`
 
-3. 📝 **日报管理** (`daily-report.md`)
+4. 📝 **日报管理** (`03-daily-report.md`)
    - **用途**：创建、查看、更新日报
    - **使用方式**：`/daily-report`
 
-4. 📚 **其他指令**：
+5. 💼 **商业价值分析** (`70-business-analysis.md`) ⭐
+   - **用途**：创建新项目时自动进行商业价值分析（投资人/用户视角）
+   - **触发场景**：用户提到"创建新项目"、"项目规划"、"商业价值分析"等
+   - **说明**：AI 应该主动分析，不要等待反馈
+   - **指令文件**：`.cursor/commands/70-business-analysis.md`
+
+5. 📚 **其他指令**：
    - 查看 `.cursor/commands/` 目录了解所有可用指令
    - 使用斜线命令执行：`/指令文件名`（不含 .md 扩展名）
 
@@ -77,15 +88,22 @@ alwaysApply: true
    - **Cursor 斜线命令**：`/continue-project-work [项目：项目名]`
    - **直接描述**：`继续完成项目工作，项目：[项目名]`
    - **不指定项目**：`/continue-project-work` 或 `继续完成项目工作`（我会列出所有项目让你选择）
-   - **指令文件**：`.cursor/commands/continue-project-work.md`
+   - **指令文件**：`.cursor/commands/00-continue.md`
 
-2. 🤖 自主工作
+2. 🎯 智能继续工作
+   - **Cursor 斜线命令**：`/smart-go`
+   - **说明**：智能继续执行当前任务，自主决定下一步工作
+   - **指令文件**：`.cursor/commands/01-smart-go.md`
+
+3. 🤖 自主工作
    - **Cursor 斜线命令**：`/autonomous-work`
    - **说明**：AI 自主完成项目工作
+   - **指令文件**：`.cursor/commands/02-autonomous-work.md`
 
-3. 📝 日报管理
+4. 📝 日报管理
    - **Cursor 斜线命令**：`/daily-report`
    - **说明**：创建、查看、更新日报
+   - **指令文件**：`.cursor/commands/03-daily-report.md`
 
 📁 **工作区项目**：
 [根据 workspace.mdc 中的项目列表动态生成，如适用]
@@ -98,9 +116,11 @@ alwaysApply: true
 - ✅ 其他项目相关任务
 
 📖 **查看指令详情**：
-- 🚀 继续完成项目工作：`.cursor/commands/continue-project-work.md`（如果存在）
-- 🤖 自主工作：`.cursor/commands/autonomous-work.md`
-- 📝 日报管理：`.cursor/commands/daily-report.md`
+- 🚀 继续完成项目工作：`.cursor/commands/00-continue.md`（如果存在）
+- 🎯 智能继续工作：`.cursor/commands/01-smart-go.md`
+- 🤖 自主工作：`.cursor/commands/02-autonomous-work.md`
+- 📝 日报管理：`.cursor/commands/03-daily-report.md`
+- 💼 商业价值分析：`.cursor/commands/70-business-analysis.md` ⭐
 
 请告诉我你想做什么，或者使用上面的指令。
 ```
@@ -222,18 +242,6 @@ alwaysApply: true
 3. **优先使用配置**：优先使用 `git config` 获取当前配置的身份信息
 4. **备用方案**：如果 git config 没有配置，可以查看最近的提交历史
 
-### 浏览器调试工具
-
-当需要查看界面效果、验证 UI 实现或调试前端问题时，如果已配置了浏览器控制相关的 MCP 服务，可以考虑使用浏览器工具进行调试。
-
-**可用的工具示例**（具体工具取决于已配置的 MCP 服务）：
-
-- 导航到页面
-- 查看页面快照
-- 截图功能
-- 页面交互（点击、输入等）
-
-**注意**：不同的 MCP 服务可能提供不同的工具和功能，请根据实际配置的 MCP 服务使用相应的工具。如果未配置浏览器控制相关的 MCP 服务，可以使用其他方式（如手动打开浏览器）进行调试。
 
 ---
 

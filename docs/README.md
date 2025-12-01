@@ -10,6 +10,7 @@ docs/
 ├── FEATURES.md                  # 功能清单（所有功能的详细列表）
 ├── DEVELOPMENT_PLAN.md          # 开发计划总览
 ├── DEVELOPER_GUIDE.md           # 开发者指南（技术决策、架构设计）
+├── PROJECT_CREATION_GUIDE.md    # 新项目创建指南 ⭐ 创建新项目时参考
 │
 ├── experiences/                  # 开发经验记录 ⭐
 │   └── highlight.js.md          # Highlight.js 集成问题
@@ -44,12 +45,20 @@ docs/
 
 ### 通用文档
 
+- **PROJECT_CREATION_GUIDE.md** ⭐：新项目创建指南
+  - 项目规划阶段
+  - 项目命名阶段（唯一性检查、域名检查）
+  - 技术选型阶段
+  - 文档创建阶段
+  - 开发计划阶段
+  - 项目初始化阶段
+  - 完整检查清单
+
 - **DEVELOPER_GUIDE.md**：项目整体的技术决策、架构设计和开发规范
   - 认证系统架构
   - Warden 集成方式
   - API 认证策略
   - 开发规范
-
 
 - **experiences/**：开发经验记录目录
   - 记录开发过程中遇到的疑难问题和解决方案
@@ -117,6 +126,7 @@ docs/
 
 - [主 README](../README.md)
 - [当前工作状态](../CURRENT_WORK.md) ⭐ 每日必看
+- [新项目创建指南](./PROJECT_CREATION_GUIDE.md) ⭐ 创建新项目时参考
 - [开发者指南](./DEVELOPER_GUIDE.md)
 - [MCP 开发规则](../.cursor/rules/mcp.mdc) ⭐ MCP 服务开发必读（AI 自动参考）
 - [Cursor 规则](../.cursor/rules/)

@@ -35,6 +35,8 @@
 
 ## 创建新项目
 
+> 💡 **提示**：在创建新项目之前，建议先阅读 [新项目创建指南](PROJECT_CREATION_GUIDE.md)，了解完整的项目创建流程，包括项目规划、命名、技术选型等关键步骤。
+
 ### 方法一：Fork 方式（推荐）
 
 如果你使用 GitHub/GitLab 等 Git 托管服务：
@@ -394,6 +396,7 @@ git revert -m 1 <merge-commit-hash>
 
 ## 相关资源
 
+- [新项目创建指南](PROJECT_CREATION_GUIDE.md) ⭐ - 完整的项目创建流程和检查清单
 - [开发者指南](DEVELOPER_GUIDE.md) - 技术决策和架构设计
 - [贡献指南](CONTRIBUTING.md) - 如何将修复贡献回基础设施
 - [子项目模板](../../../buildx.run/template-project/) - 完整的项目模板和扩展示例

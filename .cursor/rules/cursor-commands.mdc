@@ -131,7 +131,8 @@ touch .cursor/commands/my-command.md
 ### 命名示例
 
 ```
-✅ autonomous-work.md      # 自主工作模式
+✅ 02-autonomous-work.md  # 自主工作模式（带数字前缀）
+✅ autonomous-work.md      # 自主工作模式（无前缀）
 ✅ code-review.md          # 代码审查指令
 ✅ refactoring.md          # 重构指令
 ✅ testing.md              # 测试指令
@@ -140,6 +141,8 @@ touch .cursor/commands/my-command.md
 ❌ autonomous_work.md      # 避免使用下划线
 ❌ my command.md          # 避免使用空格
 ```
+
+**注意**：可以使用数字前缀（如 `00-`、`01-`）来方便快速执行指令，前缀不影响指令的实际功能。
 
 ## 指令文件编写最佳实践
 
@@ -180,7 +183,10 @@ touch .cursor/commands/my-command.md
 
 ### 工作模式指令
 
-- **autonomous-work.md**：自主工作模式指令，定义 AI 在自主工作场景下的工作流程和行为准则
+- **00-continue.md**：继续完成项目工作指令
+- **01-smart-go.md**：智能继续工作指令，直接继续执行当前任务，自主决定下一步工作
+- **02-autonomous-work.md**：自主工作模式指令，定义 AI 在自主工作场景下的工作流程和行为准则
+- **03-daily-report.md**：日报管理指令，用于生成员工日报
 
 ## 注意事项
 

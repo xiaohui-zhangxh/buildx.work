@@ -1,0 +1,416 @@
+---
+description: AI 功能开发规则和最佳实践。使用 RubyLLM 作为统一的 AI 接口库，支持多种 AI 服务提供商。开发 AI 功能、集成 AI 服务时参考此规则。
+alwaysApply: false
+---
+
+# AI 开发规则
+
+## 核心原则
+
+1. **统一使用 RubyLLM**：所有 AI 功能开发必须使用 [RubyLLM](https://rubyllm.com/) 作为基础对接库
+2. **统一接口**：RubyLLM 提供统一的 API，支持多种 AI 服务提供商（OpenAI、Anthropic、Gemini 等）
+3. **简化开发**：避免直接使用各服务商的 SDK，通过 RubyLLM 统一管理
+4. **易于切换**：通过 RubyLLM 可以轻松切换不同的 AI 服务提供商
+
+## 为什么选择 RubyLLM？
+
+### 优势
+
+1. **统一 API**：一个接口支持所有主流 AI 服务（OpenAI、Anthropic、Gemini、Ollama 等）
+2. **简洁依赖**：只有 3 个依赖（Faraday、Zeitwerk、Marcel）
+3. **功能完整**：支持聊天、图片生成、语音转录、文档分析、嵌入、内容审核等
+4. **Rails 集成**：提供 Rails 生成器和 ActiveRecord 集成
+5. **易于使用**：简洁的 API 设计，学习成本低
+
+### 支持的提供商
+
+- OpenAI
+- Anthropic (Claude)
+- Google Gemini
+- VertexAI
+- AWS Bedrock
+- Mistral
+- DeepSeek
+- Ollama（本地模型）
+- OpenRouter
+- Perplexity
+- GPUStack
+- 以及任何 OpenAI 兼容的 API
+
+## 安装和配置
+
+### 1. 添加 Gem
+
+```ruby
+# Gemfile
+gem 'ruby_llm'
+```
+
+然后运行：
+
+```bash
+bundle install
+```
+
+### 2. 配置 API 密钥
+
+```ruby
+# config/initializers/ruby_llm.rb
+RubyLLM.configure do |config|
+  # OpenAI
+  config.openai_api_key = ENV['OPENAI_API_KEY']
+  
+  # Anthropic (Claude)
+  config.anthropic_api_key = ENV['ANTHROPIC_API_KEY']
+  
+  # Google Gemini
+  config.gemini_api_key = ENV['GEMINI_API_KEY']
+  
+  # 默认模型（可选）
+  config.default_model = 'gpt-4'
+end
+```
+
+### 3. Rails 集成（可选）
+
+如果需要使用 Rails 集成功能：
+
+```bash
+# 安装 Rails 集成
+rails generate ruby_llm:install
+
+# 安装 Chat UI（可选）
+rails generate ruby_llm:chat_ui
+```
+
+## 使用示例
+
+### 基础聊天
+
+```ruby
+# 创建聊天实例
+chat = RubyLLM.chat
+
+# 简单提问
+response = chat.ask "What's the best way to learn Ruby?"
+puts response.content
+```
+
+### 多文件分析
+
+```ruby
+# 分析图片
+chat.ask "What's in this image?", with: "ruby_conf.jpg"
+
+# 分析视频
+chat.ask "What's happening in this video?", with: "video.mp4"
+
+# 分析音频
+chat.ask "Describe this meeting", with: "meeting.wav"
+
+# 分析文档
+chat.ask "Summarize this document", with: "contract.pdf"
+
+# 分析代码
+chat.ask "Explain this code", with: "app.rb"
+
+# 多个文件
+chat.ask "Analyze these files", with: ["diagram.png", "report.pdf", "notes.txt"]
+```
+
+### 流式响应
+
+```ruby
+chat.ask "Tell me a story about Ruby" do |chunk|
+  print chunk.content
+end
+```
+
+### 图片生成
+
+```ruby
+# 生成图片
+image_url = RubyLLM.paint "a sunset over mountains in watercolor style"
+```
+
+### 语音转录
+
+```ruby
+# 转录音频为文本
+text = RubyLLM.transcribe "meeting.wav"
+```
+
+### 嵌入向量
+
+```ruby
+# 生成嵌入向量
+embedding = RubyLLM.embed "Ruby is elegant and expressive"
+```
+
+### 内容审核
+
+```ruby
+# 内容安全审核
+result = RubyLLM.moderate "Check if this text is safe"
+```
+
+### 工具调用（Tools）
+
+```ruby
+# 定义工具
+class Weather < RubyLLM::Tool
+  description "Get current weather"
+  param :latitude
+  param :longitude
+
+  def execute(latitude:, longitude:)
+    url = "https://api.open-meteo.com/v1/forecast?latitude=#{latitude}&longitude=#{longitude}&current=temperature_2m,wind_speed_10m"
+    JSON.parse(Faraday.get(url).body)
+  end
+end
+
+# 使用工具
+chat.with_tool(Weather).ask "What's the weather in Berlin?"
+```
+
+### 结构化输出（Schema）
+
+```ruby
+# 定义 Schema
+class ProductSchema < RubyLLM::Schema
+  string :name
+  number :price
+  array :features do
+    string
+  end
+end
+
+# 获取结构化输出
+response = chat.with_schema(ProductSchema).ask "Analyze this product", with: "product.txt"
+```
+
+## 开发规范
+
+### 1. Service 封装
+
+创建统一的 AI Service 封装，而不是在 Controller 中直接调用 RubyLLM：
+
+```ruby
+# app/services/ai_service.rb
+class AiService
+  class << self
+    def optimize_text(text, style = 'default')
+      chat = RubyLLM.chat
+      
+      prompt = build_optimize_prompt(text, style)
+      response = chat.ask prompt
+      
+      response.content
+    end
+
+    def generate_image(prompt, size = '1024x1024')
+      RubyLLM.paint prompt
+    end
+
+    def analyze_file(file_path, question)
+      chat = RubyLLM.chat
+      response = chat.ask question, with: file_path
+      response.content
+    end
+
+    private
+
+    def build_optimize_prompt(text, style)
+      style_prompts = {
+        'default' => '优化以下文案，使其更加流畅、优美：',
+        'concise' => '优化以下文案，使其更加简洁、精炼：',
+        'professional' => '优化以下文案，使其更加专业、正式：',
+        'poetic' => '优化以下文案，使其更加优美、富有诗意：'
+      }
+      
+      "#{style_prompts[style] || style_prompts['default']}\n\n#{text}"
+    end
+  end
+end
+```
+
+### 2. 异步处理
+
+AI 操作应该使用异步任务处理：
+
+```ruby
+# app/jobs/card_optimize_job.rb
+class CardOptimizeJob < ApplicationJob
+  queue_as :default
+
+  def perform(card_id, style = 'default')
+    card = Card.find(card_id)
+    
+    begin
+      optimized_text = AiService.optimize_text(card.original_content, style)
+      card.update(optimized_content: optimized_text)
+    rescue => e
+      Rails.logger.error "AI optimization failed: #{e.message}"
+      # 处理错误
+    end
+  end
+end
+```
+
+### 3. 错误处理
+
+```ruby
+# app/services/ai_service.rb
+class AiService
+  class Error < StandardError; end
+  class ApiError < Error; end
+  class RateLimitError < Error; end
+  class QuotaExceededError < Error; end
+
+  def self.optimize_text(text, style = 'default')
+    chat = RubyLLM.chat
+    response = chat.ask build_optimize_prompt(text, style)
+    response.content
+  rescue => e
+    handle_error(e)
+  end
+
+  private
+
+  def self.handle_error(error)
+    case error.message
+    when /rate limit/i
+      raise RateLimitError, 'API 调用频率过高，请稍后重试'
+    when /quota/i
+      raise QuotaExceededError, 'API 额度已用完'
+    else
+      raise ApiError, "API 调用失败: #{error.message}"
+    end
+  end
+end
+```
+
+### 4. 模型选择
+
+通过 RubyLLM 可以轻松切换不同的模型：
+
+```ruby
+# 使用特定模型
+chat = RubyLLM.chat(model: 'claude-sonnet-4')
+chat = RubyLLM.chat(model: 'gpt-4')
+chat = RubyLLM.chat(model: 'gemini-pro')
+```
+
+### 5. 成本控制
+
+记录每次 AI 调用，控制成本：
+
+```ruby
+# app/models/ai_usage.rb
+class AiUsage < ApplicationRecord
+  belongs_to :user
+  
+  enum usage_type: { text_optimization: 0, image_generation: 1, chat: 2 }
+  
+  def self.record_usage(user, type, cost = 0)
+    create(
+      user: user,
+      usage_type: type,
+      cost: cost,
+      used_at: Time.current
+    )
+  end
+  
+  def self.has_free_quota?(user, type)
+    today_usage = where(user: user, usage_type: type)
+                  .where('used_at >= ?', Time.current.beginning_of_day)
+                  .count
+    
+    free_quota = user.free_ai_quota || 10
+    today_usage < free_quota
+  end
+end
+```
+
+## 最佳实践
+
+### 1. 统一配置
+
+所有 AI 相关配置集中在 `config/initializers/ruby_llm.rb`：
+
+```ruby
+RubyLLM.configure do |config|
+  config.openai_api_key = ENV['OPENAI_API_KEY']
+  config.anthropic_api_key = ENV['ANTHROPIC_API_KEY']
+  config.default_model = ENV.fetch('DEFAULT_AI_MODEL', 'gpt-4')
+end
+```
+
+### 2. 环境变量
+
+使用环境变量管理 API 密钥：
+
+```bash
+# .env
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GEMINI_API_KEY=...
+DEFAULT_AI_MODEL=gpt-4
+```
+
+### 3. 测试
+
+编写 AI 功能的测试时，可以使用 VCR 或 WebMock 模拟 API 响应：
+
+```ruby
+# test/services/ai_service_test.rb
+require 'test_helper'
+
+class AiServiceTest < ActiveSupport::TestCase
+  test "optimize_text returns optimized content" do
+    VCR.use_cassette('ai_optimize_text') do
+      result = AiService.optimize_text("原始文本", "default")
+      assert_not_nil result
+      assert_kind_of String, result
+    end
+  end
+end
+```
+
+### 4. 日志记录
+
+记录所有 AI 调用，便于调试和成本分析：
+
+```ruby
+# app/services/ai_service.rb
+def self.optimize_text(text, style = 'default')
+  Rails.logger.info "AI Service: Optimizing text with style #{style}"
+  
+  start_time = Time.current
+  result = RubyLLM.chat.ask(build_optimize_prompt(text, style)).content
+  duration = Time.current - start_time
+  
+  Rails.logger.info "AI Service: Optimization completed in #{duration}s"
+  result
+end
+```
+
+## 相关资源
+
+- **RubyLLM 官网**：https://rubyllm.com/
+- **RubyLLM GitHub**：https://github.com/crmne/ruby_llm
+- **RubyLLM 文档**：https://rubyllm.com/docs
+- **RubyLLM Changelog**：https://rubyllm.com/changelog
+
+## 注意事项
+
+1. **API 密钥安全**：永远不要将 API 密钥提交到代码仓库，使用环境变量或 Rails credentials
+2. **成本控制**：监控 AI 调用次数和成本，设置合理的免费额度
+3. **错误处理**：所有 AI 调用都应该有完善的错误处理机制
+4. **异步处理**：AI 操作应该使用异步任务，避免阻塞请求
+5. **测试覆盖**：编写测试时使用 VCR 或 WebMock 模拟 API 响应
+
+---
+
+**创建时间**：2025-11-30  
+**最后更新**：2025-11-30
