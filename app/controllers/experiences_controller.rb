@@ -15,6 +15,12 @@ class ExperiencesController < ApplicationController
     # before_action 已经处理了 format，将文件扩展名合并到 id 中
     # 例如：/experiences/highlight.js -> params[:id] = "highlight.js" (已处理)
     experience_id = params[:id]
+    
+    # 安全验证：确保 experience_id 不包含路径分隔符
+    # 允许字母、数字、点号、连字符、下划线（用于文件名如 highlight.js）
+    unless experience_id.match?(/\A[a-zA-Z0-9.\-_]+\z/)
+      raise ActiveRecord::RecordNotFound, "经验记录不存在: #{params[:id]}"
+    end
 
     @experience = load_experience(experience_id)
 
@@ -22,7 +28,9 @@ class ExperiencesController < ApplicationController
       raise ActiveRecord::RecordNotFound, "经验记录不存在: #{params[:id]}"
     end
 
-    experience_file = EXPERIENCES_DIR.join("#{experience_id}.md")
+    # 使用 File.basename 防止路径遍历攻击
+    safe_filename = File.basename("#{experience_id}.md")
+    experience_file = EXPERIENCES_DIR.join(safe_filename)
 
     unless File.exist?(experience_file)
       raise ActiveRecord::RecordNotFound, "经验文件不存在: #{experience_file}"
@@ -69,7 +77,14 @@ class ExperiencesController < ApplicationController
   end
 
   def load_experience(id)
-    file_path = EXPERIENCES_DIR.join("#{id}.md")
+    # 安全验证：确保 id 不包含路径分隔符
+    unless id.match?(/\A[a-zA-Z0-9.\-_]+\z/)
+      return nil
+    end
+    
+    # 使用 File.basename 防止路径遍历攻击
+    safe_filename = File.basename("#{id}.md")
+    file_path = EXPERIENCES_DIR.join(safe_filename)
     return nil unless File.exist?(file_path)
 
     content = File.read(file_path)

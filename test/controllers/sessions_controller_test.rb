@@ -29,6 +29,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create with valid credentials" do
+    # Ensure user is confirmed
+    @user.update!(confirmed_at: Time.current) unless @user.confirmed?
     post session_path, params: { email_address: @user.email_address, password: "password123" }
 
     assert_redirected_to root_path
@@ -36,6 +38,25 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     # Check that a session was created for the user
     user = User.find_by(email_address: @user.email_address)
     assert user.sessions.active.any?, "Session should be created after login"
+  end
+
+  test "create with unconfirmed user redirects with error" do
+    # Create unconfirmed user
+    unconfirmed_user = User.create!(
+      email_address: "unconfirmed@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Unconfirmed User"
+    )
+    assert_not unconfirmed_user.confirmed?, "User should not be confirmed"
+
+    post session_path, params: { email_address: unconfirmed_user.email_address, password: "password123" }
+
+    assert_redirected_to new_session_path
+    assert_equal "请先确认您的邮箱地址。我们已向您的邮箱发送了确认链接。", flash[:alert]
+    assert_nil Current.user, "User should not be authenticated"
+    # Verify no session was created
+    assert_equal 0, unconfirmed_user.sessions.active.count, "No session should be created for unconfirmed user"
   end
 
   test "create with invalid credentials" do

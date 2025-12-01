@@ -94,6 +94,9 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   end
 
   test "remember_me! sets remember_token cookie" do
+    # Ensure user is confirmed
+    @user.update!(confirmed_at: Time.current)
+
     # remember_me! is called in SessionsController#create when remember_me is checked
     # We can test it indirectly by checking the session has remember_token after login with remember_me
     post session_path, params: {
@@ -125,6 +128,9 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   end
 
   test "request_authentication stores return_to and redirects to login" do
+    # Ensure user is confirmed
+    @user.update!(confirmed_at: Time.current)
+
     # Try to access protected page
     get users_path
     assert_redirected_to new_session_path
@@ -134,12 +140,17 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     # After login, should redirect back to users_path (stored in session)
+    # Note: request.url returns full URL (http://www.example.com/users),
+    # but after_authentication_url returns root_url if no return_to is stored
+    # or the stored URL. Let's check the session directly.
+    assert_equal "http://www.example.com/users", session[:return_to_after_authenticating]
+
     post session_path, params: {
       email_address: @user.email_address,
       password: "password123"
     }
-    # Should redirect to the original URL (users_path)
-    assert_redirected_to users_path
+    # Should redirect to the original URL (users_path, stored as full URL)
+    assert_redirected_to "http://www.example.com/users"
   end
 
   test "after_authentication_url returns stored return_to URL" do

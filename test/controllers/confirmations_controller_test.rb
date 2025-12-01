@@ -62,6 +62,25 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "确认链接无效或已过期。", flash[:alert]
   end
 
+  test "show with already confirmed user and valid token redirects with notice" do
+    # Test lines 13-14: User is already confirmed but token is still valid
+    # This can happen if user was confirmed through another method (e.g., admin)
+    token = @user.confirmation_token
+
+    # Confirm user but keep the token (simulate admin confirming user)
+    @user.update_columns(confirmed_at: Time.current)
+    @user.update_column(:confirmation_token, token) # Keep the token
+
+    assert @user.confirmed?
+    assert_equal token, @user.reload.confirmation_token
+
+    # Try to use the token - should redirect with notice that already confirmed
+    get confirmation_path(token)
+
+    assert_redirected_to new_session_path
+    assert_equal "您的邮箱已经确认过了。", flash[:notice]
+  end
+
   test "show with expired token redirects with error" do
     # Set confirmation_sent_at to 25 hours ago (expired, default is 24 hours)
     @user.update_column(:confirmation_sent_at, 25.hours.ago)
@@ -86,8 +105,17 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
 
     session = @user.sessions.active.order(created_at: :desc).first
     assert_not_nil session, "Session should exist"
-    assert_equal request.user_agent, session.user_agent
-    assert_equal request.remote_ip, session.ip_address
+    # Check user_agent and ip_address if they are not nil
+    if request.user_agent.nil?
+      assert_nil session.user_agent
+    else
+      assert_equal request.user_agent, session.user_agent
+    end
+    if request.remote_ip.nil?
+      assert_nil session.ip_address
+    else
+      assert_equal request.remote_ip, session.ip_address
+    end
   end
 
   test "show authenticates user via warden after confirmation" do
@@ -99,5 +127,38 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     # Verify session was created (warden.set_user was called in controller)
     @user.reload
     assert @user.sessions.active.any?, "Session should be created and user authenticated"
+  end
+
+  test "show handles confirm! failure gracefully" do
+    # Test line 32: confirm! returns false (simulate database error)
+    token = @user.confirmation_token
+
+    # Stub the user instance's confirm! method to return false
+    # We need to stub it on the instance that will be loaded from the database
+    # Since User.find_by will load a fresh instance, we stub the class method
+    original_confirm = User.instance_method(:confirm!)
+
+    # Define a new method that returns false
+    User.define_method(:confirm!) do
+      false
+    end
+
+    begin
+      get confirmation_path(token)
+
+      # Should redirect with error message
+      assert_redirected_to new_session_path
+      assert_equal "确认失败，请重试。", flash[:alert]
+    ensure
+      # Restore original method
+      User.define_method(:confirm!, original_confirm)
+    end
+  end
+
+  test "show handles blank token parameter" do
+    # This is hard to test because route requires token parameter
+    # But we can test the controller logic by checking the redirect
+    # Actually, blank token is handled by route constraints, so this test may not be needed
+    skip "Blank token is handled by route constraints"
   end
 end

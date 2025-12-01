@@ -24,10 +24,10 @@ module Admin
 
       # Filter by date range
       if params[:start_date].present?
-        @audit_logs = @audit_logs.where("created_at >= ?", params[:start_date])
+        @audit_logs = @audit_logs.where("audit_logs.created_at >= ?", params[:start_date])
       end
       if params[:end_date].present?
-        @audit_logs = @audit_logs.where("created_at <= ?", params[:end_date])
+        @audit_logs = @audit_logs.where("audit_logs.created_at <= ?", params[:end_date])
       end
 
       respond_to do |format|

@@ -5,9 +5,9 @@ module Admin
     setup do
       @admin_user = users(:one)
       @admin_user.add_role(:admin)
-      @admin_user.update(confirmed_at: Time.current)
+      @admin_user.update!(password: "password123", password_confirmation: "password123", confirmed_at: Time.current)
       @regular_user = users(:two)
-      @regular_user.update(confirmed_at: Time.current)
+      @regular_user.update!(password: "password123", password_confirmation: "password123", confirmed_at: Time.current)
     end
 
     test "requires authentication" do

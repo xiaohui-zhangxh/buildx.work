@@ -101,5 +101,49 @@ module Admin
       assert_equal "text/csv", response.content_type
       assert_match(/时间.*用户.*操作.*资源类型/, response.body)
     end
+
+    test "should handle show with non-existent audit log" do
+      sign_in_as(@admin)
+      get admin_audit_log_url(999999)
+      assert_response :not_found
+    end
+
+    test "should filter audit logs by start_date only" do
+      sign_in_as(@admin)
+      get admin_audit_logs_url, params: {
+        start_date: 1.week.ago.to_date.to_s
+      }
+      assert_response :success
+    end
+
+    test "should filter audit logs by end_date only" do
+      sign_in_as(@admin)
+      get admin_audit_logs_url, params: {
+        end_date: Time.current.to_date.to_s
+      }
+      assert_response :success
+    end
+
+    test "should combine multiple filters" do
+      sign_in_as(@admin)
+      get admin_audit_logs_url, params: {
+        search: @admin.email_address,
+        action_filter: "create",
+        resource_type: "User",
+        start_date: 1.week.ago.to_date.to_s,
+        end_date: Time.current.to_date.to_s
+      }
+      assert_response :success
+    end
+
+    test "should export CSV with filtered results" do
+      sign_in_as(@admin)
+      get admin_audit_logs_url(format: :csv), params: {
+        action_filter: "create"
+      }
+      assert_response :success
+      assert_equal "text/csv", response.content_type
+      assert_match(/create/, response.body)
+    end
   end
 end

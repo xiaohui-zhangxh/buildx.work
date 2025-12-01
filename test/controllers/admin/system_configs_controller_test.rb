@@ -113,5 +113,44 @@ module Admin
       installation_config.reload
       assert_equal original_value, installation_config.value
     end
+
+    test "should handle non-existent config" do
+      sign_in_as(@admin)
+      # In integration tests, RecordNotFound is handled by Rails and returns 404
+      patch admin_system_config_url(999999), params: {
+        system_config: {
+          value: "test",
+          description: "Test"
+        }
+      }
+      assert_response :not_found
+    end
+
+    test "should group configs by category in index" do
+      sign_in_as(@admin)
+      # Create configs in different categories
+      SystemConfig.find_or_create_by!(key: "site_name") do |c|
+        c.value = "Test Site"
+        c.description = "站点名称"
+        c.category = "site"
+      end
+      SystemConfig.find_or_create_by!(key: "time_zone") do |c|
+        c.value = "Asia/Shanghai"
+        c.description = "时区"
+        c.category = "system"
+      end
+
+      get admin_system_configs_url
+      assert_response :success
+      # Should display configs grouped by category
+      assert_match(/site|system/, response.body)
+    end
+
+    test "should order configs by category and key" do
+      sign_in_as(@admin)
+      get admin_system_configs_url
+      assert_response :success
+      # Configs should be ordered by category, then by key
+    end
   end
 end

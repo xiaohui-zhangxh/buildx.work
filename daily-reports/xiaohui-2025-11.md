@@ -138,7 +138,7 @@
 - **Cursor 规则和指令**：
   - 创建认证系统开发规则（`.cursor/rules/authentication.mdc`，188 行）
   - 创建基础规则（`.cursor/rules/base.mdc`，208 行）
-  - 创建自主工作指令（`.cursor/commands/autonomous-work.md`，176 行）
+  - 创建自主工作指令（`.cursor/commands/02-autonomous-work.md`，176 行）
 - **项目状态文件**：
   - 创建 `CURRENT_WORK.md`（当前工作状态跟踪）
 

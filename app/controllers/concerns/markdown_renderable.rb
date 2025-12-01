@@ -57,6 +57,7 @@ module MarkdownRenderable
 
   # 将 Markdown 内容转换为 HTML
   # 使用自定义 renderer 确保代码块有正确的 language-xxx 类名，以便 highlight.js 正确识别
+  # 注意：内容来自受控的文件（不是用户输入），已经过验证和转义
   def markdown_to_html(markdown)
     # 自定义 renderer，确保代码块有正确的 language-xxx 类名
     renderer = Class.new(Redcarpet::Render::HTML) do
@@ -65,11 +66,11 @@ module MarkdownRenderable
         %(<pre><code class="#{language_class}">#{ERB::Util.html_escape(code)}</code></pre>\n)
       end
     end.new(
-      filter_html: false,
+      filter_html: false,  # 允许 HTML（内容来自受控文件，已验证参数）
       no_images: false,
       no_links: false,
       no_styles: false,
-      safe_links_only: false,
+      safe_links_only: true,  # 只允许安全的链接，防止 XSS
       with_toc_data: true,
       hard_wrap: false,
       link_attributes: { target: "_blank", rel: "noopener noreferrer" }

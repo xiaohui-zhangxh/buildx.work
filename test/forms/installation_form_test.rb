@@ -308,4 +308,122 @@ class InstallationFormTest < ActiveSupport::TestCase
     # site_description should not be set if blank
     assert_nil SystemConfig.get("site_description")
   end
+
+  test "should convert Rails timezone to IANA timezone" do
+    form = InstallationForm.new(
+      site_name: "Test Site",
+      time_zone: "Beijing",
+      locale: "zh-CN",
+      admin_email: "admin@example.com",
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    assert form.save
+
+    SystemConfig::Current.values.clear
+    # Should convert "Beijing" to "Asia/Shanghai"
+    time_zone = SystemConfig.get("time_zone")
+    assert time_zone.present?
+    # The timezone should be in IANA format
+    assert_match(/Asia\/Shanghai|UTC/, time_zone)
+  end
+
+  test "should handle invalid Rails timezone" do
+    form = InstallationForm.new(
+      site_name: "Test Site",
+      time_zone: "InvalidTimezone",
+      locale: "zh-CN",
+      admin_email: "admin@example.com",
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    assert form.save
+
+    SystemConfig::Current.values.clear
+    # Should use the original timezone if conversion fails
+    time_zone = SystemConfig.get("time_zone")
+    assert_equal "InvalidTimezone", time_zone
+  end
+
+  test "should handle blank timezone" do
+    form = InstallationForm.new(
+      site_name: "Test Site",
+      time_zone: "",
+      locale: "zh-CN",
+      admin_email: "admin@example.com",
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    # Should fail validation
+    assert_not form.valid?
+  end
+
+  test "should create admin role if it does not exist" do
+    # Ensure admin role does not exist
+    Role.where(name: "admin").destroy_all
+
+    form = InstallationForm.new(
+      site_name: "Test Site",
+      time_zone: "Asia/Shanghai",
+      locale: "zh-CN",
+      admin_email: "admin@example.com",
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    assert_difference "Role.count", 1 do
+      assert form.save
+    end
+
+    admin_role = Role.find_by(name: "admin")
+    assert admin_role.present?
+    assert_equal "系统管理员，拥有所有权限", admin_role.description
+  end
+
+  test "should not create duplicate admin role" do
+    # Create admin role first (using find_or_create_by to avoid uniqueness validation error)
+    admin_role = Role.find_or_create_by!(name: "admin") do |role|
+      role.description = "Existing admin"
+    end
+
+    form = InstallationForm.new(
+      site_name: "Test Site",
+      time_zone: "Asia/Shanghai",
+      locale: "zh-CN",
+      admin_email: "admin@example.com",
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    initial_count = Role.count
+    assert form.save
+
+    # Should still have only one admin role (no new role created)
+    assert_equal initial_count, Role.count
+    assert_equal 1, Role.where(name: "admin").count
+  end
+
+  test "should handle save failure gracefully" do
+    # Create a form that will fail validation
+    form = InstallationForm.new(
+      site_name: "",
+      time_zone: "Asia/Shanghai",
+      locale: "zh-CN",
+      admin_email: "admin@example.com",
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    assert_not form.valid?
+    assert_not form.save
+  end
 end

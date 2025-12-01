@@ -261,9 +261,14 @@ class InstallationControllerTest < ActionDispatch::IntegrationTest
     delete session_path
     assert_redirected_to new_session_path
 
+    # Clear Current.session to ensure clean state
+    Current.session = nil
+
     # Step 3: Try to login again
-    # Need to ensure admin is confirmed before login attempt
-    admin.update!(confirmed_at: Time.current) unless admin.confirmed?
+    # Reload admin to ensure we have fresh data
+    admin.reload
+    # Ensure admin is confirmed (should already be confirmed from installation)
+    assert admin.confirmed?, "Admin should be confirmed after installation"
 
     post session_path, params: {
       email_address: "admin@example.com",

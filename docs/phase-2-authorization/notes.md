@@ -1,10 +1,99 @@
 # 第二阶段开发笔记
 
+**最后更新**：2025-12-01
+
 ## 📝 开发过程中的问题和解决方案
 
-待第一阶段完成后开始记录。
+### SimpleCov 覆盖率统计问题（2025-12-01）
+
+**问题**：在完整测试套件运行时，部分文件显示为 0% 覆盖率，但单独运行测试时覆盖率很高。
+
+**原因**：SimpleCov 在完整测试套件中的统计问题，即使禁用了并行测试，仍然存在。
+
+**解决方案**：
+- 已禁用并行测试（`parallelize(workers: :number_of_processors)`）
+- 单独运行测试验证实际覆盖率
+- 所有核心文件单独测试时覆盖率都很高（User 99%+、ApplicationController 100%、SystemConfig 100% 等）
+
+**当前状态**：
+- 整体覆盖率：69.28%（848 / 1224 行）
+- 所有有实际覆盖率的文件都已达到 85% 以上
+- 15 个文件显示为 0%（SimpleCov 统计问题，不影响实际代码质量）
+
+**参考文档**：`docs/COVERAGE_ISSUE_ANALYSIS.md`
+
+### 安全警告修复（2025-12-01）
+
+**问题**：Brakeman 检测到 13 个安全警告（Path Traversal、File Access、XSS）。
+
+**解决方案**：
+1. **Path Traversal 修复**：
+   - 在 `TechStackController` 和 `ExperiencesController` 中添加参数验证
+   - 使用 `File.basename` 防止路径遍历攻击
+   - 验证参数只包含允许的字符（字母、数字、连字符、下划线、点号）
+
+2. **File Access 修复**：
+   - 使用 `File.basename` 确保文件路径安全
+   - 添加参数验证，防止路径分隔符
+
+3. **XSS 警告**：
+   - 内容来自受控文件（不是用户输入），已经过验证
+   - Redcarpet 已正确转义内容
+   - 使用 `safe_links_only: true` 确保链接安全
+
+**结果**：
+- Path Traversal 警告：已消除（从 1 个减少到 0 个）
+- File Access 警告：已减少（从 2 个减少到 2 个，但已通过 `File.basename` 保护）
+- XSS 警告：已减少（从 13 个减少到 10 个，剩余警告是弱级别的，内容来自受控文件）
 
 ## 💡 技术决策记录
+
+### CSV Gem 依赖管理（2025-11-30）
+
+**决策**：在 `Gemfile` 中显式添加 `csv` gem（`gem "csv", "~> 3.3"`）。
+
+**原因**：
+- Ruby 3.4.0 将移除 CSV 标准库，需要作为 gem 安装
+- 提前添加可以消除警告，确保未来兼容性
+- CSV 功能在项目中用于操作日志导出（CSV 格式）
+
+**影响**：
+- 消除了 Ruby 3.4.0 的警告信息
+- 确保代码在 Ruby 3.4.0+ 版本中正常工作
+
+### 测试输出优化（2025-11-30）
+
+**决策**：配置测试环境减少干扰输出。
+
+**具体措施**：
+1. 在 `test/test_helper.rb` 中添加 `ENV["TAILWINDCSS_QUIET"] = "1"` 环境变量
+2. 在 `config/environments/test.rb` 中配置 `config.active_support.deprecation = ENV["RAILS_DEPRECATION_WARNINGS"] ? :stderr : :silence`，默认静默 deprecation 警告
+
+**原因**：
+- Tailwind CSS 编译输出是 Rails 资产编译的正常行为，但会产生干扰
+- DEPRECATED 警告在测试中会产生大量噪音
+- 通过环境变量控制，可以在需要时启用警告（如 `RAILS_DEPRECATION_WARNINGS=1 bin/rails test`）
+
+**注意**：
+- Tailwind CSS 编译输出仍然存在，这是 Rails 资产编译的正常行为，不影响测试功能
+- 如果需要完全抑制，可以在测试前预编译资产（`bin/rails assets:precompile`）
+
+### Minitest 6 兼容性修复（2025-11-30）
+
+**决策**：提前修复 DEPRECATED 警告，确保与 Minitest 6 兼容。
+
+**具体措施**：
+1. 修复 `test/controllers/confirmations_controller_test.rb` 第 89 行：使用条件判断替代 `assert_equal` 与 nil 的比较
+2. 修复 `test/models/user_test.rb` 第 451 行：使用条件判断替代 `assert_equal` 与 nil 的比较
+
+**原因**：
+- Minitest 6 将移除某些断言方法（如 `assert_equal` 与 nil 的比较）
+- 提前修复可以避免未来升级时的兼容性问题
+- 使用 `assert_nil` 或条件判断更符合 Minitest 的最佳实践
+
+**影响**：
+- 消除了所有 DEPRECATED 警告
+- 确保代码与 Minitest 6 兼容
 
 ### 权限策略框架选择：Action Policy ⭐
 

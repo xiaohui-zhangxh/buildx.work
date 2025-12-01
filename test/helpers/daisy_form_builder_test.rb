@@ -205,4 +205,184 @@ class DaisyFormBuilderTest < ActionView::TestCase
     assert_match(/can&#39;t be blank|can't be blank/, field_html)
     assert_match(/text-error/, field_html)
   end
+
+  test "number_field renders with default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.number_field(:age)
+    end
+    assert_match(/input.*input-bordered/, @field_html)
+    assert_match(/type="number"/, @field_html)
+  end
+
+  test "number_field renders with label when label_text is provided" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.number_field(:age, label_text: "年龄")
+    end
+    assert_match(/<label/, @field_html)
+    assert_match(/年龄/, @field_html)
+  end
+
+  test "text_area renders with default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.text_area(:bio)
+    end
+    assert_match(/textarea.*textarea-bordered/, @field_html)
+  end
+
+  test "text_area renders with label when label_text is provided" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.text_area(:bio, label_text: "简介")
+    end
+    assert_match(/<label/, @field_html)
+    assert_match(/简介/, @field_html)
+  end
+
+  test "text_area uses default rows" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.text_area(:bio)
+    end
+    assert_match(/rows="3"/, @field_html)
+  end
+
+  test "text_area uses custom rows" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.text_area(:bio, rows: 5)
+    end
+    assert_match(/rows="5"/, @field_html)
+  end
+
+  test "select renders with default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.select(:role, [["Admin", "admin"], ["User", "user"]])
+    end
+    assert_match(/select.*select-bordered/, @field_html)
+  end
+
+  test "select renders with label when label_text is provided" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.select(:role, [["Admin", "admin"], ["User", "user"]], {}, label_text: "角色")
+    end
+    assert_match(/<label/, @field_html)
+    assert_match(/角色/, @field_html)
+  end
+
+  test "collection_radio_buttons renders radio buttons" do
+    roles = [Role.new(name: "admin", id: 1), Role.new(name: "user", id: 2)]
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.collection_radio_buttons(:role_id, roles, :id, :name)
+    end
+    # HTML is escaped in test output, so check for escaped version
+    assert_match(/type=&quot;radio&quot;|type="radio"/, @field_html)
+    assert_match(/admin/, @field_html)
+    assert_match(/user/, @field_html)
+  end
+
+  test "submit with custom class" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @button_html = f.submit("Save", class: "custom-btn")
+    end
+    assert_match(/custom-btn/, @button_html)
+    assert_match(/btn.*btn-primary/, @button_html)
+  end
+
+  test "actions renders submit and cancel buttons" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @actions_html = f.actions(cancel_url: "/users")
+    end
+    assert_match(/type="submit"/, @actions_html)
+    assert_match(/保存/, @actions_html)
+    assert_match(/取消/, @actions_html)
+    assert_match(/\/users/, @actions_html)
+  end
+
+  test "actions renders only submit when no cancel_url" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @actions_html = f.actions
+    end
+    assert_match(/type="submit"/, @actions_html)
+    assert_no_match(/取消/, @actions_html)
+  end
+
+  test "actions uses custom submit and cancel text" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @actions_html = f.actions(submit_text: "Submit", cancel_text: "Cancel", cancel_url: "/users")
+    end
+    assert_match(/Submit/, @actions_html)
+    assert_match(/Cancel/, @actions_html)
+  end
+
+  test "card_actions renders submit and cancel buttons" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @actions_html = f.card_actions(cancel_url: "/users")
+    end
+    assert_match(/card-actions/, @actions_html)
+    assert_match(/type="submit"/, @actions_html)
+    assert_match(/保存/, @actions_html)
+    assert_match(/取消/, @actions_html)
+  end
+
+  test "card_actions renders only submit when no cancel_url" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @actions_html = f.card_actions
+    end
+    # HTML is escaped in test output, so check for escaped version
+    assert_match(/type=&quot;submit&quot;|type="submit"/, @actions_html)
+    assert_no_match(/取消/, @actions_html)
+  end
+
+  test "field_wrapper with label_text false does not render label" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.check_box(:remember_me, label_text: "Remember me")
+    end
+    # check_box with label_text should render label, but wrapper should have label_text: false
+    assert_match(/checkbox/, @field_html)
+  end
+
+  test "text_field with no_default_classes skips default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.text_field(:name, no_default_classes: true, class: "custom-class")
+    end
+    assert_no_match(/input-bordered/, @field_html)
+    assert_match(/custom-class/, @field_html)
+  end
+
+  test "email_field with no_default_classes skips default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.email_field(:email_address, no_default_classes: true, class: "custom-class")
+    end
+    assert_no_match(/input-bordered/, @field_html)
+    assert_match(/custom-class/, @field_html)
+  end
+
+  test "text_area with no_default_classes skips default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.text_area(:bio, no_default_classes: true, class: "custom-class")
+    end
+    assert_no_match(/textarea-bordered/, @field_html)
+    assert_match(/custom-class/, @field_html)
+  end
+
+  test "select with no_default_classes skips default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.select(:role, [["Admin", "admin"]], {}, no_default_classes: true, class: "custom-class")
+    end
+    assert_no_match(/select-bordered/, @field_html)
+    assert_match(/custom-class/, @field_html)
+  end
+
+  test "check_box with no_default_classes skips default classes" do
+    form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      @field_html = f.check_box(:remember_me, no_default_classes: true, class: "custom-class")
+    end
+    assert_no_match(/checkbox-primary/, @field_html)
+    assert_match(/custom-class/, @field_html)
+  end
+
+  test "error_messages with custom class" do
+    @user.errors.add(:email_address, "is invalid")
+    error_html = form_with(model: @user, builder: DaisyFormBuilder) do |f|
+      f.error_messages(class: "custom-alert")
+    end
+    assert_match(/custom-alert/, error_html)
+  end
 end

@@ -24,13 +24,21 @@ class TechStackController < ApplicationController
 
   def show
     @tech_stack = params[:id]
+
+    # 安全验证：确保 tech_stack 不包含路径分隔符或特殊字符
+    unless @tech_stack.match?(/\A[a-z0-9\-_]+\z/)
+      raise ActiveRecord::RecordNotFound, "技术栈规则不存在: #{@tech_stack}"
+    end
+
     @rule_config = TECH_STACK_RULES[@tech_stack]
 
     unless @rule_config
       raise ActiveRecord::RecordNotFound, "技术栈规则不存在: #{@tech_stack}"
     end
 
-    rule_file = Rails.root.join(".cursor", "rules", "#{@tech_stack}.mdc")
+    # 使用 File.basename 防止路径遍历攻击
+    safe_filename = File.basename("#{@tech_stack}.mdc")
+    rule_file = Rails.root.join(".cursor", "rules", safe_filename)
 
     unless File.exist?(rule_file)
       raise ActiveRecord::RecordNotFound, "规则文件不存在: #{rule_file}"

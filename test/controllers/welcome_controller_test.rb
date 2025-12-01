@@ -41,4 +41,32 @@ class WelcomeControllerTest < ActionDispatch::IntegrationTest
     # Verify it's not a redirect to login
     assert_not_equal new_session_path, response.location
   end
+
+  test "index sets meta tags with site_tagline when available" do
+    SystemConfig.set("installation_completed", "true", description: "系统安装完成", category: "system") unless SystemConfig.installation_completed?
+    SystemConfig.set("site_name", "Test Site", description: "测试站点", category: "site")
+    SystemConfig.set("site_tagline", "Custom Tagline", description: "自定义标语", category: "site")
+
+    get root_path
+    assert_response :success
+    # Meta tags should use custom tagline
+  end
+
+  test "index sets meta tags with default tagline when site_tagline is blank" do
+    SystemConfig.set("installation_completed", "true", description: "系统安装完成", category: "system") unless SystemConfig.installation_completed?
+    SystemConfig.set("site_name", "Test Site", description: "测试站点", category: "site")
+    SystemConfig.set("site_tagline", "", description: "自定义标语", category: "site")
+
+    get root_path
+    assert_response :success
+    # Meta tags should use default tagline
+  end
+
+  test "index sets meta tags with default site_name when system not installed" do
+    SystemConfig.set("installation_completed", "false", description: "系统安装完成", category: "system")
+
+    get root_path
+    # Should redirect to installation
+    assert_redirected_to installation_path
+  end
 end

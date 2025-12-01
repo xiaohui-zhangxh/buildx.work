@@ -124,5 +124,26 @@ module My
       assert_redirected_to my_sessions_path
       assert_match(/Terminated 2 session\(s\)\./, flash[:notice])
     end
+
+    test "destroy handles invalid session id gracefully" do
+      sign_in_as(@user)
+      # Try to destroy a non-existent session
+      delete my_session_path(999999)
+      assert_redirected_to my_sessions_path
+      # Should show alert message
+      assert_match(/Failed to terminate/, flash[:alert])
+    end
+
+    test "destroy handles session that doesn't belong to user" do
+      sign_in_as(@user)
+      other_user = users(:two)
+      other_user.update!(password: "password123", password_confirmation: "password123", confirmed_at: Time.current)
+      other_session = other_user.sign_in!("Other User Agent", "192.168.1.1")
+
+      delete my_session_path(other_session)
+      assert_redirected_to my_sessions_path
+      # Should show alert message
+      assert_match(/Failed to terminate/, flash[:alert])
+    end
   end
 end

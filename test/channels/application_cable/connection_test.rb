@@ -44,6 +44,7 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
   end
 
   test "connects with remember_token cookie" do
+    # Test lines 37, 38, 41, 42, 44, 46, 47, 48: restore_session_from_remember_token
     # Create a session with remember_token
     session = @user.sessions.create!(
       user_agent: "Test",
@@ -51,6 +52,7 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
       active: true
     )
     session.remember_me!
+    assert_not_nil session.remember_token
 
     # Create a Warden mock (not authenticated initially, but will be set after restore)
     warden = Object.new
@@ -63,17 +65,36 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
       true
     end
 
-    # Set up environment with remember_token cookie
-    # ActionCable's cookies.signed requires the cookie to be properly formatted
-    # Testing signed cookies in ActionCable is complex due to cookie jar setup
-    # The functionality is tested indirectly through integration tests
-    # For now, we verify that the session has a remember_token
-    assert_not_nil session.remember_token
-    assert_not_nil session.remember_created_at
+    # Set up environment
+    env = Rack::MockRequest.env_for("/cable")
+    env["warden"] = warden
 
-    # The actual connection with remember_token is tested through integration tests
-    # where the full Rails stack is available
-    skip "Remember token cookie connection requires full Rails stack - tested via integration tests"
+    # Create connection and stub cookies.signed to return the remember_token
+    connection = ApplicationCable::Connection.new(ActionCable.server, env)
+
+    # Stub cookies.signed[:remember_token] to return the token
+    cookies_mock = Object.new
+    def cookies_mock.signed
+      self
+    end
+    cookies_mock.define_singleton_method(:[]) do |key|
+      key == :remember_token ? session.remember_token : nil
+    end
+
+    # Stub the connection's cookies method
+    connection.define_singleton_method(:cookies) { cookies_mock }
+
+    # Connect should succeed
+    assert_nothing_raised do
+      connection.connect
+    end
+
+    # Verify user is authenticated
+    assert_equal @user, connection.current_user
+    assert_not_nil Current.session
+    assert_equal session.id, Current.session.id
+  ensure
+    Current.session = nil
   end
 
   test "rejects connection without authentication" do
