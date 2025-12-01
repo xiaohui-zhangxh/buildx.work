@@ -1,13 +1,13 @@
 # Name of your application. Used to uniquely configure containers.
-service: buildx
+service: buildx-work
 
 # Name of the container image (use your-user/app-name on external registries).
-image: buildx
+image: buildx-work
 
 # Deploy to these servers.
 servers:
   web:
-    - <%= ENV.fetch("WEB_SERVER_IP", "192.168.0.1") %>
+    - <%= ENV.fetch("WEB_SERVER_IP", "buildx.work") %>
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
 # If used with Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
@@ -16,9 +16,9 @@ servers:
 #
 # Don't use this when deploying to multiple web servers (then you have to terminate SSL at your load balancer).
 #
-# proxy:
-#   ssl: true
-#   host: app.example.com
+proxy:
+  ssl: true
+  host: <%= ENV.fetch("WEB_SERVER_HOST", "buildx.work") %>
 
 # Where you keep your container images.
 registry:
@@ -65,7 +65,7 @@ aliases:
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 # Recommended to change this to a mounted volume path that is backed up off server.
 volumes:
-  - "buildx_storage:/rails/storage"
+  - "buildx_work_storage:/rails/storage"
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
 # hitting 404 on in-flight requests. Combines all files from new and old

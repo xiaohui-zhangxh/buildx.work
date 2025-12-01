@@ -10,18 +10,18 @@ Rails.application.config.after_initialize do
     smtp_user_name = SystemConfig.get("smtp_user_name")
     smtp_password = SystemConfig.get("smtp_password")
     smtp_authentication = SystemConfig.get("smtp_authentication")
-    smtp_enable_starttls_auto = SystemConfig.get("smtp_enable_starttls_auto")
+    smtp_ssl = SystemConfig.get("smtp_ssl")
 
     # Only configure SMTP if address is set
     if smtp_address.present?
       smtp_settings = {
         address: smtp_address,
-        port: smtp_port&.to_i || 587,
+        port: smtp_port&.to_i || 465,
         domain: smtp_domain.presence,
         user_name: smtp_user_name.presence,
         password: smtp_password.presence,
         authentication: (smtp_authentication&.to_sym || :plain),
-        enable_starttls_auto: smtp_enable_starttls_auto != "false"
+        ssl: smtp_ssl == "true"
       }.compact
 
       Rails.application.config.action_mailer.delivery_method = :smtp

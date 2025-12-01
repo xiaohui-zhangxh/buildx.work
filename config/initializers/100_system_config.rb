@@ -28,12 +28,12 @@ Rails.application.config.after_initialize do
 
   # 邮件服务器配置（生产环境）
   SystemConfig.set("smtp_address", "", description: "SMTP 服务器地址", category: "mail") unless SystemConfig.exists?(key: "smtp_address")
-  SystemConfig.set("smtp_port", "587", description: "SMTP 服务器端口", category: "mail") unless SystemConfig.exists?(key: "smtp_port")
+  SystemConfig.set("smtp_port", "465", description: "SMTP 服务器端口", category: "mail") unless SystemConfig.exists?(key: "smtp_port")
   SystemConfig.set("smtp_domain", "", description: "SMTP 域名", category: "mail") unless SystemConfig.exists?(key: "smtp_domain")
   SystemConfig.set("smtp_user_name", "", description: "SMTP 用户名", category: "mail") unless SystemConfig.exists?(key: "smtp_user_name")
   SystemConfig.set("smtp_password", "", description: "SMTP 密码", category: "mail") unless SystemConfig.exists?(key: "smtp_password")
   SystemConfig.set("smtp_authentication", "plain", description: "SMTP 认证方式（plain, login, cram_md5）", category: "mail") unless SystemConfig.exists?(key: "smtp_authentication")
-  SystemConfig.set("smtp_enable_starttls_auto", "true", description: "启用 STARTTLS 自动（true/false）", category: "mail") unless SystemConfig.exists?(key: "smtp_enable_starttls_auto")
+  SystemConfig.set("smtp_ssl", "true", description: "启用 SSL（true/false，通常 465 端口使用 SSL，587 端口使用 STARTTLS）", category: "mail") unless SystemConfig.exists?(key: "smtp_ssl")
   SystemConfig.set("mail_from_address", "noreply@example.com", description: "默认发件人地址", category: "mail") unless SystemConfig.exists?(key: "mail_from_address")
   SystemConfig.set("mail_from_name", "BuildX.work", description: "默认发件人名称", category: "mail") unless SystemConfig.exists?(key: "mail_from_name")
 end
