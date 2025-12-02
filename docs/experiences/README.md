@@ -31,6 +31,12 @@
   - 共享配置读取方法的设计模式
   - ActionMailer::Base 与 Rails.application.config.action_mailer 的区别
 
+- [Kamal 部署时端口转发失败问题](./kamal-port-forwarding-failure.md) (2025-12-02)
+  - SSH 端口转发配置优先级
+  - Kamal 本地注册表端口转发机制
+  - SSH 服务器 AllowTcpForwarding 配置
+  - SSH 代理和端口转发
+
 ## 📝 如何添加新经验
 
 1. 在 `experiences/` 目录下创建新的 Markdown 文件
