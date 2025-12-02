@@ -37,6 +37,12 @@
   - SSH 服务器 AllowTcpForwarding 配置
   - SSH 代理和端口转发
 
+- [Cloudflare 真实 IP 地址获取](./cloudflare-real-ip.md) (2025-11-26)
+  - 使用 cloudflare-rails Gem 获取真实客户端 IP
+  - Cloudflare 代理环境下的 IP 地址问题
+  - IP 欺骗攻击防护
+  - 自动验证请求来源的安全性
+
 ## 📝 如何添加新经验
 
 1. 在 `experiences/` 目录下创建新的 Markdown 文件

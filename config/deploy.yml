@@ -19,6 +19,7 @@ servers:
 proxy:
   ssl: true
   host: <%= ENV.fetch("WEB_SERVER_HOST", "buildx.work") %>
+  forward_headers: true
 
 # Where you keep your container images.
 registry:

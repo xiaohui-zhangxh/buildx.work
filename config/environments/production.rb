@@ -49,6 +49,14 @@ Rails.application.configure do
   # Replace the default in-process memory cache store with a durable alternative.
   config.cache_store = :solid_cache_store
 
+  # Cloudflare Rails configuration
+  # See: https://github.com/modosc/cloudflare-rails
+  # The gem automatically fixes request.ip and request.remote_ip when using Cloudflare
+  # It verifies that requests come from Cloudflare IP ranges and extracts real IP from CF-Connecting-IP header
+  # Optional: configure cache expiration and timeout
+  # config.cloudflare.expires_in = 12.hours  # default: 12.hours
+  # config.cloudflare.timeout = 5.seconds     # default: 5.seconds
+
   # Replace the default in-process and non-durable queuing backend for Active Job.
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }

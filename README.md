@@ -55,7 +55,8 @@
 - **前端**: Tailwind CSS 4 + DaisyUI 5
 - **JavaScript**: Importmap + Stimulus + Turbo
 - **部署**: Kamal + Docker + Let's Encrypt SSL
-- **缓存**: Redis（生产环境）
+- **CDN/代理**: Cloudflare（支持真实 IP 地址获取）
+- **缓存**: Solid Cache（Rails 8 内置，生产环境）
 - **任务队列**: Solid Queue（Rails 8 内置）
 
 ## ✨ 主要功能模块
@@ -130,6 +131,13 @@ bin/kamal logs
 # 进入控制台
 bin/kamal console
 ```
+
+### Cloudflare 支持
+
+项目已集成 `cloudflare-rails` Gem，支持在 Cloudflare 代理环境下自动获取真实客户端 IP 地址。详细说明请参考：
+
+- [开发者指南 - Cloudflare 支持](docs/DEVELOPER_GUIDE.md#-cloudflare-支持)
+- [开发经验 - Cloudflare 真实 IP 地址获取](docs/experiences/cloudflare-real-ip.md)
 
 详细部署说明请参考 [开发文档](docs/README.md)。
 

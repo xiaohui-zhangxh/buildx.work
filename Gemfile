@@ -66,6 +66,13 @@ gem "unicode-display_width", "~> 2.5"
 # CSV support (required for Ruby 3.4.0+)
 gem "csv", "~> 3.3"
 
+# Cloudflare Rails - fix request.ip and request.remote_ip when using Cloudflare
+# Only use in production (or staging/beta) environments
+# See: https://github.com/modosc/cloudflare-rails
+group :production do
+  gem "cloudflare-rails"
+end
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

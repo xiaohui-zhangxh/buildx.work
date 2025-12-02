@@ -103,6 +103,88 @@ COVERAGE_FILES=app/models bin/rails test test/models/
 - **Kamal** - 部署工具
 - **Docker** - 容器化
 - **Let's Encrypt** - SSL 证书
+- **Cloudflare** - CDN 和代理服务（支持真实 IP 地址获取）
+
+## ☁️ Cloudflare 支持
+
+项目集成了 `cloudflare-rails` Gem，用于在生产环境中正确处理通过 Cloudflare 代理的请求，确保能够获取真实的客户端 IP 地址。
+
+### 为什么需要 Cloudflare 支持？
+
+当应用部署在 Cloudflare 后面时，所有请求都会经过 Cloudflare 的代理服务器。这导致：
+- `request.remote_ip` 返回的是 Cloudflare 的 IP，而不是真实客户端 IP
+- 登录日志、审计日志等记录的 IP 地址不准确
+- 无法正确识别用户的地理位置
+
+### 解决方案
+
+使用 `cloudflare-rails` Gem（版本 7.0.0+，支持 Rails 8.1+）：
+
+1. **自动验证请求来源**：检查请求是否真的来自 Cloudflare IP 范围
+2. **防止 IP 欺骗**：如果请求不是来自 Cloudflare，忽略 `CF-Connecting-IP` 头
+3. **自动修复 IP 地址**：修复 `request.ip` 和 `request.remote_ip`，使其返回真实客户端 IP
+
+### 配置
+
+**Gemfile**（仅 production 环境）：
+
+```ruby
+group :production do
+  gem "cloudflare-rails"
+end
+```
+
+**生产环境配置**（`config/environments/production.rb`）：
+
+```ruby
+# Cloudflare Rails configuration
+# See: https://github.com/modosc/cloudflare-rails
+# The gem automatically fixes request.ip and request.remote_ip when using Cloudflare
+# It verifies that requests come from Cloudflare IP ranges and extracts real IP from CF-Connecting-IP header
+# Optional: configure cache expiration and timeout
+config.cloudflare.expires_in = 12.hours  # default: 12.hours
+config.cloudflare.timeout = 5.seconds     # default: 5.seconds
+```
+
+### 工作原理
+
+1. **自动获取 Cloudflare IP 列表**：Gem 会定期从 Cloudflare 获取最新的 IPv4 和 IPv6 IP 地址列表
+2. **缓存 IP 列表**：使用 Rails 缓存存储 IP 列表（需要配置 `cache_store`）
+3. **验证请求来源**：检查 `REMOTE_ADDR` 是否在 Cloudflare IP 范围内
+4. **提取真实 IP**：如果验证通过，从 `CF-Connecting-IP` 或 `X-Forwarded-For` 头中提取真实客户端 IP
+5. **自动修复**：修复 `Rack::Request::Helpers` 和 `ActionDispatch::RemoteIP`，使 `request.ip` 和 `request.remote_ip` 返回真实 IP
+
+### 使用方式
+
+**无需修改代码**：Gem 会自动工作，所有使用 `request.remote_ip` 的地方都会自动返回真实客户端 IP：
+
+```ruby
+# 在控制器中（自动工作）
+session_record = user.sign_in!(request.user_agent, request.remote_ip)
+
+# 在模型中（自动工作）
+AuditLog.log(
+  user: current_user,
+  action: :create,
+  request: request  # request.remote_ip 会自动返回真实 IP
+)
+```
+
+### 安全考虑
+
+- **IP 验证**：只有来自 Cloudflare IP 范围的请求才会信任 `CF-Connecting-IP` 头
+- **防止欺骗**：如果攻击者知道服务器真实 IP 并直接访问，无法伪造 `CF-Connecting-IP` 头
+- **自动更新**：Cloudflare IP 列表会自动更新，确保始终使用最新的 IP 范围
+
+### 前置条件
+
+- **缓存存储**：必须配置 `cache_store`（项目使用 `solid_cache_store`，已满足要求）
+- **生产环境**：Gem 仅在 `production` 环境加载（开发/测试环境不需要）
+
+### 相关资源
+
+- [cloudflare-rails GitHub](https://github.com/modosc/cloudflare-rails)
+- [Cloudflare IP 地址列表](https://www.cloudflare.com/ips/)
 
 ## 📁 项目结构规范
 
@@ -224,6 +306,7 @@ COVERAGE_FILES=app/models/user.rb,app/controllers/sessions_controller.rb bin/rai
 
 ## 📅 更新日志
 
+- **2025-11-26**：添加 Cloudflare 支持文档，说明如何使用 `cloudflare-rails` Gem 获取真实客户端 IP
 - **2025-11-25**：添加第三方库文件存放规范，规定所有第三方库文件应存放在 `vendor/` 目录
 - **2024-XX-XX**：初始版本，确定使用 Rails 8 Authentication Generator 和 Warden
 
