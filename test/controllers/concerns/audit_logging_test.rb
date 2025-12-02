@@ -212,4 +212,103 @@ class AuditLoggingTest < ActionDispatch::IntegrationTest
     # Verify redirect happened
     assert_redirected_to admin_users_path
   end
+
+  test "log_destroy handles errors gracefully" do
+    sign_in_as(@admin)
+    user = User.create!(
+      email_address: "testuser@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Test User",
+      confirmed_at: Time.current
+    )
+
+    # Stub AuditLog.log to raise an error using Minitest's stub
+    original_log = AuditLog.method(:log)
+    AuditLog.define_singleton_method(:log) do |*|
+      raise StandardError, "Database error"
+    end
+
+    begin
+      # Should not raise error, should handle gracefully
+      assert_nothing_raised do
+        delete admin_user_path(user)
+      end
+      # User should still be destroyed despite logging error
+      assert_nil User.find_by(id: user.id)
+    ensure
+      # Restore original method
+      AuditLog.define_singleton_method(:log, original_log)
+    end
+  end
+
+  test "log_action handles errors gracefully" do
+    sign_in_as(@admin)
+    role = Role.create!(name: "test_role_#{Time.current.to_i}", description: "Test Role")
+
+    # Stub AuditLog.log to raise an error using Minitest's stub
+    original_log = AuditLog.method(:log)
+    AuditLog.define_singleton_method(:log) do |*|
+      raise StandardError, "Database error"
+    end
+
+    begin
+      # Should not raise error, should handle gracefully
+      assert_nothing_raised do
+        patch admin_role_path(role), params: {
+          role: {
+            name: role.name,
+            description: "Updated Description"
+          }
+        }
+      end
+      # Role should still be updated despite logging error
+      assert_redirected_to admin_role_path(role)
+      assert_equal "Updated Description", role.reload.description
+    ensure
+      # Restore original method
+      AuditLog.define_singleton_method(:log, original_log)
+    end
+  end
+
+  test "log_action does not log when response is not successful" do
+    sign_in_as(@admin)
+    # Try to update with invalid data (should fail with 422)
+    AuditLog.destroy_all
+    initial_count = AuditLog.count
+
+    patch admin_user_path(@admin), params: {
+      user: {
+        email_address: "invalid-email", # Invalid format
+        name: @admin.name
+      }
+    }
+
+    # Should not create audit log for failed actions
+    assert_equal initial_count, AuditLog.count
+  end
+
+  test "log_action does not log when user is not present" do
+    # Sign out (no current_user)
+    AuditLog.destroy_all
+    initial_count = AuditLog.count
+
+    # Try to access admin page without authentication
+    get admin_users_url
+
+    # Should not create audit log when user is not present
+    assert_equal initial_count, AuditLog.count
+  end
+
+  test "log_action does not log actions not in the list" do
+    sign_in_as(@admin)
+    AuditLog.destroy_all
+    initial_count = AuditLog.count
+
+    # index action is not in the list of logged actions
+    get admin_users_url
+
+    # Should not create audit log for index action
+    assert_equal initial_count, AuditLog.count
+  end
 end

@@ -116,6 +116,88 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, @user.reload.sessions.count
   end
 
+  test "update with weak password shows error" do
+    token = @user.password_reset_token
+    put password_path(token), params: {
+      password: "short",
+      password_confirmation: "short"
+    }
+
+    assert_redirected_to edit_password_path(token)
+    follow_redirect!
+    assert_match(/Passwords did not match/, response.body)
+  end
+
+  test "update with password without numbers shows error" do
+    token = @user.password_reset_token
+    put password_path(token), params: {
+      password: "onlyletters",
+      password_confirmation: "onlyletters"
+    }
+
+    assert_redirected_to edit_password_path(token)
+    follow_redirect!
+    assert_match(/Passwords did not match/, response.body)
+  end
+
+  test "update with empty password succeeds but doesn't change password" do
+    token = @user.password_reset_token
+    old_digest = @user.password_digest
+
+    put password_path(token), params: {
+      password: "",
+      password_confirmation: ""
+    }
+
+    # Empty password might succeed (password is optional in update)
+    # but should redirect to new_session_path if update succeeds
+    # or to edit_password_path if update fails
+    assert_response :redirect
+    @user.reload
+    # Password digest should not change when password is empty
+    assert_equal old_digest, @user.password_digest
+  end
+
+  test "edit with expired token redirects to new password path" do
+    # Create a token that looks valid but is actually expired/invalid
+    expired_token = "expired_token_#{Time.current.to_i}"
+    get edit_password_path(expired_token)
+
+    assert_redirected_to new_password_path
+    follow_redirect!
+    assert_match(/invalid or has expired/, response.body)
+  end
+
+  test "update with expired token redirects to new password path" do
+    expired_token = "expired_token_#{Time.current.to_i}"
+    put password_path(expired_token), params: {
+      password: "newpass123",
+      password_confirmation: "newpass123"
+    }
+
+    assert_redirected_to new_password_path
+    follow_redirect!
+    assert_match(/invalid or has expired/, response.body)
+  end
+
+  test "create with empty email address" do
+    Rails.cache.clear
+    post passwords_path, params: { email_address: "" }
+
+    assert_redirected_to new_session_path
+    follow_redirect!
+    assert_notice "reset instructions sent"
+  end
+
+  test "create with nil email address" do
+    Rails.cache.clear
+    post passwords_path, params: { email_address: nil }
+
+    assert_redirected_to new_session_path
+    follow_redirect!
+    assert_notice "reset instructions sent"
+  end
+
   private
     def assert_notice(text)
       assert_select "div", /#{text}/

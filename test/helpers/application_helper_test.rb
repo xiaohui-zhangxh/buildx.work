@@ -239,6 +239,16 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
 
+  test "format_time handles I18n.l success for longer periods" do
+    # Test line 45: I18n.l(time, format: :long) success path
+    time = 2.months.ago
+    result = format_time(time)
+    # Should use I18n.l with :long format (if available) or fallback
+    assert result.length > 10
+    # Should include date information
+    assert_match(/\d{4}/, result) || assert_match(/\d{2}:\d{2}/, result)
+  end
+
   test "format_time handles I18n.l failure for longer periods" do
     # Test line 47: I18n.l rescue path for longer periods
     time = 2.months.ago

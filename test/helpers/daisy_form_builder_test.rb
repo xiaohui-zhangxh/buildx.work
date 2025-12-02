@@ -253,21 +253,21 @@ class DaisyFormBuilderTest < ActionView::TestCase
 
   test "select renders with default classes" do
     form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
-      @field_html = f.select(:role, [["Admin", "admin"], ["User", "user"]])
+      @field_html = f.select(:role, [ [ "Admin", "admin" ], [ "User", "user" ] ])
     end
     assert_match(/select.*select-bordered/, @field_html)
   end
 
   test "select renders with label when label_text is provided" do
     form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
-      @field_html = f.select(:role, [["Admin", "admin"], ["User", "user"]], {}, label_text: "角色")
+      @field_html = f.select(:role, [ [ "Admin", "admin" ], [ "User", "user" ] ], {}, label_text: "角色")
     end
     assert_match(/<label/, @field_html)
     assert_match(/角色/, @field_html)
   end
 
   test "collection_radio_buttons renders radio buttons" do
-    roles = [Role.new(name: "admin", id: 1), Role.new(name: "user", id: 2)]
+    roles = [ Role.new(name: "admin", id: 1), Role.new(name: "user", id: 2) ]
     form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
       @field_html = f.collection_radio_buttons(:role_id, roles, :id, :name)
     end
@@ -364,7 +364,7 @@ class DaisyFormBuilderTest < ActionView::TestCase
 
   test "select with no_default_classes skips default classes" do
     form = form_with(model: @user, builder: DaisyFormBuilder) do |f|
-      @field_html = f.select(:role, [["Admin", "admin"]], {}, no_default_classes: true, class: "custom-class")
+      @field_html = f.select(:role, [ [ "Admin", "admin" ] ], {}, no_default_classes: true, class: "custom-class")
     end
     assert_no_match(/select-bordered/, @field_html)
     assert_match(/custom-class/, @field_html)

@@ -35,16 +35,11 @@ module Admin
     end
 
     test "uses admin layout" do
+      # Use SessionTestHelper's sign_in_as method which properly sets up Warden session
       sign_in_as(@admin_user)
       get admin_root_path
       assert_response :success
       # Layout is set via layout "admin", which is tested indirectly through response
     end
-
-    private
-
-      def sign_in_as(user)
-        post session_path, params: { email_address: user.email_address, password: "password123" }
-      end
   end
 end

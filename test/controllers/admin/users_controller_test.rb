@@ -208,18 +208,63 @@ module Admin
       assert_equal "Updated Name Without Password", @other_user.name
     end
 
-    test "should update user with password" do
-      sign_in_as(@admin)
-      patch admin_user_url(@other_user), params: {
-        user: {
-          name: @other_user.name,
-          email_address: @other_user.email_address,
-          password: "newpassword123",
-          password_confirmation: "newpassword123"
-        }
+  test "should update user with password" do
+    sign_in_as(@admin)
+    patch admin_user_url(@other_user), params: {
+      user: {
+        name: @other_user.name,
+        email_address: @other_user.email_address,
+        password: "newpassword123",
+        password_confirmation: "newpassword123"
       }
-      assert_redirected_to admin_user_path(@other_user)
-      assert @other_user.reload.authenticate("newpassword123")
-    end
+    }
+    assert_redirected_to admin_user_path(@other_user)
+    assert @other_user.reload.authenticate("newpassword123")
+  end
+
+  test "should render edit when update fails" do
+    sign_in_as(@admin)
+    # Try to update with invalid email
+    patch admin_user_url(@other_user), params: {
+      user: {
+        email_address: "invalid-email",
+        name: @other_user.name
+      }
+    }
+    assert_response :unprocessable_entity
+    assert_select "form"
+  end
+
+  test "should show alert when batch assign role with no role name" do
+    sign_in_as(@admin)
+    user1 = User.create!(
+      email_address: "batch1@example.com",
+      password: "password123",
+      name: "Batch User 1",
+      confirmed_at: Time.current
+    )
+    post batch_assign_role_admin_users_url, params: {
+      user_ids: [ user1.id ],
+      role_name: ""
+    }
+    assert_redirected_to admin_users_path
+    # Alert message is set via flash
+  end
+
+  test "should show alert when batch remove role with no role name" do
+    sign_in_as(@admin)
+    user1 = User.create!(
+      email_address: "batch1@example.com",
+      password: "password123",
+      name: "Batch User 1",
+      confirmed_at: Time.current
+    )
+    post batch_remove_role_admin_users_url, params: {
+      user_ids: [ user1.id ],
+      role_name: ""
+    }
+    assert_redirected_to admin_users_path
+    # Alert message is set via flash
+  end
   end
 end

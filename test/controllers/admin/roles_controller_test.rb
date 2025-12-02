@@ -131,5 +131,75 @@ module Admin
       assert_response :unprocessable_entity
       assert_select "form"
     end
+
+    test "should handle duplicate role name on create" do
+      sign_in_as(@admin)
+      existing_role = Role.create!(name: "existing_role", description: "Existing")
+      post admin_roles_url, params: {
+        role: {
+          name: existing_role.name, # Duplicate name
+          description: "New description"
+        }
+      }
+      assert_response :unprocessable_entity
+      assert_select "form"
+    end
+
+    test "should handle duplicate role name on update" do
+      sign_in_as(@admin)
+      existing_role = Role.create!(name: "existing_role", description: "Existing")
+      new_role = Role.create!(name: "new_role", description: "New")
+      patch admin_role_url(new_role), params: {
+        role: {
+          name: existing_role.name, # Duplicate name
+          description: "Updated"
+        }
+      }
+      assert_response :unprocessable_entity
+      assert_select "form"
+    end
+
+    test "should handle non-existent role on show" do
+      sign_in_as(@admin)
+      get admin_role_url(999999)
+      assert_response :not_found
+    end
+
+    test "should handle non-existent role on edit" do
+      sign_in_as(@admin)
+      get edit_admin_role_url(999999)
+      assert_response :not_found
+    end
+
+    test "should handle non-existent role on update" do
+      sign_in_as(@admin)
+      patch admin_role_url(999999), params: {
+        role: {
+          name: "updated_name",
+          description: "Updated"
+        }
+      }
+      assert_response :not_found
+    end
+
+    test "should handle non-existent role on destroy" do
+      sign_in_as(@admin)
+      delete admin_role_url(999999)
+      assert_response :not_found
+    end
+
+    test "should handle empty search term" do
+      sign_in_as(@admin)
+      get admin_roles_url, params: { search: "" }
+      assert_response :success
+      # Should show all roles when search is empty
+    end
+
+    test "should handle search with special characters" do
+      sign_in_as(@admin)
+      get admin_roles_url, params: { search: "@#$%^&*()" }
+      assert_response :success
+      # Should handle special characters gracefully
+    end
   end
 end

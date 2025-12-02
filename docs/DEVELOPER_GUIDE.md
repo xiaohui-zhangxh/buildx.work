@@ -89,6 +89,20 @@ COVERAGE_FILES=app/models bin/rails test test/models/
 ### 权限系统
 - **Action Policy** (~> 0.7.5) - 权限策略框架
 - **Role 模型** - 角色管理
+- **RBAC（基于角色的访问控制）** - 用户通过角色获得权限
+- **资源级权限控制** - 支持细粒度的权限检查
+- **Policy 类** - UserPolicy、RolePolicy、AdminPolicy 等
+
+**详细说明**：
+- 权限系统基于 Action Policy 实现，支持资源级权限控制
+- 用户通过角色（Role）获得权限，支持多角色
+- 在控制器中使用 `authorize!` 进行权限检查
+- 在视图中使用 `allowed_to?` 进行权限判断
+- 权限不足时返回 403 错误页面
+
+**相关文档**：
+- [第二阶段开发计划](phase-2-authorization/plan.md)
+- [权限系统架构图](phase-2-authorization/architecture.md)
 
 ### 前端
 - **DaisyUI** - UI 组件库
