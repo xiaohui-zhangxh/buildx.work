@@ -11,6 +11,7 @@ docs/
 ├── DEVELOPMENT_PLAN.md          # 开发计划总览
 ├── DEVELOPER_GUIDE.md           # 开发者指南（技术决策、架构设计）
 ├── PROJECT_CREATION_GUIDE.md    # 新项目创建指南 ⭐ 创建新项目时参考
+├── AI_USAGE_GUIDE.md            # AI 使用教程 ⭐ 快速上手 AI 开发
 │
 ├── experiences/                  # 开发经验记录 ⭐
 │   └── highlight.js.md          # Highlight.js 集成问题
@@ -53,6 +54,13 @@ docs/
   - 开发计划阶段
   - 项目初始化阶段
   - 完整检查清单
+
+- **AI_USAGE_GUIDE.md** ⭐：AI 使用教程
+  - 如何创建和管理指令
+  - 如何创建和管理规则
+  - 如何保存开发经验
+  - 如何记录技术栈规则
+  - 最佳实践和常见问题
 
 - **DEVELOPER_GUIDE.md**：项目整体的技术决策、架构设计和开发规范
   - 认证系统架构
@@ -127,6 +135,7 @@ docs/
 - [主 README](../README.md)
 - [当前工作状态](../CURRENT_WORK.md) ⭐ 每日必看
 - [新项目创建指南](./PROJECT_CREATION_GUIDE.md) ⭐ 创建新项目时参考
+- [AI 使用教程](./AI_USAGE_GUIDE.md) ⭐ 快速上手 AI 开发
 - [开发者指南](./DEVELOPER_GUIDE.md)
 - [MCP 开发规则](../.cursor/rules/mcp.mdc) ⭐ MCP 服务开发必读（AI 自动参考）
 - [Cursor 规则](../.cursor/rules/)

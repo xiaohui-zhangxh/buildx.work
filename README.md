@@ -160,6 +160,7 @@ bin/kamal console
 所有详细文档都在 `docs/` 目录下：
 
 - [使用指南](docs/USAGE_GUIDE.md) ⭐ - 如何创建子项目、如何扩展、如何更新
+- [AI 使用教程](docs/AI_USAGE_GUIDE.md) ⭐ - 快速上手 AI 开发（指令、规则、经验、技术栈）
 - [功能清单](docs/FEATURES.md) - 完整的功能列表
 - [开发计划](docs/DEVELOPMENT_PLAN.md) - 开发路线图
 - [开发者指南](docs/DEVELOPER_GUIDE.md) - 技术决策和架构设计
