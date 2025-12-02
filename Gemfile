@@ -61,7 +61,7 @@ gem "meta-tags", "~> 2.22", ">= 2.22.2"
 
 # Pagination library
 gem "pagy", "~> 9.3", ">= 9.3.4"
-gem "unicode-display_width", "~> 2.5"
+gem "unicode-display_width", "~> 3.2"
 
 # CSV support (required for Ruby 3.4.0+)
 gem "csv", "~> 3.3"
