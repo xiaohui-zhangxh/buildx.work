@@ -23,6 +23,14 @@
   - custom_failure! 的使用场景和注意事项
   - ActionController::API 与 Warden 的配合
 
+### 配置问题
+
+- [ActionMailer 动态配置从数据库读取](./action-mailer-dynamic-config.md) (2025-12-02)
+  - after_initialize 中配置 ActionMailer 的正确方式
+  - 实现邮件配置动态更新（无需重启服务器）
+  - 共享配置读取方法的设计模式
+  - ActionMailer::Base 与 Rails.application.config.action_mailer 的区别
+
 ## 📝 如何添加新经验
 
 1. 在 `experiences/` 目录下创建新的 Markdown 文件
