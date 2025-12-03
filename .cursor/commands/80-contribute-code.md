@@ -88,10 +88,10 @@ git status --short
      # 记录当前分支名称
      CURRENT_BRANCH=$(git branch --show-current)
      
-     # 创建临时分支保存当前工作
-     git checkout -b wip/save-current-work-$(date +%Y%m%d-%H%M%S)
-     git add .
-     git commit -m "WIP: 保存当前工作进度（自动暂存）"
+    # 创建临时分支保存当前工作（包含操作类型和时间戳，便于识别）
+    git checkout -b wip/contribute-code-$(date +%Y%m%d-%H%M%S)
+    git add .
+    git commit -m "WIP: 保存当前工作进度（贡献代码前自动暂存）"
      
      # 切换回原分支（此时原分支应该是干净的）
      git checkout $CURRENT_BRANCH
@@ -112,7 +112,7 @@ git status --short
 
 **注意**：
 - 这是**必须步骤**，如果当前分支不干净，**自动使用方式 2 暂存到独立分支**，然后继续执行
-- 暂存分支命名格式：`wip/save-current-work-{timestamp}`，确保唯一性
+- 暂存分支命名格式：`wip/contribute-code-{timestamp}`，包含操作类型（contribute-code）和时间戳，便于识别和恢复
 - 暂存分支会在步骤 8 中用于切换回之前的工作
 
 ### 步骤 4：对比代码差异并识别可贡献代码
@@ -416,14 +416,14 @@ git push buildx-work-fork contribute/feature-description
 **方法**：
 
 1. **记录之前的工作分支**：
-   - 在步骤 3 中，如果分支不干净，自动创建了暂存分支（如 `wip/save-current-work-20251203-213335`），记录该分支名称
+   - 在步骤 3 中，如果分支不干净，自动创建了暂存分支（如 `wip/contribute-code-20251203-213335`），记录该分支名称
    - 如果分支干净，记录当前分支名称（如 `main`）
 
 2. **切换回之前的工作分支**：
 
 ```bash
 # 如果之前的工作在 wip 分支（步骤 3 自动创建的）
-git checkout wip/save-current-work-{timestamp}
+git checkout wip/contribute-code-{timestamp}
 
 # 如果之前的工作在 main 分支或其他分支
 git checkout {原分支名称}
@@ -532,7 +532,7 @@ AI 执行：
 3. 检查当前分支状态：
    git status --short
    → 分支干净 ✅
-   （如果分支不干净，自动暂存到 wip/save-current-work-{timestamp}，然后继续）
+   （如果分支不干净，自动暂存到 wip/contribute-code-{timestamp}，然后继续）
 
 4. 对比代码差异：
    git diff upstream/main --name-status
@@ -575,7 +575,7 @@ AI 执行：
     - 显示给用户
 
 12. 清理贡献分支，回到之前的工作：
-    - 切换回 wip/save-current-work 分支
+    - 切换回 wip/contribute-code-{timestamp} 分支（如果之前自动创建的）
     - 删除贡献分支 contribute/add-format-date-and-validator
     - 提示用户可以继续业务开发
 ```
@@ -598,12 +598,12 @@ AI 执行：
    
    自动执行：
    CURRENT_BRANCH=$(git branch --show-current)  # 记录当前分支：main
-   git checkout -b wip/save-current-work-20251203-213335
+   git checkout -b wip/contribute-code-20251203-213335
    git add .
-   git commit -m "WIP: 保存当前工作进度（自动暂存）"
+   git commit -m "WIP: 保存当前工作进度（贡献代码前自动暂存）"
    git checkout main  # 切换回原分支（现在干净了）
    
-   → 已自动暂存到 wip/save-current-work-20251203-213335
+   → 已自动暂存到 wip/contribute-code-20251203-213335
    → 继续执行下一步...
    
 4. 对比代码差异：✅
@@ -611,7 +611,7 @@ AI 执行：
 6. 创建贡献分支：✅
 7. 生成 PR 提交指南：✅
 8. 清理贡献分支，回到之前的工作：
-   git checkout wip/save-current-work-20251203-213335
+   git checkout wip/contribute-code-20251203-213335
    → 已切换回之前的工作分支，可以继续业务开发
 ```
 
@@ -673,9 +673,9 @@ git status --short
 
 # 如果有未提交的变更，自动暂存到独立分支（AI 自动执行，不询问用户）
 CURRENT_BRANCH=$(git branch --show-current)
-git checkout -b wip/save-current-work-$(date +%Y%m%d-%H%M%S)
+git checkout -b wip/contribute-code-$(date +%Y%m%d-%H%M%S)
 git add .
-git commit -m "WIP: 保存当前工作进度（自动暂存）"
+git commit -m "WIP: 保存当前工作进度（贡献代码前自动暂存）"
 git checkout $CURRENT_BRANCH  # 切换回原分支（现在干净了）
 ```
 
