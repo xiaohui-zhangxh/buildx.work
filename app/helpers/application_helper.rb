@@ -1,6 +1,4 @@
 module ApplicationHelper
-  include Pagy::Frontend
-
   # Format time for display with automatic format selection based on time distance
   # - Today: shows time only (e.g., "14:30")
   # - This week: shows weekday and time (e.g., "Monday 14:30" or "周一 14:30")

@@ -188,8 +188,8 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     assert ApplicationController.include?(ActionPolicy::Controller)
   end
 
-  test "includes Pagy::Backend" do
-    assert ApplicationController.include?(Pagy::Backend)
+  test "includes Pagy::Method" do
+    assert ApplicationController.include?(Pagy::Method)
   end
 
   test "includes ApplicationControllerExtensions if extension file exists" do

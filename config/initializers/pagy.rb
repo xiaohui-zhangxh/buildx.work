@@ -1,4 +1,3 @@
-require "pagy/extras/overflow"
-
-Pagy::DEFAULT[:items] = 50
-Pagy::DEFAULT[:overflow] = :empty_page
+# Pagy 43 配置
+# overflow 行为现在是默认的，无需配置
+Pagy.options[:items] = 50

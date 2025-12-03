@@ -23,6 +23,12 @@
   - custom_failure! 的使用场景和注意事项
   - ActionController::API 与 Warden 的配合
 
+- [Pagy 43 升级和使用经验](./pagy-43-upgrade.md) (2025-12-03)
+  - 从 Pagy 9 升级到 Pagy 43 的完整指南
+  - Pagy 43 的新特性和优势
+  - 配置迁移和代码更新步骤
+  - 最佳实践和注意事项
+
 ### 配置问题
 
 - [ActionMailer 动态配置从数据库读取](./action-mailer-dynamic-config.md) (2025-12-02)

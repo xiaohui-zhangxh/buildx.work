@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
   include ActionPolicy::Controller
-  include Pagy::Backend
+  include Pagy::Method
 
   # Check installation status before processing requests
   before_action :check_installation_status
