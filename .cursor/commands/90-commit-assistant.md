@@ -445,6 +445,12 @@ git commit                  # 打开编辑器编辑提交信息
 # 查看提交历史
 git log --oneline -10       # 查看最近 10 条提交
 git log --oneline --graph   # 图形化显示提交历史
+
+# Rebase（整理提交历史）
+GIT_EDITOR=true git rebase -i HEAD~n  # 交互式 rebase，使用 GIT_EDITOR=true 避免 vim 弹窗
+git rebase <branch>                    # 将当前分支 rebase 到指定分支
+git rebase --continue                  # 解决冲突后继续 rebase
+git rebase --abort                     # 取消 rebase
 ```
 
 ### 文件分析

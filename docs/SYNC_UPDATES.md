@@ -192,7 +192,8 @@ git diff --name-status HEAD..upstream/main
 git merge upstream/main
 
 # 或者使用 rebase（如果更喜欢线性历史）
-# git rebase upstream/main
+# 注意：使用 GIT_EDITOR=true 避免 vim 弹窗，命令可自动完成
+# GIT_EDITOR=true git rebase upstream/main
 ```
 
 **步骤 4：处理合并冲突**
