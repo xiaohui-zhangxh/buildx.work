@@ -12,6 +12,9 @@ docs/
 ├── DEVELOPER_GUIDE.md           # 开发者指南（技术决策、架构设计）
 ├── PROJECT_CREATION_GUIDE.md    # 新项目创建指南 ⭐ 创建新项目时参考
 ├── AI_USAGE_GUIDE.md            # AI 使用教程 ⭐ 快速上手 AI 开发
+├── CONTRIBUTING.md              # 贡献指南（修复和改进）
+├── FEATURE_CONTRIBUTION.md      # 功能贡献指南 ⭐ 贡献新功能时参考
+├── SYNC_UPDATES.md              # 同步更新指南 ⭐ 同步基础平台更新时参考
 │
 ├── experiences/                  # 开发经验记录 ⭐
 │   └── highlight.js.md          # Highlight.js 集成问题
@@ -60,6 +63,26 @@ docs/
   - 如何创建和管理规则
   - 如何保存开发经验
   - 如何记录技术栈规则
+  - 最佳实践和常见问题
+
+- **CONTRIBUTING.md**：贡献指南（修复和改进）
+  - 如何识别基础设施代码
+  - 如何贡献修复和改进
+  - 贡献流程和检查清单
+  - 最佳实践
+
+- **FEATURE_CONTRIBUTION.md** ⭐：功能贡献指南
+  - 如何识别可贡献代码
+  - 如何从业务代码中提取通用功能
+  - 如何通用化处理
+  - 贡献流程和检查清单
+  - 最佳实践和示例
+
+- **SYNC_UPDATES.md** ⭐：同步更新指南
+  - 如何检查基础平台更新
+  - 如何同步更新到业务项目
+  - 如何处理合并冲突
+  - 如何验证更新结果
   - 最佳实践和常见问题
 
 - **DEVELOPER_GUIDE.md**：项目整体的技术决策、架构设计和开发规范
@@ -136,6 +159,9 @@ docs/
 - [当前工作状态](../CURRENT_WORK.md) ⭐ 每日必看
 - [新项目创建指南](./PROJECT_CREATION_GUIDE.md) ⭐ 创建新项目时参考
 - [AI 使用教程](./AI_USAGE_GUIDE.md) ⭐ 快速上手 AI 开发
+- [贡献指南](./CONTRIBUTING.md) - 如何贡献修复和改进
+- [功能贡献指南](./FEATURE_CONTRIBUTION.md) ⭐ 如何贡献新功能
+- [同步更新指南](./SYNC_UPDATES.md) ⭐ 如何同步基础平台更新
 - [开发者指南](./DEVELOPER_GUIDE.md)
 - [MCP 开发规则](../.cursor/rules/mcp.mdc) ⭐ MCP 服务开发必读（AI 自动参考）
 - [Cursor 规则](../.cursor/rules/)

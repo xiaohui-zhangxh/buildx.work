@@ -63,7 +63,13 @@ alwaysApply: true
    - **说明**：AI 应该主动分析，不要等待反馈
    - **指令文件**：`.cursor/commands/70-business-analysis.md`
 
-5. 📚 **其他指令**：
+6. 🔄 **代码贡献** (`80-contribute-code.md`) ⭐
+   - **用途**：识别可以贡献给基础平台的代码，并协助提取和贡献
+   - **使用方式**：`/contribute-code` 或 `找出可以贡献的代码`
+   - **说明**：适用于 fork 项目，帮助识别和贡献通用功能到基础平台
+   - **指令文件**：`.cursor/commands/80-contribute-code.md`
+
+6. 📚 **其他指令**：
    - 查看 `.cursor/commands/` 目录了解所有可用指令
    - 使用斜线命令执行：`/指令文件名`（不含 .md 扩展名）
 
@@ -105,6 +111,16 @@ alwaysApply: true
    - **说明**：创建、查看、更新日报
    - **指令文件**：`.cursor/commands/03-daily-report.md`
 
+5. 💼 商业价值分析
+   - **Cursor 斜线命令**：`/business-analysis`
+   - **说明**：创建新项目时自动进行商业价值分析（投资人/用户视角）
+   - **指令文件**：`.cursor/commands/70-business-analysis.md` ⭐
+
+6. 🔄 代码贡献
+   - **Cursor 斜线命令**：`/contribute-code`
+   - **说明**：识别可以贡献给基础平台的代码，并协助提取和贡献
+   - **指令文件**：`.cursor/commands/80-contribute-code.md` ⭐
+
 📁 **工作区项目**：
 [根据 workspace.mdc 中的项目列表动态生成，如适用]
 
@@ -113,6 +129,7 @@ alwaysApply: true
 - ✅ 更新项目文档和进度
 - ✅ 管理任务清单和状态
 - ✅ 创建或管理日报
+- ✅ 识别和贡献代码到基础平台（使用指令：代码贡献）
 - ✅ 其他项目相关任务
 
 📖 **查看指令详情**：
@@ -121,6 +138,7 @@ alwaysApply: true
 - 🤖 自主工作：`.cursor/commands/02-autonomous-work.md`
 - 📝 日报管理：`.cursor/commands/03-daily-report.md`
 - 💼 商业价值分析：`.cursor/commands/70-business-analysis.md` ⭐
+- 🔄 代码贡献：`.cursor/commands/80-contribute-code.md` ⭐
 
 请告诉我你想做什么，或者使用上面的指令。
 ```

@@ -6,6 +6,18 @@
 
 当你在子项目中发现基础设施代码的问题或需要改进时，可以通过以下流程将修复贡献回基础设施项目。
 
+**重要**：BuildX.work 是 GitHub 开源项目，所有贡献必须通过 **GitHub Pull Request** 提交。请遵循 GitHub 最佳实践，确保贡献流程清晰、可维护。
+
+**本文档与 [功能贡献指南](FEATURE_CONTRIBUTION.md) 的区别**：
+- **贡献指南**（本文档）：主要说明如何贡献**修复**（bug fix）和改进
+- **功能贡献指南**：主要说明如何贡献**新功能**（feature）和通用代码
+
+如果你要贡献新功能，请参考 [功能贡献指南](FEATURE_CONTRIBUTION.md)。
+
+**贡献方式**：
+- ✅ **唯一方式**：通过 GitHub Pull Request 提交
+- ❌ **不支持**：Git 补丁、直接提交、邮件等方式
+
 ## 🔍 识别基础设施代码
 
 在贡献之前，需要识别哪些修复属于基础设施：
@@ -26,116 +38,25 @@
 
 ## 🚀 贡献流程
 
-### 方法一：通过 Git 补丁（推荐用于简单修复）
+> **重要**：BuildX.work 是 GitHub 开源项目，所有贡献必须通过 GitHub Pull Request 提交。请遵循 GitHub 最佳实践，确保贡献流程清晰、可维护。
 
-适用于：小的修复、bug 修复、配置调整
+### 通过 GitHub Pull Request 贡献（唯一方式）
 
-#### 步骤 1：在子项目中创建修复
-
-```bash
-cd /path/to/your-sub-project
-# 修复基础设施代码
-# ... 进行修复 ...
-
-# 提交修复
-git add app/helpers/application_helper.rb
-git commit -m "Fix daisy_form_with: prioritize model over url"
-```
-
-#### 步骤 2：生成补丁文件
-
-```bash
-# 找到修复的提交
-git log --oneline -5
-
-# 生成补丁文件（假设修复的提交是 abc1234）
-git format-patch -1 abc1234 --stdout > /tmp/infrastructure-fix.patch
-```
-
-#### 步骤 3：在基础设施项目中应用补丁
-
-```bash
-cd /path/to/buildx.work
-
-# 创建新分支
-git checkout -b fix/daisy-form-with-parameter-wrapping
-
-# 应用补丁
-git am /tmp/infrastructure-fix.patch
-
-# 检查更改
-git diff main
-
-# 运行测试确保修复正确
-bin/rails test
-
-# 提交
-git commit -m "Fix daisy_form_with: prioritize model over url to ensure parameter wrapping
-
-When both model and url are provided, the form should still use model
-to wrap parameters (e.g., user[email_address]) while allowing url to
-override the default form action URL."
-```
-
-### 方法二：手动复制修复（推荐用于复杂修复）
-
-适用于：涉及多个文件的修复、需要调整的修复
-
-#### 步骤 1：在子项目中识别修复的文件
-
-```bash
-cd /path/to/your-sub-project
-
-# 查看最近的提交
-git log --oneline -10
-
-# 查看特定提交的更改
-git show <commit-hash> --stat
-```
-
-#### 步骤 2：在基础设施项目中创建修复分支
-
-```bash
-cd /path/to/buildx.work
-git checkout -b fix/description-of-fix
-```
-
-#### 步骤 3：手动复制修复
-
-```bash
-# 复制修复的文件（从子项目到基础设施）
-cp /path/to/your-sub-project/app/helpers/application_helper.rb \
-   /path/to/buildx.work/app/helpers/application_helper.rb
-
-# 或者使用 diff 查看差异，然后手动应用
-diff -u \
-  /path/to/buildx.work/app/helpers/application_helper.rb \
-  /path/to/your-sub-project/app/helpers/application_helper.rb
-```
-
-#### 步骤 4：测试和提交
-
-```bash
-# 运行测试
-bin/rails test
-
-# 检查代码质量
-bin/rubocop
-
-# 提交修复
-git add app/helpers/application_helper.rb
-git commit -m "Fix: description of the fix
-
-Detailed explanation of what was fixed and why."
-```
-
-### 方法三：通过 Pull Request（如果使用 GitHub）
-
-如果基础设施项目托管在 GitHub 上：
+**这是唯一推荐的贡献方式**，遵循 GitHub 最佳实践，便于代码审查和维护。
 
 #### 步骤 1：Fork 基础设施仓库
 
-在 GitHub 上 Fork `xiaohui-zhangxh/buildx.work` 到你的账户
+在 GitHub 上 Fork `xiaohui-zhangxh/buildx.work` 到你的账户。
+
+**重要**：如果已经 Fork 过，请先同步上游更新：
+
+```bash
+cd buildx.work
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
+```
 
 #### 步骤 2：克隆你的 Fork
 
@@ -145,25 +66,141 @@ cd buildx.work
 git remote add upstream https://github.com/xiaohui-zhangxh/buildx.work.git
 ```
 
-#### 步骤 3：创建修复分支并应用修复
+#### 步骤 3：创建修复分支
 
 ```bash
-git checkout -b fix/description-of-fix
+# 确保 main 分支是最新的
+git checkout main
+git pull upstream main
 
-# 应用修复（使用方法一或方法二）
-# ...
-
-# 推送分支
-git push origin fix/description-of-fix
+# 创建修复分支（使用清晰的命名）
+git checkout -b fix/issue-description
+# 或
+git checkout -b fix/daisy-form-with-parameter-wrapping
 ```
 
-#### 步骤 4：创建 Pull Request
+**分支命名规范**：
+- 修复：`fix/issue-description` 或 `fix/bug-description`
+- 功能：`feature/feature-name`
+- 文档：`docs/update-documentation`
 
-在 GitHub 上创建 Pull Request，详细说明：
-- 问题描述
-- 修复方案
-- 测试结果
-- 相关 Issue（如果有）
+#### 步骤 4：应用修复
+
+在修复分支上进行以下操作：
+
+1. **应用修复**：
+   - 修复基础设施代码
+   - 确保修复正确
+   - 移除业务特定逻辑（如有）
+
+2. **添加测试**：
+   - 为新修复添加测试
+   - 确保测试覆盖率至少 85%
+   - 确保所有测试通过
+
+3. **更新文档**：
+   - 更新相关文档说明修复
+   - 添加使用示例（如需要）
+
+4. **提交代码**：
+
+```bash
+# 添加文件
+git add app/helpers/application_helper.rb
+git add test/helpers/application_helper_test.rb
+
+# 提交（使用规范的提交信息）
+git commit -m "Fix: daisy_form_with parameter wrapping when both model and url provided
+
+When daisy_form_with receives both model and url parameters, it was
+ignoring the model parameter, causing form parameters to not be wrapped
+in the model namespace (e.g., user[email_address]).
+
+This fix prioritizes model over url, ensuring parameters are correctly
+wrapped while still allowing url to override the default form action.
+
+Fixes issue where user registration failed with:
+  ActionController::ParameterMissing: param is missing or the value is empty: user
+
+Closes #123"  # 如果有相关 Issue
+```
+
+**提交信息规范**：
+- 使用 `Fix:` 前缀表示修复
+- 第一行简短描述（50 字符以内）
+- 详细说明问题、修复方案、影响范围
+- 如果有关联 Issue，使用 `Closes #123` 或 `Fixes #123`
+
+#### 步骤 5：推送分支并创建 Pull Request
+
+```bash
+# 推送分支到你的 Fork
+git push origin fix/issue-description
+```
+
+然后在 GitHub 上创建 Pull Request：
+
+1. **访问你的 Fork**：https://github.com/your-username/buildx.work
+2. **点击 "New Pull Request"**
+3. **选择分支**：base: `main` ← compare: `fix/issue-description`
+4. **填写 PR 描述**（使用模板）：
+
+```markdown
+## 🐛 问题描述
+
+简要描述问题是什么，在什么场景下出现。
+
+## 🔧 修复方案
+
+如何修复的？修复的关键点是什么？
+
+## ✅ 测试结果
+
+- [ ] 所有测试通过
+- [ ] 测试覆盖率至少 85%
+- [ ] 代码质量检查通过（RuboCop）
+
+测试覆盖率：XX%
+测试结果：XXX 个测试，XXX 个断言，0 失败
+
+## 🔄 影响范围
+
+- [ ] 不破坏现有功能
+- [ ] 保持向后兼容
+- [ ] 已测试相关功能
+
+## 📚 文档更新
+
+- [ ] 已更新相关文档（如需要）
+
+## 🔗 相关资源
+
+- 相关 Issue：#123
+- 相关文档：[链接]
+```
+
+#### 步骤 6：代码审查和合并
+
+1. **等待审查**：维护者会审查你的 PR
+2. **响应反馈**：根据审查意见进行修改
+3. **保持更新**：如果上游有更新，及时同步：
+
+```bash
+git fetch upstream
+git checkout fix/issue-description
+git merge upstream/main
+# 解决冲突（如果有）
+git push origin fix/issue-description
+```
+
+4. **合并后**：PR 合并后，可以删除修复分支：
+
+```bash
+git checkout main
+git pull upstream main
+git branch -d fix/issue-description
+git push origin --delete fix/issue-description
+```
 
 ## 📝 提交信息规范
 
@@ -210,12 +247,12 @@ Fixes issue where user registration failed with:
 
 ## 🔄 同步修复到其他子项目
 
-修复被合并到基础设施后，需要同步到其他子项目：
+修复通过 GitHub Pull Request 合并到基础设施后，需要同步到其他子项目：
 
 ```bash
 cd /path/to/other-sub-project
 
-# 获取上游更新
+# 获取上游更新（从 GitHub）
 git fetch upstream
 
 # 合并更新
@@ -228,8 +265,11 @@ git merge upstream/main
 bin/rails test
 ```
 
+**注意**：同步更新时，确保从 GitHub 仓库（upstream）获取更新，而不是本地路径。
+
 ## 📚 相关资源
 
+- [功能贡献指南](FEATURE_CONTRIBUTION.md) ⭐ - 如何贡献新功能和通用代码
 - [使用指南](USAGE_GUIDE.md) - 如何使用基础设施
 - [开发者指南](DEVELOPER_GUIDE.md) - 技术决策和架构设计
 - [Git 工作流最佳实践](https://guides.github.com/introduction/flow/)
