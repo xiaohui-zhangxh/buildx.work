@@ -7,8 +7,18 @@ class ExperiencesController < ApplicationController
 
   def index
     @experiences = load_experiences
-    # 按日期倒序排列（最新的在前）
-    @experiences.sort_by! { |exp| exp[:date] || Date.new(1970, 1, 1) }.reverse!
+    # 优先按文档中的日期倒序排列（最新的在前）
+    # 如果没有日期，则按标题排序（字母顺序）
+    # 有日期的排在前面，没有日期的排在后面
+    @experiences.sort_by! do |exp|
+      if exp[:date]
+        # 有日期的按日期倒序（最新的在前），使用负数实现倒序
+        [ 0, -exp[:date].to_time.to_i, exp[:title] || "" ]
+      else
+        # 没有日期的按标题排序（字母顺序），排在后面
+        [ 1, exp[:title] || "" ]
+      end
+    end
   end
 
   def show
@@ -97,7 +107,8 @@ class ExperiencesController < ApplicationController
       title: metadata[:title] || id.humanize,
       date: metadata[:date],
       problem_type: metadata[:problem_type],
-      file_path: file_path
+      file_path: file_path,
+      created_at: File.ctime(file_path)
     }
   end
 
