@@ -1,0 +1,74 @@
+<svg width="300" height="80" viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Primary gradient - Blue to Purple -->
+    <linearGradient id="buildGradientHorizontal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Accent gradient -->
+    <linearGradient id="accentGradientHorizontal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#a5b4fc;stop-opacity:0.6" />
+    </linearGradient>
+    
+    <!-- Text gradient -->
+    <linearGradient id="textGradientHorizontal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glowHorizontal">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Icon section (64x64, centered vertically at y=40) -->
+  <g transform="translate(40, 8)">
+    <!-- Background circle -->
+    <circle cx="32" cy="32" r="30" fill="url(#buildGradientHorizontal)" opacity="0.95"/>
+    
+    <!-- Main X shape - simplified for icon -->
+    <g transform="translate(32, 32)">
+      <!-- Left diagonal -->
+      <rect x="-3" y="-24" width="6" height="48" rx="3" fill="url(#accentGradientHorizontal)" opacity="0.95" transform="rotate(-45 0 0)" filter="url(#glowHorizontal)"/>
+      <!-- Right diagonal -->
+      <rect x="-3" y="-24" width="6" height="48" rx="3" fill="url(#accentGradientHorizontal)" opacity="0.95" transform="rotate(45 0 0)" filter="url(#glowHorizontal)"/>
+    </g>
+    
+    <!-- Simplified building blocks -->
+    <g transform="translate(32, 32)" opacity="0.85">
+      <!-- Top block -->
+      <rect x="-10" y="-28" width="20" height="10" rx="2" fill="url(#accentGradientHorizontal)" opacity="0.8" filter="url(#glowHorizontal)"/>
+      <!-- Middle blocks -->
+      <rect x="-16" y="-6" width="14" height="14" rx="2" fill="url(#accentGradientHorizontal)" opacity="0.7" filter="url(#glowHorizontal)"/>
+      <rect x="2" y="-6" width="14" height="14" rx="2" fill="url(#accentGradientHorizontal)" opacity="0.7" filter="url(#glowHorizontal)"/>
+      <!-- Bottom block -->
+      <rect x="-6" y="10" width="12" height="18" rx="2" fill="url(#accentGradientHorizontal)" opacity="0.8" filter="url(#glowHorizontal)"/>
+    </g>
+    
+    <!-- Center highlight -->
+    <circle cx="32" cy="32" r="3" fill="#ffffff" opacity="0.9" filter="url(#glowHorizontal)"/>
+  </g>
+  
+  <!-- Text section (vertically centered to align with icon center at y=40) -->
+  <g transform="translate(110, 0)">
+    <!-- BuildX text - moved down 2px from center (y=40+2=42) -->
+    <text x="0" y="42" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" font-weight="700" fill="url(#textGradientHorizontal)" opacity="0.95" dominant-baseline="middle" text-anchor="start">
+      BuildX
+    </text>
+    
+    <!-- .work text - 6px spacing from BuildX -->
+    <text x="110" y="42" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="26" font-weight="500" fill="url(#textGradientHorizontal)" opacity="0.75" dominant-baseline="middle" text-anchor="start">
+      .work
+    </text>
+  </g>
+</svg>
+
