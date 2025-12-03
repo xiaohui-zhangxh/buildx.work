@@ -1,5 +1,5 @@
 ---
-description: Cursor 规则文件（.mdc 文件）创建和管理指南。当用户提到"规则"、"规则文件"、"创建规则"、"管理规则"、"cursor 规则"、".mdc 文件"等关键词，或需要创建、修改、管理 .cursor/rules/ 目录下的规则文件时参考此规则。说明规则文件的作用、格式、头部元数据字段（description、alwaysApply）的使用方法。
+description: Cursor 规则文件（.mdc 文件）创建和管理指南。创建、修改、管理 .cursor/rules/ 目录下的规则文件时参考此规则。说明规则文件的作用、格式、头部元数据字段（description、alwaysApply）的使用方法。
 alwaysApply: false
 ---
 

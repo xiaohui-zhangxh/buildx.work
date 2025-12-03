@@ -69,7 +69,13 @@ alwaysApply: true
    - **说明**：适用于 fork 项目，帮助识别和贡献通用功能到基础平台
    - **指令文件**：`.cursor/commands/80-contribute-code.md`
 
-6. 📚 **其他指令**：
+7. 🔀 **同步基础平台更新** (`81-sync-upstream.md`) ⭐
+   - **用途**：智能 rebase upstream main 分支的代码，用于合并基础平台的代码到子项目
+   - **使用方式**：`/sync-upstream` 或 `同步基础平台更新`、`rebase upstream main`
+   - **说明**：适用于 fork 项目，使用 rebase 方式同步基础平台更新，保持提交历史线性
+   - **指令文件**：`.cursor/commands/81-sync-upstream.md`
+
+8. 📚 **其他指令**：
    - 查看 `.cursor/commands/` 目录了解所有可用指令
    - 使用斜线命令执行：`/指令文件名`（不含 .md 扩展名）
 
@@ -121,6 +127,11 @@ alwaysApply: true
    - **说明**：识别可以贡献给基础平台的代码，并协助提取和贡献
    - **指令文件**：`.cursor/commands/80-contribute-code.md` ⭐
 
+7. 🔀 同步基础平台更新
+   - **Cursor 斜线命令**：`/sync-upstream`
+   - **说明**：智能 rebase upstream main 分支的代码，用于合并基础平台的代码到子项目
+   - **指令文件**：`.cursor/commands/81-sync-upstream.md` ⭐
+
 📁 **工作区项目**：
 [根据 workspace.mdc 中的项目列表动态生成，如适用]
 
@@ -130,6 +141,7 @@ alwaysApply: true
 - ✅ 管理任务清单和状态
 - ✅ 创建或管理日报
 - ✅ 识别和贡献代码到基础平台（使用指令：代码贡献）
+- ✅ 同步基础平台更新到子项目（使用指令：同步基础平台更新）
 - ✅ 其他项目相关任务
 
 📖 **查看指令详情**：
@@ -139,6 +151,7 @@ alwaysApply: true
 - 📝 日报管理：`.cursor/commands/03-daily-report.md`
 - 💼 商业价值分析：`.cursor/commands/70-business-analysis.md` ⭐
 - 🔄 代码贡献：`.cursor/commands/80-contribute-code.md` ⭐
+- 🔀 同步基础平台更新：`.cursor/commands/81-sync-upstream.md` ⭐
 
 请告诉我你想做什么，或者使用上面的指令。
 ```
