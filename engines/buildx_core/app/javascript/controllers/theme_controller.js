@@ -2,8 +2,15 @@ import { Controller } from "@hotwired/stimulus"
 
 // Theme toggle controller - handles theme switching and persistence
 // Works with Turbo navigation by listening to turbo:load events
+// Supports customizable theme names via data attributes:
+//   data-theme-light-value="light" (default: "light")
+//   data-theme-dark-value="dark" (default: "dark")
 export default class extends Controller {
   static targets = ["icon"]
+  static values = {
+    light: { type: String, default: "light" },
+    dark: { type: String, default: "dark" }
+  }
 
   connect() {
     // Initialize theme on connect (works for both initial load and Turbo navigation)
@@ -29,7 +36,11 @@ export default class extends Controller {
   toggle() {
     const html = document.documentElement
     const currentTheme = html.getAttribute("data-theme")
-    const newTheme = currentTheme === "dark" ? "light" : "dark"
+    const lightTheme = this.lightValue
+    const darkTheme = this.darkValue
+
+    // Determine new theme based on current theme
+    const newTheme = currentTheme === darkTheme ? lightTheme : darkTheme
 
     // Update theme
     html.setAttribute("data-theme", newTheme)
@@ -40,8 +51,8 @@ export default class extends Controller {
   }
 
   initializeTheme() {
-    // Get saved theme or use default
-    const savedTheme = localStorage.getItem("theme") || "light"
+    // Get saved theme or use default (light theme)
+    const savedTheme = localStorage.getItem("theme") || this.lightValue
     const html = document.documentElement
 
     // Apply theme
@@ -54,9 +65,10 @@ export default class extends Controller {
   updateIcon(theme) {
     // Update all theme icons on the page (there might be multiple instances)
     const icons = document.querySelectorAll("[data-theme-target='icon']")
+    const darkTheme = this.darkValue
 
     icons.forEach((icon) => {
-      if (theme === "dark") {
+      if (theme === darkTheme) {
         // Moon icon for dark mode
         icon.innerHTML =
           '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />'
@@ -68,4 +80,3 @@ export default class extends Controller {
     })
   }
 }
-

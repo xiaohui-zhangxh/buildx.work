@@ -1,0 +1,34 @@
+@plugin "daisyui/theme" {
+    name: "lofi"; 
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(100% 0 0);
+    --color-base-200: oklch(97% 0.002 240);
+    --color-base-300: oklch(94% 0.004 240);
+    --color-base-content: oklch(20% 0.02 240);
+    --color-primary: oklch(55% 0.22 250);
+    --color-primary-content: oklch(100% 0 0);
+    --color-secondary: oklch(65% 0.15 280);
+    --color-secondary-content: oklch(100% 0 0);
+    --color-accent: oklch(60% 0.25 270);
+    --color-accent-content: oklch(100% 0 0);
+    --color-neutral: oklch(45% 0.02 240);
+    --color-neutral-content: oklch(100% 0 0);
+    --color-info: oklch(65% 0.20 220);
+    --color-info-content: oklch(100% 0 0);
+    --color-success: oklch(70% 0.20 150);
+    --color-success-content: oklch(100% 0 0);
+    --color-warning: oklch(75% 0.18 80);
+    --color-warning-content: oklch(20% 0.02 80);
+    --color-error: oklch(60% 0.22 20);
+    --color-error-content: oklch(100% 0 0);
+    --radius-selector: 0.5rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.75rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
