@@ -308,7 +308,7 @@ git log --author="[员工姓名或邮箱]" --since="[今天] 00:00:00" --until="
 git log --author="xiaohui" --since="2025-11-26 00:00:00" --until="2025-11-26 23:59:59" --pretty=format:"%H|%an|%ae|%ad|%s" --date=iso
 
 # 如果姓名匹配不准确，可以使用邮箱或部分匹配
-git log --author="xiaohui@tanmer.com" --since="2025-11-26 00:00:00" --until="2025-11-26 23:59:59"
+git log --author="user@example.com" --since="2025-11-26 00:00:00" --until="2025-11-26 23:59:59"
 
 # 或者使用 --all 搜索所有分支
 git log --all --author="xiaohui" --since="2025-11-26 00:00:00" --until="2025-11-26 23:59:59"
@@ -419,6 +419,6 @@ git log --since="[今天] 00:00:00" --until="[今天] 23:59:59" --pretty=format:
 **创建日期**：2025-11-26  
 **最后更新**：2025-11-26  
 **指令类型**：通用指令  
-**适用项目**：BuildX.work (tanmer-egg)  
+**适用项目**：BuildX.work (project-name)  
 **相关规则**：`.cursor/rules/check-missing-daily-report.mdc`
 

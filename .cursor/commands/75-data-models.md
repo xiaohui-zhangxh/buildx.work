@@ -130,7 +130,7 @@
 4. 数据迁移顺序
 5. 性能考虑
 
-**参考模板**：`docs/daily-card-platform/05-DATA_MODELS.md`
+**参考模板**：`docs/project-[project-name]/05-DATA_MODELS.md`
 
 ## 检查清单
 
@@ -173,7 +173,7 @@
 - 产品设计：`03-PRODUCT_DESIGN.md`
 - 项目规划：`02-PROJECT_PLAN.md`
 - 项目创建指南：`docs/PROJECT_CREATION_GUIDE.md` - 数据模型设计阶段
-- 数据模型模板：`docs/daily-card-platform/05-DATA_MODELS.md`
+- 数据模型模板：`docs/project-[project-name]/05-DATA_MODELS.md`
 
 ---
 

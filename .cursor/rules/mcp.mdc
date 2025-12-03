@@ -151,7 +151,7 @@ alwaysApply: false
   "mcpServers": {
     "baklib-desk-local": {
       "type": "httpPost",
-      "url": "http://tanmer.lvh.me:3000/mcp/desk?token=xxx",
+      "url": "http://example.lvh.me:3000/mcp/desk?token=xxx",
       "description": "Baklib 探码组织的 MCP Server。提供知识库、资源库、站点管理等功能的工具和资源。"
     }
   }

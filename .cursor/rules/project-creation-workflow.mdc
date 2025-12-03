@@ -68,7 +68,7 @@ alwaysApply: false
 - [ ] 原型设计（可选但建议：高保真原型、交互原型）
 - [ ] 创建 `03-PRODUCT_DESIGN.md` 文档
 
-**参考文档**：`docs/daily-card-platform/03-PRODUCT_DESIGN.md`（示例）
+**参考文档**：`docs/project-[project-name]/03-PRODUCT_DESIGN.md`（示例）
 
 **AI 执行方式**：参考 `.cursor/commands/72-product-design.md` 指令，AI 应该扮演产品设计专家角色，认真完成产品设计工作，特别关注用户定位。
 
@@ -132,7 +132,7 @@ alwaysApply: false
 - [ ] 模型扩展说明
 - [ ] 创建 `05-DATA_MODELS.md` 文档
 
-**参考文档**：`docs/daily-card-platform/05-DATA_MODELS.md`（示例）
+**参考文档**：`docs/project-[project-name]/05-DATA_MODELS.md`（示例）
 
 **AI 执行方式**：参考 `.cursor/commands/75-data-models.md` 指令，AI 应该扮演数据库架构师角色，认真完成数据模型设计工作。
 
@@ -151,7 +151,7 @@ alwaysApply: false
 - [ ] API 设计文档（如有 API）
 - [ ] 部署文档（如有特殊部署需求）
 
-**参考文档**：`docs/daily-card-platform/06-AI_INTEGRATION.md`（示例）
+**参考文档**：`docs/project-[project-name]/06-AI_INTEGRATION.md`（示例）
 
 **AI 执行方式**：参考 `.cursor/commands/76-special-features.md` 指令，AI 应该扮演技术方案专家角色，认真完成特殊功能设计工作。
 
@@ -361,7 +361,7 @@ docs/project-name/
 
 ### 文档模板
 - 商业价值分析模板：参考已完成项目的 `01-BUSINESS_ANALYSIS.md`
-- 产品设计模板：参考 `docs/daily-card-platform/03-PRODUCT_DESIGN.md`
+- 产品设计模板：参考 `docs/project-[project-name]/03-PRODUCT_DESIGN.md`
 - 数据模型模板：参考已完成项目的 `05-DATA_MODELS.md`
 - 开发计划模板：参考已完成项目的 `07-DEVELOPMENT_PLAN.md`
 

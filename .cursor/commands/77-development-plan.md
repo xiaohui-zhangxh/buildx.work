@@ -163,7 +163,7 @@
 4. 里程碑
 5. 风险评估
 
-**参考模板**：`docs/daily-card-platform/07-DEVELOPMENT_PLAN.md`
+**参考模板**：`docs/project-[project-name]/07-DEVELOPMENT_PLAN.md`
 
 ## 检查清单
 
@@ -211,7 +211,7 @@
 - 产品设计：`03-PRODUCT_DESIGN.md`
 - 数据模型：`05-DATA_MODELS.md`
 - 项目创建指南：`docs/PROJECT_CREATION_GUIDE.md` - 开发计划阶段
-- 开发计划模板：`docs/daily-card-platform/07-DEVELOPMENT_PLAN.md`
+- 开发计划模板：`docs/project-[project-name]/07-DEVELOPMENT_PLAN.md`
 
 ---
 

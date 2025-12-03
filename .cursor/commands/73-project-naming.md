@@ -226,7 +226,7 @@
 3. 综合评估
 4. 最终建议
 
-**参考模板**：`docs/daily-card-platform/04-NAME_OPTIONS.md`
+**参考模板**：`docs/project-[project-name]/04-NAME_OPTIONS.md`
 
 ## 检查清单
 
@@ -305,7 +305,7 @@
 ## 相关文档
 
 - 项目创建指南：`docs/PROJECT_CREATION_GUIDE.md` - 项目命名阶段
-- 命名备选方案模板：`docs/daily-card-platform/04-NAME_OPTIONS.md`
+- 命名备选方案模板：`docs/project-[project-name]/04-NAME_OPTIONS.md`
 
 ---
 

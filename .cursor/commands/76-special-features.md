@@ -97,7 +97,7 @@
 - AI 功能集成方案文档
 - 创建 `06-AI_INTEGRATION.md` 文档
 
-**参考模板**：`docs/daily-card-platform/06-AI_INTEGRATION.md`
+**参考模板**：`docs/project-[project-name]/06-AI_INTEGRATION.md`
 
 ### 步骤 3：设计 API 方案（如有）
 
@@ -209,7 +209,7 @@
 
 - 项目规划：`02-PROJECT_PLAN.md`
 - AI 开发规则：`.cursor/rules/ai-development.mdc`
-- AI 集成方案模板：`docs/daily-card-platform/06-AI_INTEGRATION.md`
+- AI 集成方案模板：`docs/project-[project-name]/06-AI_INTEGRATION.md`
 - 项目创建指南：`docs/PROJECT_CREATION_GUIDE.md` - 特殊功能设计阶段
 
 ---

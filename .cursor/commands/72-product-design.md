@@ -210,7 +210,7 @@
 6. 视觉设计规范
 7. 原型设计（可选）
 
-**参考模板**：`docs/daily-card-platform/03-PRODUCT_DESIGN.md`
+**参考模板**：`docs/project-[project-name]/03-PRODUCT_DESIGN.md`
 
 ## 检查清单
 
@@ -269,7 +269,7 @@
 - 商业价值分析：`01-BUSINESS_ANALYSIS.md`
 - 项目规划：`02-PROJECT_PLAN.md`
 - 项目创建指南：`docs/PROJECT_CREATION_GUIDE.md` - 产品设计阶段
-- 产品设计模板：`docs/daily-card-platform/03-PRODUCT_DESIGN.md`
+- 产品设计模板：`docs/project-[project-name]/03-PRODUCT_DESIGN.md`
 
 ---
 

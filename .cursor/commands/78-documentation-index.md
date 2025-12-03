@@ -162,7 +162,7 @@
 ## 相关文档
 
 - 项目创建指南：`docs/PROJECT_CREATION_GUIDE.md` - 文档创建阶段
-- 文档索引模板：`docs/daily-card-platform/00-README.md`
+- 文档索引模板：`docs/project-[project-name]/00-README.md`
 - 项目创建流程规则：`.cursor/rules/project-creation-workflow.mdc`
 
 ---

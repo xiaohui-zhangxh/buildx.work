@@ -601,11 +601,11 @@ bin/dev
 ## 参考资源
 
 ### 文档模板
-- 商业价值分析模板：参考 `docs/daily-card-platform/01-BUSINESS_ANALYSIS.md`
-- 项目规划模板：参考 `docs/daily-card-platform/02-PROJECT_PLAN.md`
-- 产品设计模板：参考 `docs/daily-card-platform/03-PRODUCT_DESIGN.md`
-- 数据模型模板：参考 `docs/daily-card-platform/05-DATA_MODELS.md`
-- 开发计划模板：参考 `docs/daily-card-platform/07-DEVELOPMENT_PLAN.md`
+- 商业价值分析模板：参考 `docs/project-[project-name]/01-BUSINESS_ANALYSIS.md`
+- 项目规划模板：参考 `docs/project-[project-name]/02-PROJECT_PLAN.md`
+- 产品设计模板：参考 `docs/project-[project-name]/03-PRODUCT_DESIGN.md`
+- 数据模型模板：参考 `docs/project-[project-name]/05-DATA_MODELS.md`
+- 开发计划模板：参考 `docs/project-[project-name]/07-DEVELOPMENT_PLAN.md`
 
 ### 规则文件
 - AI 开发规则：`.cursor/rules/ai-development.mdc`
