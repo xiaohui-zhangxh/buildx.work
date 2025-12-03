@@ -340,8 +340,9 @@
 
 ### 第五部分：文档更新
 
-- [ ] 更新 README.md，标记已完成的功能
+- [ ] 更新 `engines/buildx_core/README.md`，标记已完成的功能
 - [ ] 更新 DEVELOPER_GUIDE.md，添加权限系统和管理后台的说明
+- **注意**：根目录 `README.md` 只做简单介绍和链接，详细文档在 `engines/buildx_core/README.md`
 - [ ] 更新 FEATURES.md，标记完成的功能
 - [ ] 添加管理后台使用文档
 

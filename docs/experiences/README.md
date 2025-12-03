@@ -6,7 +6,7 @@
 
 ### 前端集成
 
-- [Highlight.js 集成问题](./highlight.js.md) (2025-11-25)
+- [Highlight.js 集成问题](./importmap-install-highlight-js.md) (2025-11-25)
   - Importmap 路径配置
   - ES Module vs CommonJS 兼容性
   - Stimulus Controller 初始化
@@ -15,6 +15,12 @@
   - OpenSSL gem 配置
   - SSL 证书验证问题
   - Importmap HTTPS 连接
+
+- [Importmap 从 Engine 中加载配置](./importmap-engine-loading.md) (2025-12-03)
+  - Rails Engine 中配置 importmap 的三个关键路径
+  - Engine 的 controllers 无法识别的解决方案
+  - 开发环境缓存清理配置
+  - 配置分离策略
 
 ### 后端逻辑 / 认证系统
 

@@ -232,8 +232,10 @@ git add <resolved-file>
 
 4. **文档冲突**（如 `README.md`）：
    - **策略**：保留基础平台的文档
-   - **原因**：基础平台的文档是标准文档
-   - **注意**：业务特定文档应该在 `docs/project-*/` 目录
+   - **原因**：根目录 `README.md` 只做简单介绍和链接，指向 `engines/buildx_core/README.md`
+   - **注意**：
+     - 业务特定文档应该在 `docs/project-*/` 目录
+     - 不要修改根目录 `README.md`，详细的基础设施文档在 `engines/buildx_core/README.md`
 
 **步骤 5：提交合并**
 

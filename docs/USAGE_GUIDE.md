@@ -98,7 +98,7 @@ bin/dev
 
 ```
 my-new-project/
-├── app/
+├── app/                          # 主应用（业务逻辑）
 │   ├── models/
 │   │   ├── user.rb              # 基础设施：用户模型
 │   │   ├── concerns/            # 基础设施：Concern 模块
@@ -106,12 +106,38 @@ my-new-project/
 │   ├── controllers/
 │   │   ├── application_controller.rb  # 基础设施：基础控制器
 │   │   └── ...                  # 在这里添加你的业务控制器
-│   └── ...
+│   └── views/                    # 业务视图（如需要覆盖 Engine 视图）
+│
+├── engines/
+│   └── buildx_core/              # 基础设施 Engine
+│       ├── app/
+│       │   ├── views/            # 基础设施视图（认证、管理后台等）
+│       │   ├── javascript/       # JavaScript Controllers
+│       │   └── assets/          # 样式和图片资源
+│       ├── vendor/               # 第三方库（JavaScript、CSS）
+│       └── lib/
+│           └── buildx_core/
+│               └── engine.rb     # Engine 配置
+│
 ├── config/
 │   └── initializers/
 │       └── extensions.rb        # 扩展加载机制（自动创建）
 └── ...
 ```
+
+**重要说明**：
+- **Engine 管理基础设施资源**：视图、JavaScript、样式等都在 `engines/buildx_core/` 中
+- **主应用管理业务逻辑**：控制器、模型、业务视图等在 `app/` 中
+- **覆盖视图**：如需要自定义基础设施视图，在主应用的 `app/views/` 中创建同名文件即可覆盖 Engine 视图
+
+**为什么只把 Views 和 Assets 放入 Engine？**
+
+- **Views 和 Assets 相对稳定**：视图和资源文件一旦确定，很少需要修改，放在 Engine 中可以减少合并冲突
+- **Controllers 和 Models 需要频繁扩展**：业务项目经常需要通过 Module/Concern 扩展，放在主应用中更方便扩展和调试
+- **扩展机制更灵活**：控制器和模型通过扩展机制扩展，视图可以通过覆盖机制自定义
+- **开发体验更好**：控制器和模型在主应用中，代码可见，调试方便，符合 Rails 约定
+
+详细说明请参考 [开发者指南 - 项目架构](DEVELOPER_GUIDE.md#-项目架构)
 
 ---
 

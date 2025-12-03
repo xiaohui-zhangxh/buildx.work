@@ -200,6 +200,105 @@ AuditLog.log(
 - [cloudflare-rails GitHub](https://github.com/modosc/cloudflare-rails)
 - [Cloudflare IP 地址列表](https://www.cloudflare.com/ips/)
 
+## 🏗️ 项目架构
+
+### Rails Engine 架构
+
+**BuildX.work 采用 Rails Engine 架构**，将基础设施代码组织在 Engine 中，主应用专注于业务逻辑。
+
+#### 架构设计
+
+**Engine 位置**：`engines/buildx_core/`
+
+**Engine 职责**：
+- 管理基础设施的视图文件（认证、管理后台等）
+- 管理 JavaScript Controllers（Stimulus）
+- 管理样式和图片资源
+- 管理第三方库（JavaScript、CSS）
+- 管理邮件模板
+
+**主应用职责**：
+- 管理业务逻辑（控制器、模型）
+- 管理业务视图（如需要覆盖 Engine 视图）
+- 通过 Module/Concern 扩展基础设施功能
+
+#### 目录结构
+
+```
+buildx.work/
+├── app/                          # 主应用（业务逻辑）
+│   ├── controllers/              # 业务控制器
+│   ├── models/                   # 业务模型
+│   ├── views/                    # 业务视图（可覆盖 Engine 视图）
+│   └── ...
+│
+└── engines/
+    └── buildx_core/              # 基础设施 Engine
+        ├── app/
+        │   ├── views/            # 基础设施视图
+        │   ├── javascript/       # JavaScript Controllers
+        │   └── assets/          # 样式和图片资源
+        ├── vendor/               # 第三方库
+        └── lib/
+            └── buildx_core/
+                └── engine.rb     # Engine 配置
+```
+
+#### 为什么使用 Engine？
+
+1. **代码组织清晰**：基础设施资源统一管理，职责分离明确
+2. **便于维护**：基础设施代码集中管理，更新时只需修改 Engine
+3. **减少合并冲突**：视图文件在 Engine 中，业务项目很少需要修改
+4. **开发体验友好**：Engine 作为项目内部模块，代码可见，调试方便
+
+#### 为什么只把 Views 和 Assets 放入 Engine？
+
+**放入 Engine 的内容**：
+- **Views（视图）**：基础设施的视图文件（认证、管理后台等）
+- **Assets（资源）**：JavaScript Controllers、样式、图片等静态资源
+- **Vendor（第三方库）**：第三方 JavaScript、CSS 库
+
+**不放入 Engine 的内容**：
+- **Controllers（控制器）**：保留在主应用的 `app/controllers/`
+- **Models（模型）**：保留在主应用的 `app/models/`
+- **Lib（工具库）**：保留在主应用的 `lib/` 或 `app/`
+
+**设计原因**：
+
+1. **Views 和 Assets 相对稳定**：
+   - 视图文件一旦确定，很少需要修改
+   - 资源文件（JavaScript、CSS）相对固定
+   - 放在 Engine 中可以减少合并冲突，因为业务项目很少需要修改这些文件
+
+2. **Controllers 和 Models 需要频繁扩展**：
+   - 业务项目经常需要通过 Module/Concern 扩展控制器和模型
+   - 放在主应用中更方便扩展和调试
+   - 通过扩展机制（`app/models/concerns/`、`app/controllers/concerns/`）可以灵活扩展，无需修改 Engine
+
+3. **扩展机制更灵活**：
+   - 控制器和模型通过 Module/Concern 扩展，不需要放在 Engine 中
+   - 主应用中的扩展模块可以覆盖或扩展基础设施功能
+   - 视图文件可以通过覆盖机制自定义（在主应用创建同名文件）
+
+4. **开发体验更好**：
+   - 控制器和模型在主应用中，代码可见，调试方便
+   - 不需要处理 Engine 的加载顺序和命名空间问题
+   - 符合 Rails 约定，代码组织更直观
+
+#### 覆盖 Engine 视图
+
+如需要自定义基础设施视图，在主应用的 `app/views/` 中创建同名文件即可覆盖 Engine 视图：
+
+```
+app/views/
+└── sessions/
+    └── new.html.erb              # 覆盖 Engine 的登录页面
+```
+
+**相关文档**：
+- [使用指南 - 项目结构说明](USAGE_GUIDE.md#项目结构说明)
+- [开发经验 - Importmap 从 Engine 中加载配置](experiences/importmap-engine-loading.md)
+
 ## 📁 项目结构规范
 
 ### 第三方库文件存放位置
