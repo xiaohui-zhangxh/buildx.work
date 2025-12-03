@@ -147,12 +147,14 @@ AI 执行：
 ## 🔗 相关文件
 
 ### 规则文件
+
 - 通用规则：`.cursor/rules/base.mdc`
 - 项目规则：`.cursor/rules/workspace.mdc`
 - 规则创建指南：`.cursor/rules/cursor-rules.mdc`
 - 指令创建指南：`.cursor/rules/cursor-commands.mdc`
 
 ### 项目文档
+
 - 当前工作状态：`CURRENT_WORK.md` ⭐ 每日必看
 - 开发者指南：`docs/DEVELOPER_GUIDE.md`
 - 文档索引：`docs/README.md`

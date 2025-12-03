@@ -12,9 +12,11 @@ alwaysApply: true
 ### 根目录文档
 
 根目录下的主要文档包括：
-- **技术栈说明**：更新 `README.md` 或 `docs/DEVELOPER_GUIDE.md`
+- **技术栈说明**：更新 `engines/buildx_core/README.md` 或 `docs/DEVELOPER_GUIDE.md`
 - **开发笔记**：更新对应阶段的 `notes.md`
 - **记录添加原因和使用场景**：便于后续维护
+
+**注意**：根目录 `README.md` 只做简单介绍和链接，指向 `engines/buildx_core/README.md` 获取详细文档。详细的基础设施文档在 `engines/buildx_core/README.md`。
 
 ### 解决技术问题
 
@@ -57,7 +59,7 @@ alwaysApply: true
 1. **技术决策**：更新 `docs/DEVELOPER_GUIDE.md`
 2. **开发进度**：更新对应阶段的 `progress.md`
 3. **开发笔记**：更新对应阶段的 `notes.md`
-4. **功能完成**：更新 `docs/FEATURES.md` 和 `README.md`
+4. **功能完成**：更新 `docs/FEATURES.md` 和 `engines/buildx_core/README.md`
 
 ### 如何更新文档
 
@@ -75,7 +77,8 @@ alwaysApply: true
 
 ## 🔗 重要链接
 
-- **项目主页**：`README.md`
+- **项目主页**：`README.md`（简单介绍和链接）
+- **基础设施详细文档**：`engines/buildx_core/README.md` ⭐ 查看完整文档
 - **当前工作**：`CURRENT_WORK.md` ⭐ 每日必看
 - **文档索引**：`docs/README.md`
 - **功能清单**：`docs/FEATURES.md`
@@ -86,10 +89,11 @@ alwaysApply: true
 ## ⚠️ 注意事项
 
 1. **每日更新 CURRENT_WORK.md**：开始工作时查看，完成工作后更新
-2. **不要重复文档内容**：README.md 保持精简，详细内容在其他文档
+2. **不要重复文档内容**：根目录 `README.md` 保持精简（只做介绍和链接），详细内容在 `engines/buildx_core/README.md`
 3. **及时更新进度**：开发过程中及时更新 progress.md 和 CURRENT_WORK.md
 4. **记录技术决策**：重要决策记录在 DEVELOPER_GUIDE.md 和对应阶段的 notes.md
 5. **遵循开发顺序**：按阶段顺序开发，不要跳跃
+6. **业务文档隔离**：业务项目的文档应该放在 `docs/project-[项目名称]/` 目录下，不要修改根目录 `README.md`
 
 ## 📖 快速参考
 

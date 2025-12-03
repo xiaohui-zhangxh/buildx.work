@@ -1,5 +1,5 @@
 ---
-description: 认证系统开发规则和参考
+description: 认证系统开发规则和参考。开发用户认证、登录、注册、密码重置等功能时参考此规则。使用 Rails 8 Authentication Generator 和 Warden 管理身份。
 alwaysApply: false
 ---
 
@@ -89,7 +89,8 @@ alwaysApply: false
 
 4. **更新文档**：
    - 更新 `docs/DEVELOPER_GUIDE.md` 记录新的功能
-   - 更新 README.md 标记完成的功能
+   - 更新 `engines/buildx_core/README.md` 标记完成的功能
+   - **注意**：根目录 `README.md` 只做简单介绍和链接，详细文档在 `engines/buildx_core/README.md`
 
 ### 添加新的认证策略（如 API Token、JWT）
 

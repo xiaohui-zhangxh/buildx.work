@@ -1,15 +1,19 @@
 ---
-description: BuildX.work 项目类型识别和开发原则。区分 buildx.work 基础项目和 fork 业务项目，明确各自的开发职责。
-alwaysApply: true
+description: BuildX.work 项目类型识别和开发原则。区分 buildx.work 基础项目和 fork 业务项目，明确各自的开发职责。当提到"子项目"、"业务项目"、"fork 项目"、"项目类型"、"文档存储"、"文档操作"、"README.md"、"docs/project-"、"创建文档"、"修改文档"、"项目识别"、"开发职责"、"基础功能"、"业务逻辑"、"扩展功能"、"合并冲突"等关键词，或需要识别项目类型、创建/修改文档、开发业务功能、处理文档规范时参考此规则。
+alwaysApply: false
 ---
 
 # BuildX.work 项目类型识别和开发原则
 
 ## 🎯 核心原则
 
-**BuildX.work** 采用 **Fork + Module 扩展** 的架构模式：
+**BuildX.work** 采用 **Fork + Rails Engine + Module 扩展** 的混合架构模式：
 - **buildx.work**：专注于基础功能的开发和维护
+  - **Engine**：管理基础设施的视图、JavaScript、样式等资源（`engines/buildx_core/`）
+  - **主应用**：管理控制器、模型等业务逻辑（`app/`）
 - **fork 项目**：专注于业务逻辑开发，不修改基础功能
+  - 通过 Module/Concern 扩展基础设施功能
+  - 可在主应用中覆盖 Engine 视图（如需要）
 
 ## 📁 文档存储规范
 
@@ -19,8 +23,10 @@ alwaysApply: true
 
 1. **根目录 README.md**：
    - ✅ **永远保持为 buildx.work 的文档**
+   - ✅ **只做简单介绍和链接**，指向 `engines/buildx_core/README.md` 获取详细文档
    - ❌ **禁止在 fork 项目中修改根目录 README.md**
    - 原因：避免合并冲突，保持与 buildx.work 的兼容性
+   - **设计目的**：降低根目录 README 的修改频率，减少合并冲突
 
 2. **Fork 项目文档存储位置**：
    - ✅ 所有 fork 项目的文档存储在 `docs/project-[project-name]/` 目录下
@@ -42,12 +48,12 @@ alwaysApply: true
    │   ├── phase-2-authorization/
    │   └── ...
    │
-   └── project-[project-name]/          # fork 项目的业务文档（仅业务特定文档）
-       ├── 00-README.md                # 项目文档索引
-       ├── 01-BUSINESS_ANALYSIS.md
-       ├── 02-PROJECT_PLAN.md
-       ├── phase-1-mvp/                # 业务开发阶段文档
-       └── ...
+└── project-[project-name]/          # fork 项目的业务文档（仅业务特定文档）
+    ├── README.md                   # 项目文档索引（不使用数字前缀）
+    ├── 01-BUSINESS_ANALYSIS.md
+    ├── 02-PROJECT_PLAN.md
+    ├── phase-1-mvp/                # 业务开发阶段文档
+    └── ...
    ```
 
 **重要说明**：
@@ -67,7 +73,8 @@ alwaysApply: true
 - ✅ 更新 CURRENT_WORK.md 时，只更新 fork 项目相关的内容
 
 **当识别为 BuildX.work 项目时，AI 可以**：
-- ✅ 修改根目录 README.md
+- ✅ 修改根目录 README.md（但应该保持简洁，只做介绍和链接）
+- ✅ 修改 `engines/buildx_core/README.md`（详细的基础设施文档）
 - ✅ 修改 `docs/` 根目录下的通用文档（如 `docs/DEVELOPER_GUIDE.md`、`docs/phase-*/`）
 - ✅ 创建或修改阶段文档（`docs/phase-*/`）
 - ✅ **不需要创建 `docs/project-buildx.work/` 目录**，文档直接放在 `docs/` 根目录
@@ -82,11 +89,11 @@ AI 应该通过以下方式识别当前项目类型：
 
 **buildx.work 项目特征**：
 - README.md 标题为 "BuildX.work 🚀"
-- README.md 包含 "基础设施模板"、"业务网站生成平台" 等描述
-- README.md 说明项目定位为"基础设施模板"
+- README.md 只做简单介绍和链接，指向 `engines/buildx_core/README.md`
+- 详细的基础设施文档在 `engines/buildx_core/README.md`
 
 **fork 项目特征**：
-- README.md 标题为 "BuildX.work 🚀"（**注意：fork 项目的 README.md 也保持为 buildx.work 的文档**）
+- README.md 标题为 "BuildX.work 🚀"（**注意：fork 项目的 README.md 也保持为 buildx.work 的文档，只做简单介绍和链接**）
 - 存在业务特定的文档目录（`docs/project-[project-name]/`）
 - 通过检查 `docs/project-*/` 目录识别 fork 项目
 
@@ -479,4 +486,4 @@ end
 
 **创建时间**：2025-12-02  
 **最后更新**：2025-12-02  
-**规则版本**：v1.1（添加文档存储规范）
+**规则版本**：v1.2（更新根目录 README 规范，指向 engines/buildx_core/README.md）

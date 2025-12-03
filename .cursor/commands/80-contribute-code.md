@@ -42,8 +42,10 @@
    - 如果 origin 指向 buildx.work 仓库，说明是 buildx.work 项目
 
 3. **检查 README.md**：
-   - 如果 README.md 包含业务特定内容，说明是 fork 项目
-   - 如果 README.md 是基础平台文档，说明是 buildx.work 项目
+   - 根目录 `README.md` 只做简单介绍和链接，指向 `engines/buildx_core/README.md`
+   - 详细的基础设施文档在 `engines/buildx_core/README.md`
+   - 如果存在 `docs/project-*/` 目录，说明是 fork 项目
+   - 如果不存在 `docs/project-*/` 目录，说明是 buildx.work 项目
 
 **输出**：
 - 项目类型（buildx.work / fork 项目）

@@ -7,7 +7,43 @@ alwaysApply: false
 
 ## 核心原则
 
-**重要规则**：所有从外部下载的第三方库文件（JavaScript、CSS 等）必须存放在 `vendor/` 目录下，而不是 `app/assets/` 目录。
+### 项目资源 vs 第三方资源
+
+**重要规则**：
+- **项目自己的资源**（Logo、图标、项目图片等）：存放在 `app/assets/` 目录
+- **第三方库文件**（JavaScript、CSS 等）：存放在 `vendor/` 目录
+
+### 图片资源存放规范 ⭐ **基础规则**
+
+**项目图片资源必须存放在 `app/assets/images/` 目录**，包括：
+- Logo 文件（`logo.svg`、`logo-icon.svg` 等）
+- Favicon（`icon.svg`、`icon.png`）
+- 项目自己的图标、图片等
+
+**为什么放在 `app/assets/images/`**：
+- 符合 Rails Asset Pipeline 规范
+- 通过 `image_tag` 或 `asset_path` 自动引用
+- 支持资源预编译和优化
+- 便于版本控制和缓存管理
+
+**示例**：
+```
+app/assets/images/
+├── logo.svg              # 主 Logo
+├── logo-icon.svg         # 图标版本
+├── logo-horizontal.svg  # 横向版本
+├── icon.svg             # Favicon (SVG)
+└── icon.png             # Favicon (PNG)
+```
+
+**在视图中使用**：
+```erb
+<!-- 使用 image_tag（推荐） -->
+<%= image_tag "logo.svg", alt: "Logo" %>
+
+<!-- 使用 asset_path -->
+<%= asset_path('icon.svg') %>
+```
 
 ## 目录结构
 
@@ -57,14 +93,30 @@ pin "highlight.js/lib/languages/ruby", to: "highlight.js/lib/languages/ruby.js"
 /* 直接复制内容或使用 @import（如果支持） */
 ```
 
-### 3. 其他资源
+### 3. 图片资源
 
-- **图片、字体等资源**：存放在 `vendor/assets/` 对应子目录
+#### 项目自己的图片（Logo、图标等）
+
+- **存放位置**：`app/assets/images/` 目录 ⭐ **基础规则**
+- **包括**：Logo、Favicon、项目图标、项目图片等
+- **使用方式**：通过 `image_tag` 或 `asset_path` 引用
+
+**示例**：
+- `app/assets/images/logo.svg` - 项目 Logo
+- `app/assets/images/icon.svg` - Favicon
+- `app/assets/images/brand/` - 品牌相关图片
+
+#### 第三方图片资源
+
+- **存放位置**：`vendor/assets/images/` 目录
+- **包括**：从第三方库下载的图片、图标等
 
 ## 文件分类说明
 
 | 文件类型 | 存放位置 | 说明 |
 |---------|---------|------|
+| **项目图片资源** | `app/assets/images/` 目录 ⭐ | Logo、Favicon、项目图标等 |
+| **项目样式文件** | `app/assets/stylesheets/` 目录 | 项目自己的 CSS 样式 |
 | **第三方原始文件** | `vendor/` 目录 | 从外部下载的、未经修改的库文件 |
 | **项目包装文件** | `app/assets/` 目录 | 对第三方库进行合并、修改或包装的文件 |
 
@@ -76,6 +128,31 @@ pin "highlight.js/lib/languages/ruby", to: "highlight.js/lib/languages/ruby.js"
 - **版本控制**：便于跟踪第三方库的版本和来源
 
 ## 常见场景
+
+### 场景 0：添加项目 Logo 和图标 ⭐ **基础场景**
+
+**步骤**：
+
+1. 将 Logo 文件放在 `app/assets/images/` 目录
+   ```
+   app/assets/images/
+   ├── logo.svg
+   ├── logo-icon.svg
+   ├── icon.svg
+   └── icon.png
+   ```
+
+2. 在视图中使用 `image_tag` 引用
+   ```erb
+   <%= image_tag "logo.svg", alt: "Logo" %>
+   ```
+
+3. 在布局文件中使用 `asset_path` 引用 Favicon
+   ```erb
+   <link rel="icon" href="<%= asset_path('icon.svg') %>" type="image/svg+xml">
+   ```
+
+**重要**：Logo 和项目图片资源必须放在 `app/assets/images/`，不要放在 `public/` 目录。
 
 ### 场景 1：集成 highlight.js
 
@@ -104,10 +181,17 @@ pin "highlight.js/lib/languages/ruby", to: "highlight.js/lib/languages/ruby.js"
 
 ## 注意事项
 
-1. **不要使用 `bin/importmap pin` 下载复杂库**：对于模块化库，需要手动下载所有依赖文件
-2. **保持原始文件不变**：第三方原始文件放在 `vendor/` 目录，不要修改
-3. **包装文件要注明来源**：在包装文件中添加注释，说明原始文件位置
-4. **版本控制**：在包装文件中记录第三方库的版本和来源 URL
+1. **项目图片资源必须放在 `app/assets/images/`** ⭐ **基础规则**
+   - Logo、Favicon、项目图标等必须放在此目录
+   - 不要放在 `public/` 目录（除非是静态 HTML 错误页面等特殊需求）
+
+2. **不要使用 `bin/importmap pin` 下载复杂库**：对于模块化库，需要手动下载所有依赖文件
+
+3. **保持原始文件不变**：第三方原始文件放在 `vendor/` 目录，不要修改
+
+4. **包装文件要注明来源**：在包装文件中添加注释，说明原始文件位置
+
+5. **版本控制**：在包装文件中记录第三方库的版本和来源 URL
 
 ## 相关文件
 
