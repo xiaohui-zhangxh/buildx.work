@@ -10,11 +10,55 @@
 
 **本文档与 [贡献指南](CONTRIBUTING.md) 的区别**：
 - **贡献指南**：主要说明如何贡献**修复**（bug fix）和改进
-- **功能贡献指南**：主要说明如何贡献**新功能**（feature）和通用代码
+- **功能贡献指南**（本文档）：主要说明如何贡献**新功能**（feature）和通用代码
 
 **贡献方式**：
-- ✅ **唯一方式**：通过 GitHub Pull Request 提交
+- ✅ **推荐方式**：使用 AI 指令自动识别和贡献（`/contribute-code`）
+- ✅ **备选方式**：手动通过 GitHub Pull Request 提交
 - ❌ **不支持**：Git 补丁、直接提交、邮件等方式
+
+## 🚀 快速开始：使用 AI 指令自动贡献（推荐）
+
+**最简单的方式**：使用 Cursor 的代码贡献指令自动识别和贡献代码。
+
+### 使用步骤
+
+1. **在 Cursor 中执行指令**：
+   ```
+   /contribute-code
+   ```
+   或直接描述：
+   ```
+   找出可以贡献的代码
+   贡献代码到基础平台
+   ```
+
+2. **AI 自动执行**：
+   - ✅ 检查 upstream remote 配置
+   - ✅ 拉取基础平台最新代码
+   - ✅ 检查当前分支状态
+   - ✅ 对比代码差异，识别可贡献代码
+   - ✅ 生成贡献建议报告
+   - ✅ 等待你确认
+
+3. **确认贡献**：
+   - 查看贡献建议报告
+   - 确认要贡献的代码
+   - AI 自动创建贡献分支并智能合并代码
+
+4. **提交 PR**：
+   - 按照 AI 生成的 PR 提交指南操作
+   - 推送贡献分支到 GitHub
+   - 创建 Pull Request
+
+### AI 指令的优势
+
+- ✅ **自动化**：自动执行所有步骤，减少手动操作
+- ✅ **智能识别**：智能识别可贡献代码，区分基础功能和业务功能
+- ✅ **智能合并**：智能合并代码到贡献分支，处理位置差异和冲突
+- ✅ **详细报告**：生成详细的贡献建议报告和 PR 提交指南
+
+**详细说明**：参考 [代码贡献指令](../.cursor/commands/80-contribute-code.md)
 
 ## 🎯 贡献场景
 
@@ -43,8 +87,18 @@
 - 改进了认证流程的用户体验
 - 优化了权限检查的性能
 - 增强了管理后台的功能
+- 更新了通用文档和规则文件
 
 **判断标准**：这个优化是否对所有项目都有价值？
+
+### 场景 4：更新了通用文档和规则
+
+**示例**：
+- 更新了 `.cursor/rules/*.mdc` 规则文件
+- 更新了 `.cursor/commands/*.md` 指令文件
+- 更新了 `docs/` 目录下的通用文档（排除 `docs/project-*/`）
+
+**判断标准**：这个文档更新是否对所有项目都有价值？
 
 ## 🔍 识别可贡献代码
 
@@ -152,6 +206,23 @@
 - ❓ 是否可以通过参数化使其通用化？
 - ❓ 其他项目是否也需要类似的测试工具？
 
+#### 7. 通用文档和规则
+
+**特征**：
+- 提供通用的文档和规则
+- 不包含业务特定内容
+- 可以在多个项目中使用
+
+**示例**：
+- `.cursor/rules/*.mdc` 规则文件
+- `.cursor/commands/*.md` 指令文件
+- `docs/` 目录下的通用文档（排除 `docs/project-*/`）
+
+**判断问题**：
+- ❓ 这个文档是否只适用于当前业务？
+- ❓ 是否可以通过通用化使其适用于所有项目？
+- ❓ 其他项目是否也需要这个文档？
+
 ### ❌ 不应该贡献的代码
 
 #### 1. 业务特定功能
@@ -190,6 +261,16 @@
 - 业务特定的测试数据
 - 业务特定的测试场景
 
+#### 4. 业务文档
+
+**特征**：
+- 包含业务特定的内容
+- 只适用于特定业务场景
+
+**示例**：
+- `docs/project-*/` 目录下的所有文件
+- `CURRENT_WORK.md`（如果包含业务特定内容）
+
 ## 🔧 提取和通用化处理
 
 ### 步骤 1：识别代码边界
@@ -220,43 +301,46 @@
 **方法**：
 
 1. **参数化业务特定值**：
-   ```ruby
-   # ❌ 业务特定代码
-   def find_cards_by_user(user)
-     Card.where(user_id: user.id)
-   end
-   
-   # ✅ 通用化代码
-   def find_resources_by_user(resource_class, user)
-     resource_class.where(user_id: user.id)
-   end
-   ```
+
+```ruby
+# ❌ 业务特定代码
+def find_cards_by_user(user)
+  Card.where(user_id: user.id)
+end
+
+# ✅ 通用化代码
+def find_resources_by_user(resource_class, user)
+  resource_class.where(user_id: user.id)
+end
+```
 
 2. **抽象业务特定逻辑**：
-   ```ruby
-   # ❌ 业务特定代码
-   def validate_card_number(card_number)
-     card_number.length == 16
-   end
-   
-   # ✅ 通用化代码
-   def validate_with_custom_rule(value, rule)
-     rule.call(value)
-   end
-   ```
+
+```ruby
+# ❌ 业务特定代码
+def validate_card_number(card_number)
+  card_number.length == 16
+end
+
+# ✅ 通用化代码
+def validate_with_custom_rule(value, rule)
+  rule.call(value)
+end
+```
 
 3. **使用配置替代硬编码**：
-   ```ruby
-   # ❌ 业务特定代码
-   def max_cards_per_user
-     10
-   end
-   
-   # ✅ 通用化代码
-   def max_resources_per_user
-     Rails.application.config.max_resources_per_user || 10
-   end
-   ```
+
+```ruby
+# ❌ 业务特定代码
+def max_cards_per_user
+  10
+end
+
+# ✅ 通用化代码
+def max_resources_per_user
+  Rails.application.config.max_resources_per_user || 10
+end
+```
 
 ### 步骤 3：确保向后兼容
 
@@ -304,9 +388,26 @@
 
 > **重要**：BuildX.work 是 GitHub 开源项目，所有贡献必须通过 GitHub Pull Request 提交。请遵循 GitHub 最佳实践，确保贡献流程清晰、可维护。
 
-### 通过 GitHub Pull Request 贡献（唯一方式）
+### 方式一：使用 AI 指令自动贡献（推荐）
 
-**这是唯一推荐的贡献方式**，遵循 GitHub 最佳实践，便于代码审查和维护。
+**这是最简单的方式**，AI 会自动执行所有步骤：
+
+1. **执行指令**：在 Cursor 中执行 `/contribute-code`
+2. **AI 自动执行**：
+   - 检查 upstream remote 配置
+   - 拉取基础平台最新代码
+   - 检查当前分支状态
+   - 对比代码差异，识别可贡献代码
+   - 生成贡献建议报告
+3. **确认贡献**：查看报告，确认要贡献的代码
+4. **AI 自动合并**：AI 创建贡献分支并智能合并代码
+5. **提交 PR**：按照 AI 生成的 PR 提交指南操作
+
+**详细说明**：参考 [代码贡献指令](../.cursor/commands/80-contribute-code.md)
+
+### 方式二：手动通过 GitHub Pull Request 贡献
+
+如果不想使用 AI 指令，可以手动执行以下步骤：
 
 #### 步骤 1：Fork 基础平台仓库
 
@@ -676,14 +777,6 @@ bin/rails test
 - 使用 Module/Concern 便于扩展
 - 提供清晰的扩展指南
 
-## 📚 相关资源
-
-- [贡献指南](CONTRIBUTING.md) - 如何贡献修复和改进
-- [使用指南](USAGE_GUIDE.md) - 如何使用基础设施
-- [开发者指南](DEVELOPER_GUIDE.md) - 技术决策和架构设计
-- [新项目创建指南](PROJECT_CREATION_GUIDE.md) - 如何创建新项目
-- [Git 工作流最佳实践](https://guides.github.com/introduction/flow/)
-
 ## 🎯 贡献示例
 
 ### 示例 1：贡献通用 Helper 方法
@@ -698,13 +791,14 @@ bin/rails test
    - 其他项目也需要类似功能
 
 2. **提取代码**：
-   ```ruby
-   # 从业务项目中提取
-   # app/helpers/application_helper.rb
-   def format_date(date, format = :long)
-     # 通用实现
-   end
-   ```
+
+```ruby
+# 从业务项目中提取
+# app/helpers/application_helper.rb
+def format_date(date, format = :long)
+  # 通用实现
+end
+```
 
 3. **通用化处理**：
    - 移除业务特定逻辑
@@ -712,7 +806,8 @@ bin/rails test
    - 添加测试
 
 4. **贡献到基础平台**：
-   - 在 buildx.work 中创建功能分支
+   - 使用 `/contribute-code` 指令自动贡献
+   - 或手动在 buildx.work 中创建功能分支
    - 添加通用方法
    - 添加测试
    - 提交 PR
@@ -739,15 +834,24 @@ bin/rails test
    - 添加测试
 
 4. **贡献到基础平台**：
-   - 在 buildx.work 中创建功能分支
+   - 使用 `/contribute-code` 指令自动贡献
+   - 或手动在 buildx.work 中创建功能分支
    - 添加通用组件
    - 添加测试
    - 更新文档
    - 提交 PR
 
+## 📚 相关资源
+
+- [代码贡献指令](../.cursor/commands/80-contribute-code.md) ⭐ - 使用 AI 指令自动贡献（推荐）
+- [贡献指南](CONTRIBUTING.md) - 如何贡献修复和改进
+- [使用指南](USAGE_GUIDE.md) - 如何使用基础设施
+- [开发者指南](DEVELOPER_GUIDE.md) - 技术决策和架构设计
+- [新项目创建指南](PROJECT_CREATION_GUIDE.md) - 如何创建新项目
+- [Git 工作流最佳实践](https://guides.github.com/introduction/flow/)
+
 ---
 
 **创建时间**：2025-12-02  
-**最后更新**：2025-12-02  
+**最后更新**：2025-12-03  
 **维护者**：BuildX.work 团队
-
