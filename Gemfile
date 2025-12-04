@@ -66,6 +66,9 @@ gem "unicode-display_width", "~> 3.2"
 # CSV support (required for Ruby 3.4.0+)
 gem "csv", "~> 3.3"
 
+# AI integration - unified AI interface library
+gem "ruby_llm", "~> 1.9", ">= 1.9.1"
+
 # Cloudflare Rails - fix request.ip and request.remote_ip when using Cloudflare
 # Only use in production (or staging/beta) environments
 # See: https://github.com/modosc/cloudflare-rails
