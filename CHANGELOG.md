@@ -9,6 +9,51 @@
 
 ### 新增
 
+- 添加 Google Analytics 4 支持（2025-12-04）
+  - 集成 Google Analytics 4（gtag.js）
+  - 支持通过系统配置（SystemConfig）设置 Google Analytics 测量 ID
+  - 在应用布局中自动加载 Google Analytics 脚本（仅当配置了测量 ID 时）
+- 集成 RubyLLM 统一 AI 接口库（2025-12-04）
+  - 集成 RubyLLM gem（~> 1.9.1）作为统一的 AI 接口库
+  - 支持多种 AI 服务提供商（通过 OpenRouter）
+  - 配置 OpenRouter API 密钥和模型选择（通过系统配置）
+  - 修复 RubyLLM 的 tool_calls 解析问题（Monica API 兼容性）
+  - 添加 AI 配置到系统配置（OpenRouter API Key、模型、Google TTS 等）
+- 实现导航栏滚动交互功能（2025-12-04）
+  - 创建 Stimulus 控制器（navbar_controller.js）实现导航栏自动隐藏/显示
+  - 实现上滑隐藏、下滑显示的逻辑
+  - 在页面顶部（滚动位置 ≤ 50px）时始终显示导航栏
+  - 添加平滑的 CSS 动画过渡效果（300ms）
+  - 使用性能优化技巧（requestAnimationFrame、滚动阈值、防抖机制）
+  - 创建开发经验文档记录最佳实践
+- 扩展 Highlight.js 语言支持（2025-12-04）
+  - 添加更多编程语言的语法高亮支持
+  - 优化代码高亮显示效果
+- 创建合并贡献代码指令（2025-12-04）
+  - 添加 `.cursor/commands/83-merge-contribution.md` 指令文件
+  - 定义贡献代码合并流程和规范
+  - 支持深度代码审查和风险分析
+
+### 变更
+
+- 重构系统配置为 YAML 文件管理（2025-12-04）
+  - 将系统配置从数据库迁移到 YAML 文件（`config/system_configs.yml`）
+  - 支持配置的默认值和描述信息
+  - 简化配置管理流程，提高可维护性
+  - 更新 SystemConfig 模型以支持 YAML 配置
+- 更新 Cursor 指令和规则文档（2025-12-04）
+  - 完善指令文件的格式和内容
+  - 统一文档风格和结构
+- 完善 AI 使用指南并统一经验文档格式（2025-12-04）
+  - 更新 AI 使用指南文档
+  - 统一经验文档的格式和元数据
+  - 添加经验文档索引和分类
+- 优化移动端列表界面设计（2025-12-04）
+  - 优化 experiences 列表界面的移动端显示
+  - 解决移动端"查看详情"按钮与内容关联不清晰的问题
+  - 优化移动端卡片视觉边界（背景色块 + 浅边框）
+  - 优化卡片内按钮设计（使用 outline 样式）
+  - 创建开发经验文档记录最佳实践
 - 创建项目更新日志管理指令（2025-12-03）
   - 添加 `.cursor/commands/changelog.md` 指令文件
   - 定义更新日志的创建和管理流程
@@ -16,9 +61,6 @@
   - 在项目根目录创建 `CHANGELOG.md` 文件
   - 记录项目的重要变更和里程碑
   - 遵循 [Keep a Changelog](https://keepachangelog.com/) 规范
-
-### 变更
-
 - 优化更新日志指令文件格式（2025-12-03）
   - 从规则文件格式（`.mdc`）改为指令文件格式（`.md`）
   - 移除元数据头部，适配 BuildX 项目规范
@@ -122,4 +164,3 @@
 - 创建开发者文档和 Cursor 规则
 - 确定技术栈（Rails 8.1.1 + Ruby 3.3.5）
 - 配置开发环境
-
