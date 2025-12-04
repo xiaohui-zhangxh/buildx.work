@@ -1,0 +1,98 @@
+# 系统配置定义文件
+# 此文件定义了所有系统配置项的默认值、描述和分类
+# 启动时会自动同步到数据库，但不会覆盖已存在的值
+
+# 系统基础配置
+system:
+  site_domain:
+    default_value: ""
+    description: "站点域名（生产环境，如：example.com，用于邮件链接和 hosts 验证）"
+
+  time_zone:
+    default_value: "Asia/Shanghai"
+    description: "时区"
+
+  locale:
+    default_value: "zh-CN"
+    description: "语言"
+
+  password_expiration_days:
+    default_value: "90"
+    description: "密码过期天数"
+
+# 站点配置
+site:
+  site_name:
+    default_value: "BuildX.work"
+    description: "站点名称"
+
+  site_description:
+    default_value: "BuildX.work - 业务网站生成平台"
+    description: "站点描述"
+
+# 邮件服务器配置
+mail:
+  smtp_address:
+    default_value: ""
+    description: "SMTP 服务器地址"
+
+  smtp_port:
+    default_value: "465"
+    description: "SMTP 服务器端口"
+
+  smtp_domain:
+    default_value: ""
+    description: "SMTP 域名"
+
+  smtp_user_name:
+    default_value: ""
+    description: "SMTP 用户名"
+
+  smtp_password:
+    default_value: ""
+    description: "SMTP 密码"
+
+  smtp_authentication:
+    default_value: "plain"
+    description: "SMTP 认证方式（plain, login, cram_md5）"
+
+  smtp_ssl:
+    default_value: "true"
+    description: "启用 SSL（true/false，通常 465 端口使用 SSL，587 端口使用 STARTTLS）"
+
+  mail_from_address:
+    default_value: "noreply@example.com"
+    description: "默认发件人地址"
+
+  mail_from_name:
+    default_value: "BuildX.work"
+    description: "默认发件人名称"
+
+# AI 配置
+ai:
+  openrouter_api_key:
+    default_value: ""
+    description: "OpenRouter API Key（从 https://openrouter.ai 获取）"
+
+  openrouter_model:
+    default_value: "openai/gpt-4o-mini"
+    description: "OpenRouter 模型（格式：provider/model，如 openai/gpt-4o-mini、anthropic/claude-3-haiku）"
+
+  google_tts_credentials_json:
+    default_value: ""
+    description: "Google Cloud TTS 服务账号 JSON 凭据（完整的 JSON 内容，不是文件路径）"
+
+  google_tts_language_code:
+    default_value: "zh-CN"
+    description: "Google TTS 语言代码（如 zh-CN、en-US）"
+
+  google_tts_voice_name:
+    default_value: "zh-CN-Standard-A"
+    description: "Google TTS 语音名称（如 zh-CN-Standard-A、zh-CN-Wavenet-A）"
+
+# 分析配置
+analytics:
+  google_analytics_id:
+    default_value: ""
+    description: "Google Analytics 4 测量 ID（如：G-XXXXXXXXXX）"
+

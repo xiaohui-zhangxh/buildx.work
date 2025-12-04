@@ -46,6 +46,23 @@ class SystemConfig < ApplicationRecord
       config
     end
 
+    # Ensure config exists with default value, but don't update if it already exists
+    def ensure_config(key, default_value:, description: nil, category: nil)
+      config = find_by(key: key)
+
+      if config.nil?
+        attrs = {
+          key: key,
+          value: default_value.to_s.strip
+        }
+        attrs[:description] = description.to_s.strip if description
+        attrs[:category] = category.to_s.strip if category
+        create!(attrs)
+      else
+        config
+      end
+    end
+
     def installation_completed?
       get("installation_completed") == "1"
     end
