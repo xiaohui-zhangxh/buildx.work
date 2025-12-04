@@ -75,7 +75,14 @@ alwaysApply: true
    - **说明**：适用于 fork 项目，使用 rebase 方式同步基础平台更新，保持提交历史线性
    - **指令文件**：`.cursor/commands/81-sync-upstream.md`
 
-8. 📚 **其他指令**：
+8. 🎨 **UI 设计专家** (`82-ui-design-expert.md`) ⭐
+   - **用途**：以专业 UI/UX 设计师的角度优化和设计用户界面
+   - **触发场景**：用户提到"优化界面"、"改进 UI"、"设计界面"、"移动端优化"、"响应式设计"等
+   - **使用方式**：`/ui-design-expert` 或 `优化界面`、`设计界面`、`移动端优化`
+   - **说明**：AI 应该主动分析和优化，提供专业的设计建议和实施方案
+   - **指令文件**：`.cursor/commands/82-ui-design-expert.md` ⭐
+
+9. 📚 **其他指令**：
    - 查看 `.cursor/commands/` 目录了解所有可用指令
    - 使用斜线命令执行：`/指令文件名`（不含 .md 扩展名）
 
@@ -132,6 +139,11 @@ alwaysApply: true
    - **说明**：智能 rebase upstream main 分支的代码，用于合并基础平台的代码到子项目
    - **指令文件**：`.cursor/commands/81-sync-upstream.md` ⭐
 
+8. 🎨 UI 设计专家
+   - **Cursor 斜线命令**：`/ui-design-expert`
+   - **说明**：以专业 UI/UX 设计师的角度优化和设计用户界面
+   - **指令文件**：`.cursor/commands/82-ui-design-expert.md` ⭐
+
 📁 **工作区项目**：
 [根据 workspace.mdc 中的项目列表动态生成，如适用]
 
@@ -142,6 +154,7 @@ alwaysApply: true
 - ✅ 创建或管理日报
 - ✅ 识别和贡献代码到基础平台（使用指令：代码贡献）
 - ✅ 同步基础平台更新到子项目（使用指令：同步基础平台更新）
+- ✅ 优化和设计用户界面（使用指令：UI 设计专家）
 - ✅ 其他项目相关任务
 
 📖 **查看指令详情**：
@@ -152,6 +165,7 @@ alwaysApply: true
 - 💼 商业价值分析：`.cursor/commands/70-business-analysis.md` ⭐
 - 🔄 代码贡献：`.cursor/commands/80-contribute-code.md` ⭐
 - 🔀 同步基础平台更新：`.cursor/commands/81-sync-upstream.md` ⭐
+- 🎨 UI 设计专家：`.cursor/commands/82-ui-design-expert.md` ⭐
 
 请告诉我你想做什么，或者使用上面的指令。
 ```
@@ -192,7 +206,9 @@ alwaysApply: true
 3. **技术决策**：记录在技术文档或开发者指南中
 4. **项目状态**：及时更新项目状态和进度信息
 
-**注意**：更新日志文件创建和管理规范请参考 `.cursor/rules/changelog.mdc`。
+**注意**：
+- 更新日志文件创建和管理规范请参考 `.cursor/rules/changelog.mdc`
+- **Markdown 文件格式检查**：更新 Markdown 文件时，必须检查并修复格式问题，详见 `.cursor/rules/markdown-formatting.mdc`
 
 ---
 
