@@ -22,6 +22,12 @@
   - 开发环境缓存清理配置
   - 配置分离策略
 
+- [导航栏滚动交互优化](./navbar-scroll-interaction.md) (2025-12-04)
+  - Stimulus 控制器实现滚动交互
+  - 性能优化技巧（requestAnimationFrame、滚动阈值）
+  - CSS 动画与 JavaScript 结合
+  - 用户体验优化最佳实践
+
 ### 后端逻辑 / 认证系统
 
 - [Warden custom_failure! 使用经验](./warden-custom-failure.md) (2025-11-29)
@@ -72,11 +78,13 @@
 ## 🎯 文档模板
 
 ```markdown
-# [问题标题]
+---
+date: YYYY-MM-DD
+problem_type: 前端集成 / 后端逻辑 / 配置问题 / 性能优化
+status: 已解决 / 进行中 / 未解决
+---
 
-**日期**：YYYY-MM-DD  
-**问题类型**：前端集成 / 后端逻辑 / 配置问题 / 性能优化  
-**状态**：✅ 已解决 / 🚧 进行中 / ❌ 未解决
+# [问题标题]
 
 ## 问题描述
 

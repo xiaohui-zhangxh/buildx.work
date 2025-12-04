@@ -1,8 +1,10 @@
-# Importmap SSL 证书验证错误
+---
+date: 2025-11-25
+problem_type: 配置问题、Importmap、SSL 证书
+status: 已解决
+---
 
-**日期**：2025-11-25  
-**问题类型**：配置问题、Importmap、SSL 证书  
-**状态**：✅ 已解决
+# Importmap SSL 证书验证错误
 
 ## 问题描述
 

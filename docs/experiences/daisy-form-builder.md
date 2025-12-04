@@ -1,3 +1,9 @@
+---
+date: 2025-11-26
+problem_type: 使用指南、前端开发、表单构建器
+status: 已解决
+---
+
 # DaisyFormBuilder 使用指南
 
 ## 概述

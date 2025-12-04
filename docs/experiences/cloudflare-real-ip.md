@@ -1,3 +1,9 @@
+---
+date: 2025-11-26
+problem_type: 配置问题、Cloudflare、IP 地址
+status: 已解决
+---
+
 # Cloudflare 真实 IP 地址获取
 
 ## 问题描述

@@ -1,8 +1,10 @@
-# Highlight.js 集成问题与解决方案
+---
+date: 2025-11-25
+problem_type: 前端集成、Importmap、第三方库管理
+status: 已解决
+---
 
-**日期**：2025-11-25  
-**问题类型**：前端集成、Importmap、第三方库管理  
-**状态**：✅ 已解决
+# Highlight.js 集成问题与解决方案
 
 ## 问题描述
 

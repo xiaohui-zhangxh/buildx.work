@@ -1,8 +1,10 @@
-# Warden custom_failure! 使用经验
+---
+date: 2025-11-29
+problem_type: 后端逻辑 / 认证系统
+status: 已解决
+---
 
-**日期**：2025-11-29  
-**问题类型**：后端逻辑 / 认证系统  
-**状态**：✅ 已解决
+# Warden custom_failure! 使用经验
 
 ## 问题描述
 

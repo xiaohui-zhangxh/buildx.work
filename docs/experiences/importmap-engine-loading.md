@@ -1,8 +1,10 @@
-# Importmap 从 Engine 中加载配置
+---
+date: 2025-12-03
+problem_type: 前端集成、Rails Engine、Importmap 配置
+status: 已解决
+---
 
-**日期**：2025-12-03  
-**问题类型**：前端集成、Rails Engine、Importmap 配置  
-**状态**：✅ 已解决
+# Importmap 从 Engine 中加载配置
 
 ## 问题描述
 
@@ -202,6 +204,7 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 - 如果不配置，即使 `pin` 了文件，也无法正确加载
 
 **示例**：
+
 ```ruby
 # engines/buildx_core/config/importmap.rb
 pin "highlight.js/lib/core", to: "highlight.js/lib/core.js"
