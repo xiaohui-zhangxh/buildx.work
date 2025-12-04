@@ -2,21 +2,21 @@
 
 ## 概述
 
-将基础平台（buildx.work）的更新同步到业务项目（fork 项目），使用 rebase 方式保持提交历史的线性。适用于 fork 项目，用于同步基础平台的更新。
+将基础平台（buildx.work）的更新同步到业务项目（fork 项目），使用 merge 方式保留合并记录，避免重复检查代码。适用于 fork 项目，用于同步基础平台的更新。
 
 ### 使用方式
 
 **Cursor 斜线命令**：`/sync-upstream`  
-**直接描述**：`同步基础平台更新`、`rebase upstream main`、`合并基础平台代码`、`同步上游代码`
+**直接描述**：`同步基础平台更新`、`merge upstream main`、`合并基础平台代码`、`同步上游代码`
 
 ## 🎯 核心原则
 
 1. **自动保存工作**：如果分支不干净，自动创建分支保存当前工作，不询问用户
 2. **风险分析优先**：先分析更新内容和潜在影响，给出详细风险提示
-3. **用户确认**：必须等待用户明确确认后才执行 rebase
+3. **用户确认**：必须等待用户明确确认后才执行合并
 4. **信息透明**：显示将要同步的更新内容、风险分析和影响评估
-5. **自动处理**：使用 `GIT_EDITOR=true` 避免 vim 弹窗，自动完成 rebase
-6. **冲突处理**：检测并协助处理 rebase 过程中的冲突
+5. **使用 merge 策略**：使用 `git merge` 而不是 `git rebase`，保留合并记录，避免重复检查代码
+6. **冲突处理**：检测并协助处理合并过程中的冲突
 7. **可回退**：提供回退选项，确保操作安全
 
 ## 🔍 工作流程
@@ -210,11 +210,11 @@ git fetch upstream main
 
 ### 步骤 5：显示风险报告并等待确认
 
-**目标**：基于步骤 4 的风险分析，生成详细的风险报告，等待用户确认后再执行 rebase。
+**目标**：基于步骤 4 的风险分析，生成详细的风险报告，等待用户确认后再执行合并。
 
 **重要规则**：
 
-1. **必须等待确认**：执行 rebase 前必须等待用户明确确认
+1. **必须等待确认**：执行合并前必须等待用户明确确认
 2. **显示详细风险报告**：显示更新摘要、风险分析和影响评估
 3. **提供处理建议**：针对高风险文件给出处理建议
 
@@ -241,18 +241,18 @@ git fetch upstream main
    1. app/models/user.rb
       - 风险：基础平台添加了新方法，你的项目修改了相同位置
       - 影响：可能覆盖你的业务扩展代码
-      - 建议：rebase 后检查并合并你的扩展代码
+      - 建议：合并后检查并合并你的扩展代码
    
    2. config/routes.rb
       - 风险：基础平台添加了新路由，你的项目也添加了路由
       - 影响：路由可能冲突
-      - 建议：rebase 后手动合并路由配置
+      - 建议：合并后手动合并路由配置
    
    🟡 中风险文件（需要关注）：
    1. app/controllers/application_controller.rb
       - 风险：基础平台修改了基础控制器
       - 影响：可能影响你的控制器继承
-      - 建议：rebase 后检查控制器功能是否正常
+      - 建议：合并后检查控制器功能是否正常
    
    🟢 低风险文件（安全）：
    - .cursor/commands/changelog.md（新增）
@@ -261,20 +261,21 @@ git fetch upstream main
    
    💡 处理建议：
    1. 建议先备份当前代码（已完成，已保存到 wip/sync-upstream-{timestamp} 分支）
-   2. 执行 rebase 后，优先处理高风险文件的冲突
+   2. 执行合并后，优先处理高风险文件的冲突
    3. 运行测试确保功能正常：bin/rails test
-   4. 如有问题，可以使用 git rebase --abort 回退
+   4. 如有问题，可以使用 git merge --abort 回退
    
    ⚠️ 重要提示：
-   - 如果 rebase 过程中出现冲突，需要手动解决
-   - 解决冲突后，使用 git add <文件> 和 git rebase --continue 继续
-   - 如果遇到无法解决的问题，可以使用 git rebase --abort 取消 rebase
+   - 如果合并过程中出现冲突，需要手动解决
+   - 解决冲突后，使用 git add <文件> 和 git commit 继续
+   - 如果遇到无法解决的问题，可以使用 git merge --abort 取消合并
+   - **使用 merge 策略保留合并记录，避免重复检查代码**
    
-   是否确认执行 rebase 同步这些更新？(yes/no)
+   是否确认执行合并同步这些更新？(yes/no)
    ```
 
 2. **处理用户响应**：
-   - **yes**：执行 rebase（进入步骤 6）
+   - **yes**：执行合并（进入步骤 6）
    - **no**：取消操作，提示用户可以稍后再试
 
 **输出**：
@@ -283,32 +284,37 @@ git fetch upstream main
 - 风险评估和处理建议
 - 等待用户确认
 
-### 步骤 6：执行 rebase
+### 步骤 6：执行合并
 
-**目标**：用户确认后执行 rebase 操作。
+**目标**：用户确认后执行合并操作。
 
 **执行流程**：
 
-1. **执行 rebase**（用户确认后）：
+1. **执行合并**（用户确认后）：
    ```bash
-   # 使用 GIT_EDITOR=true 避免 vim 弹窗
-   GIT_EDITOR=true git rebase upstream/main
+   # 使用 merge 策略合并 upstream/main（保留合并记录）
+   git merge upstream/main --no-ff -m "Merge: 同步基础平台更新
+
+   - 来源：upstream/main
+   - 更新提交数：<提交数量>
+   - 更新文件数：<文件数量>
+   "
    ```
 
-2. **检查 rebase 结果**：
+2. **检查合并结果**：
    ```bash
-   # 检查 rebase 状态
+   # 检查合并状态
    git status
    ```
 
 **输出**：
-- rebase 执行结果
+- 合并执行结果
 - 如果有冲突，显示冲突信息（进入步骤 7）
 - 如果成功，进入步骤 8
 
 ### 步骤 7：处理冲突（如有）
 
-**目标**：如果 rebase 过程中出现冲突，协助用户处理。
+**目标**：如果合并过程中出现冲突，协助用户处理。
 
 **方法**：
 
@@ -333,21 +339,21 @@ git fetch upstream main
    
    请手动解决冲突后，使用以下命令继续：
    git add <解决冲突的文件>
-   git rebase --continue
+   git commit
    
-   或者取消 rebase：
-   git rebase --abort
+   或者取消合并：
+   git merge --abort
    ```
 
 3. **等待用户解决冲突**：
    - 用户手动解决冲突
    - 用户标记冲突已解决（`git add`）
-   - 用户继续 rebase（`git rebase --continue`）
+   - 用户继续合并（`git commit`）
 
-4. **继续 rebase**（用户解决冲突后）：
+4. **继续合并**（用户解决冲突后）：
    ```bash
-   # 使用 GIT_EDITOR=true 继续 rebase
-   GIT_EDITOR=true git rebase --continue
+   # 继续合并（冲突已解决，只需提交）
+   git commit
    ```
 
 **输出**：
@@ -357,7 +363,7 @@ git fetch upstream main
 
 ### 步骤 8：清理并切换回之前的工作
 
-**目标**：rebase 完成后，清理并切换回之前的工作分支（如果之前自动创建了暂存分支）。
+**目标**：合并完成后，清理并切换回之前的工作分支（如果之前自动创建了暂存分支）。
 
 **方法**：
 
@@ -375,7 +381,7 @@ git checkout wip/sync-upstream-{timestamp}
 git checkout {原分支名称}
 ```
 
-3. **合并 rebase 后的更新**（如果需要）：
+3. **合并主分支的更新**（如果需要）：
    - 如果之前的工作在 wip 分支，可以合并 main 分支的更新：
      ```bash
      git merge main
@@ -388,9 +394,7 @@ git checkout {原分支名称}
 
 ### 步骤 9：验证和总结
 
-**目标**：验证 rebase 结果，显示同步总结。
-
-**目标**：验证 rebase 结果，显示同步总结。
+**目标**：验证合并结果，显示同步总结。
 
 **方法**：
 
@@ -402,7 +406,7 @@ git checkout {原分支名称}
 
 2. **显示同步总结**：
    ```
-   ✅ Rebase 完成！
+   ✅ 合并完成！
    
    同步结果：
    - 成功同步 15 个提交
@@ -417,6 +421,7 @@ git checkout {原分支名称}
    ⚠️ 重要提醒：
    - 如果之前自动创建了暂存分支（wip/sync-upstream-{timestamp}），记得切换回去或合并更新
    - 建议运行测试确保功能正常
+   - **使用 merge 策略保留合并记录，避免重复检查代码**
    
    下一步：
    - 运行测试：bin/rails test
@@ -433,14 +438,14 @@ git checkout {原分支名称}
 
 1. **自动保存工作**：如果分支不干净，自动创建分支保存当前工作，不询问用户
 2. **风险分析优先**：必须先进行深度风险分析，识别可能冲突的文件
-3. **必须等待确认**：执行 rebase 前必须等待用户明确确认
+3. **必须等待确认**：执行合并前必须等待用户明确确认
 4. **显示详细风险报告**：显示更新摘要、风险分析和影响评估
-5. **使用 GIT_EDITOR=true**：避免 vim 弹窗，自动完成 rebase
+5. **使用 merge 策略**：使用 `git merge` 而不是 `git rebase`，保留合并记录，避免重复检查代码
 6. **冲突处理**：检测冲突并提供处理建议
-7. **可回退**：提供回退选项（`git rebase --abort`）
+7. **可回退**：提供回退选项（`git merge --abort`）
 8. **信息透明**：显示更新摘要和风险分析，让用户充分了解变更和风险
-9. **验证结果**：rebase 后验证结果并提供总结
-10. **清理工作**：rebase 完成后，切换回之前的工作分支（如果自动创建了暂存分支）
+9. **验证结果**：合并后验证结果并提供总结
+10. **清理工作**：合并完成后，切换回之前的工作分支（如果自动创建了暂存分支）
 
 ## 🔧 技术细节
 
@@ -473,16 +478,21 @@ git add .
 git commit -m "WIP: 保存当前工作进度（同步 upstream 前自动暂存）"
 git checkout $CURRENT_BRANCH  # 切换回原分支（现在干净了）
 
-# 执行 rebase（使用 GIT_EDITOR=true 避免 vim 弹窗）
-GIT_EDITOR=true git rebase upstream/main
+# 执行合并（使用 merge 策略，保留合并记录）
+git merge upstream/main --no-ff -m "Merge: 同步基础平台更新
+
+- 来源：upstream/main
+- 更新提交数：<提交数量>
+- 更新文件数：<文件数量>
+"
 
 # 处理冲突
 git status                    # 查看冲突文件
 git add <解决冲突的文件>      # 标记冲突已解决
-GIT_EDITOR=true git rebase --continue  # 继续 rebase
+git commit                    # 继续合并
 
-# 取消 rebase
-git rebase --abort
+# 取消合并
+git merge --abort
 
 # 切换回之前的工作分支（如果自动创建了暂存分支）
 git checkout wip/sync-upstream-{timestamp}
@@ -515,11 +525,11 @@ git log --oneline --graph
 
 ### 回退方法
 
-如果 rebase 失败或需要回退：
+如果合并失败或需要回退：
 
 ```bash
-# 取消 rebase，回到 rebase 前的状态
-git rebase --abort
+# 取消合并，回到合并前的状态
+git merge --abort
 
 # 或者使用 reflog 查看历史
 git reflog
@@ -559,14 +569,14 @@ AI 执行：
 5. 显示详细风险报告并等待确认：
    → ⚠️ 同步基础平台更新 - 风险分析报告
    → 显示更新摘要、风险评估、处理建议
-   → 是否确认执行 rebase？(yes/no)
+   → 是否确认执行合并？(yes/no)
 
 用户：yes
 
 AI 执行：
-6. 执行 rebase：
-   → GIT_EDITOR=true git rebase upstream/main
-   → Rebase 成功！
+6. 执行合并：
+   → git merge upstream/main --no-ff
+   → 合并成功！
 
 7. 处理冲突（如有）：
    → 无冲突
@@ -575,7 +585,7 @@ AI 执行：
    → 之前分支干净，无需切换
 
 9. 验证和总结：
-   → Rebase 完成！
+   → 合并完成！
    → 显示同步总结
 ```
 
@@ -602,13 +612,13 @@ AI 执行：
 5. 显示详细风险报告并等待确认：
    → ⚠️ 同步基础平台更新 - 风险分析报告
    → 显示更新摘要、风险评估、处理建议
-   → 是否确认执行 rebase？(yes/no)
+   → 是否确认执行合并？(yes/no)
 
 用户：yes
 
 AI 执行：
-6. 执行 rebase：
-   → GIT_EDITOR=true git rebase upstream/main
+6. 执行合并：
+   → git merge upstream/main --no-ff
    → 检测到冲突！
 
 7. 显示冲突信息：
@@ -618,18 +628,18 @@ AI 执行：
 
 用户：（手动解决冲突）
 
-用户：git add app/models/user.rb && git rebase --continue
+用户：git add app/models/user.rb && git commit
 
 AI 执行：
-→ 继续 rebase：GIT_EDITOR=true git rebase --continue
-→ Rebase 完成！
+→ 继续合并：git commit
+→ 合并完成！
 
 8. 清理并切换回之前的工作：
    → 切换回 wip/sync-upstream-20251203-213335 分支
    → 可以合并 main 分支的更新或继续在 main 分支工作
 
 9. 验证和总结：
-   → Rebase 完成！
+   → 合并完成！
    → 显示同步总结
 ```
 
@@ -642,12 +652,13 @@ AI 执行：
 ---
 
 **创建时间**：2025-12-02  
-**最后更新**：2025-12-03  
+**最后更新**：2025-12-04  
 **指令类型**：通用指令  
 **适用项目**：fork 项目（业务项目）  
 **相关文档**：`docs/SYNC_UPDATES.md`  
 **优化说明**：
 - 统一使用分支保存代码（`wip/sync-upstream-{timestamp}`），与代码贡献指令保持一致
 - 增强风险分析，先分析更新内容和潜在影响，给出详细风险提示
-- 必须等待用户确认后才执行 rebase，确保操作安全
+- 必须等待用户确认后才执行合并，确保操作安全
+- **重要变更**：从 rebase 改为 merge 策略，保留合并记录，避免重复检查代码
 
