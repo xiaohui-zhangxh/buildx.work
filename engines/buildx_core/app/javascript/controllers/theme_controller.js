@@ -5,11 +5,15 @@ import { Controller } from "@hotwired/stimulus"
 // Supports customizable theme names via data attributes:
 //   data-theme-light-value="light" (default: "light")
 //   data-theme-dark-value="dark" (default: "dark")
+//   data-theme-storage-key-value="theme" (default: "theme")
+//     - Customize localStorage key for multi-area theme switching
+//     - Each area can have its own storage key to maintain independent theme settings
 export default class extends Controller {
   static targets = ["icon"]
   static values = {
     light: { type: String, default: "light" },
-    dark: { type: String, default: "dark" }
+    dark: { type: String, default: "dark" },
+    storageKey: { type: String, default: "theme" }
   }
 
   connect() {
@@ -34,17 +38,18 @@ export default class extends Controller {
   }
 
   toggle() {
-    const html = document.documentElement
-    const currentTheme = html.getAttribute("data-theme")
+    const currentTheme = this.element.getAttribute("data-theme")
     const lightTheme = this.lightValue
     const darkTheme = this.darkValue
 
     // Determine new theme based on current theme
     const newTheme = currentTheme === darkTheme ? lightTheme : darkTheme
 
-    // Update theme
-    html.setAttribute("data-theme", newTheme)
-    localStorage.setItem("theme", newTheme)
+    // Update theme on this.element (for partial area theme switching)
+    this.updateElementTheme(newTheme)
+
+    // Save to localStorage for persistence (using customizable storage key)
+    localStorage.setItem(this.storageKeyValue, newTheme)
 
     // Update icon
     this.updateIcon(newTheme)
@@ -52,14 +57,33 @@ export default class extends Controller {
 
   initializeTheme() {
     // Get saved theme or use default (light theme)
-    const savedTheme = localStorage.getItem("theme") || this.lightValue
-    const html = document.documentElement
+    // Uses customizable storage key for multi-area theme switching
+    const savedTheme = localStorage.getItem(this.storageKeyValue) || this.lightValue
 
-    // Apply theme
-    html.setAttribute("data-theme", savedTheme)
+    // Apply theme to this.element (for partial area theme switching)
+    this.updateElementTheme(savedTheme)
 
     // Update icon to match current theme
     this.updateIcon(savedTheme)
+  }
+
+  updateElementTheme(theme) {
+    // Update this.element data attributes based on current theme
+    const darkTheme = this.darkValue
+    const lightTheme = this.lightValue
+
+    // Set data-theme attribute on this.element (for partial area theme switching)
+    this.element.setAttribute("data-theme", theme)
+
+    if (theme === darkTheme) {
+      // Dark mode: set data-theme-dark, remove data-theme-light
+      this.element.setAttribute("data-theme-dark", darkTheme)
+      this.element.removeAttribute("data-theme-light")
+    } else {
+      // Light mode: set data-theme-light, remove data-theme-dark
+      this.element.setAttribute("data-theme-light", lightTheme)
+      this.element.removeAttribute("data-theme-dark")
+    }
   }
 
   updateIcon(theme) {

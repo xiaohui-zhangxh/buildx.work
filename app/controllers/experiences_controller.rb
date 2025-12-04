@@ -61,6 +61,8 @@ class ExperiencesController < ApplicationController
         markdown_content = File.read(experience_file)
         # 去掉 markdown 顶部的 YAML front matter（如果有）
         markdown_content = remove_front_matter(markdown_content)
+        # 移除第一个标题行（因为页面顶部已经显示了标题）
+        markdown_content = remove_first_heading(markdown_content)
         # 修复列表格式
         markdown_content = fix_list_formatting(markdown_content)
         markdown_to_html(markdown_content)
@@ -115,24 +117,65 @@ class ExperiencesController < ApplicationController
   def parse_metadata(content)
     metadata = {}
 
-    # 提取标题（第一个 # 开头的行）
-    title_match = content.match(/^#\s+(.+)$/)
-    metadata[:title] = title_match[1].strip if title_match
+    # 从 YAML frontmatter 中提取元数据
+    if content.strip.start_with?("---")
+      frontmatter_match = content.match(/\A---\s*\n(.*?)\n---\s*\n(.*)\z/m)
+      if frontmatter_match
+        frontmatter_content = frontmatter_match[1]
+        markdown_content = frontmatter_match[2]
 
-    # 提取日期
-    date_match = content.match(/\*\*日期\*\*[：:]\s*(\d{4}-\d{2}-\d{2})/)
-    if date_match
-      begin
-        metadata[:date] = Date.parse(date_match[1])
-      rescue Date::Error
-        # 忽略日期解析错误
+        # 解析 YAML frontmatter
+        begin
+          yaml_data = YAML.safe_load(frontmatter_content, permitted_classes: [ Date ], aliases: true)
+          if yaml_data.is_a?(Hash)
+            # 提取日期
+            if yaml_data["date"]
+              begin
+                metadata[:date] = Date.parse(yaml_data["date"].to_s)
+              rescue Date::Error
+                # 忽略日期解析错误
+              end
+            end
+
+            # 提取问题类型
+            metadata[:problem_type] = yaml_data["problem_type"]&.to_s
+
+            # 提取状态（如果需要）
+            metadata[:status] = yaml_data["status"]&.to_s
+          end
+        rescue Psych::SyntaxError, Psych::DisallowedClass => e
+          # YAML 解析失败，记录警告
+          Rails.logger.warn("Failed to parse YAML frontmatter: #{e.message}")
+        end
+
+        # 从 Markdown 内容中提取标题（跳过 frontmatter）
+        title_match = markdown_content.match(/^#\s+(.+)$/)
+        metadata[:title] = title_match[1].strip if title_match
       end
     end
 
-    # 提取问题类型
-    type_match = content.match(/\*\*问题类型\*\*[：:]\s*(.+)$/)
-    metadata[:problem_type] = type_match[1].strip if type_match
+    # 如果没有 frontmatter 或 frontmatter 中没有标题，尝试从整个内容中提取标题
+    unless metadata[:title]
+      title_match = content.match(/^#\s+(.+)$/)
+      metadata[:title] = title_match[1].strip if title_match
+    end
 
     metadata
+  end
+
+  def remove_first_heading(content)
+    # 移除第一个 # 开头的标题行（一级标题）
+    # 匹配：行首的 # + 空白 + 标题内容 + 换行
+    lines = content.lines
+    # 找到第一个以 # 开头的行（一级标题）
+    first_heading_index = lines.index { |line| line.match?(/^#\s+/) }
+    return content unless first_heading_index
+
+    # 移除该行，如果下一行是空行也一起移除
+    result = lines.dup
+    result.delete_at(first_heading_index)
+    # 如果移除后第一行是空行，也移除它
+    result.shift if result.first&.strip&.empty?
+    result.join
   end
 end
