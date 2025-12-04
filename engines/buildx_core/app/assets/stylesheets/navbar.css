@@ -1,0 +1,19 @@
+/* Navbar auto-hide animation */
+.navbar-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.navbar-hidden {
+    transform: translateY(calc(-100% - 1rem));
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Ensure smooth transitions for both transform and opacity */
+[data-controller="navbar"] {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+  
+  
