@@ -95,4 +95,3 @@ analytics:
   google_analytics_id:
     default_value: ""
     description: "Google Analytics 4 测量 ID（如：G-XXXXXXXXXX）"
-

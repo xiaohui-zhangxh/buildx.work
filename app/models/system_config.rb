@@ -46,21 +46,32 @@ class SystemConfig < ApplicationRecord
       config
     end
 
-    # Ensure config exists with default value, but don't update if it already exists
-    def ensure_config(key, default_value:, description: nil, category: nil)
-      config = find_by(key: key)
+    # 确保配置存在，但不覆盖已存在的值
+    # 只更新 description 和 category（如果提供）
+    # 如果配置不存在，使用默认值创建
+    def ensure_config(key, default_value: "", description: nil, category: nil)
+      config = find_or_initialize_by(key: key)
 
-      if config.nil?
-        attrs = {
-          key: key,
-          value: default_value.to_s.strip
-        }
-        attrs[:description] = description.to_s.strip if description
-        attrs[:category] = category.to_s.strip if category
-        create!(attrs)
-      else
-        config
+      # 如果配置不存在，设置默认值
+      if config.new_record?
+        config.value = default_value.to_s.strip
       end
+      # 如果配置已存在，保留原有 value，不覆盖
+
+      # 更新 description 和 category（如果提供且不同）
+      needs_update = false
+      if description && config.description != description.to_s.strip
+        config.description = description.to_s.strip
+        needs_update = true
+      end
+      if category && config.category != category.to_s.strip
+        config.category = category.to_s.strip
+        needs_update = true
+      end
+
+      config.save! if needs_update || config.new_record?
+
+      config
     end
 
     def installation_completed?
