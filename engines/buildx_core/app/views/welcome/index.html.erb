@@ -44,7 +44,12 @@
           </span>
         </div>
 
-        <div class="flex flex-col items-center gap-4 md:gap-6 mb-4 md:mb-6 animate-fade-in-up">
+        <div
+          class="
+            flex flex-col items-center gap-4 md:gap-6 mb-4 md:mb-6
+            animate-fade-in-up
+          "
+        >
           <%= image_tag "logo.svg", alt: site_name, class: "h-20 w-20 md:h-24 md:w-24 lg:h-32 lg:w-32" %>
 
           <h1
@@ -132,219 +137,258 @@
   </div>
 
   <!-- Tech Stack Section -->
-  <div class="mt-32 container mx-auto px-5">
-    <div class="text-center mb-16">
-      <h2
-        class="
-          text-5xl font-bold text-base-content mb-4 bg-gradient-to-r
-          from-primary to-secondary bg-clip-text text-transparent
-        "
-      >
-        技术栈
-      </h2>
+  <div
+    class="
+      min-h-screen flex items-center md:items-center py-8 md:py-0
+      justify-center relative overflow-hidden
+    "
+  >
+    <!-- Animated Background Gradient -->
+    <div
+      class="
+        absolute inset-0 bg-gradient-to-br from-secondary/20 via-primary/10
+        to-accent/20 animate-gradient
+      "
+    ></div>
 
-      <p class="text-xl text-base-content/70">基于现代化的技术栈，提供最佳开发体验</p>
-    </div>
+    <!-- Decorative Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-5"
+      style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 50px 50px;"
+    ></div>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <%= image_tag "ruby-logo.svg", alt: "Ruby", class: "h-12 w-12 mb-3" %>
+    <div class="container mx-auto px-4 sm:px-4 md:px-5 relative z-10 w-full">
+      <div class="text-center mb-10 sm:mb-12 md:mb-16">
+        <h2
+          class="
+            text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content mb-3 sm:mb-4 bg-gradient-to-r
+            from-primary to-secondary bg-clip-text text-transparent
+          "
+        >
+          技术栈
+        </h2>
 
-          <div class="text-4xl font-bold text-primary mb-2">Ruby</div>
-          <div class="text-sm text-base-content/60 font-medium">3.3.5</div>
-        </div>
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl text-base-content/70">
+          基于现代化的技术栈，提供最佳开发体验
+        </p>
       </div>
 
       <div
         class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
+          grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-4
+          md:gap-6
         "
       >
-        <div class="card-body items-center text-center p-6">
-          <%= image_tag "rails-logo.svg", alt: "Rails", class: "h-12 w-12 mb-3" %>
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <%= image_tag "ruby-logo.svg", alt: "Ruby", class: "h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3" %>
 
-          <div class="text-4xl font-bold text-primary mb-2">Rails</div>
-          <div class="text-sm text-base-content/60 font-medium">8.1.1</div>
-        </div>
-      </div>
-
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <%= image_tag "tailwind-logo.svg", alt: "Tailwind CSS", class: "h-12 w-12 mb-3" %>
-
-          <div class="text-3xl font-bold text-secondary mb-2">Tailwind</div>
-          <div class="text-sm text-base-content/60 font-medium">CSS 4.x</div>
-        </div>
-      </div>
-
-      <a
-        href="<%= tech_stack_rule_path('daisy-ui') %>"
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-          cursor-pointer
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <%= image_tag "daisyui-logo.svg", alt: "DaisyUI", class: "h-12 w-12 mb-3" %>
-
-          <div class="text-3xl font-bold text-accent mb-2">DaisyUI</div>
-          <div class="text-sm text-base-content/60 font-medium">5.x</div>
-        </div>
-      </a>
-
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <%= image_tag "importmap-logo.svg", alt: "Importmap", class: "h-12 w-12 mb-3" %>
-
-          <div class="text-2xl font-bold text-info mb-2">Importmap</div>
-          <div class="text-sm text-base-content/60 font-medium">ESM</div>
-        </div>
-      </div>
-
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <%= image_tag "kamal-logo.svg", alt: "Kamal", class: "h-12 w-12 mb-3" %>
-
-          <div class="text-2xl font-bold text-success mb-2">Kamal</div>
-          <div class="text-sm text-base-content/60 font-medium">Docker</div>
-        </div>
-      </div>
-
-      <a
-        href="<%= tech_stack_rule_path('action-policy') %>"
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-          cursor-pointer
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <div
-            class="
-              h-12 w-12 mb-3 flex items-center justify-center
-              bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-primary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              />
-            </svg>
-          </div>
-
-          <div class="text-2xl font-bold text-primary mb-2">Action Policy</div>
-          <div class="text-sm text-base-content/60 font-medium">授权框架</div>
-        </div>
-      </a>
-
-      <a
-        href="<%= tech_stack_rule_path('authentication') %>"
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300
-          cursor-pointer
-        "
-      >
-        <div class="card-body items-center text-center p-6">
-          <div
-            class="
-              h-12 w-12 mb-3 flex items-center justify-center
-              bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-lg
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-secondary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-          </div>
-
-          <div class="text-xl font-bold text-secondary mb-2">认证系统</div>
-
-          <div class="text-sm text-base-content/60 font-medium">
-            Warden + Rails
-          </div>
-        </div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Core Features Section -->
-  <div id="features" class="mt-32 container mx-auto px-5">
-    <div class="text-center mb-16">
-      <h2
-        class="
-          text-5xl font-bold text-base-content mb-4 bg-gradient-to-r
-          from-primary to-secondary bg-clip-text text-transparent
-        "
-      >
-        核心功能
-      </h2>
-
-      <p class="text-xl text-base-content/70">开箱即用的企业级功能模块</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Feature 1: Authentication -->
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300 group
-        "
-      >
-        <div class="card-body p-8">
-          <div class="flex items-center gap-4 mb-5">
             <div
               class="
-                p-4 rounded-xl bg-gradient-to-br from-primary/20
-                to-primary/10 group-hover:scale-110 transition-transform
-                duration-300
+                text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold
+                text-primary mb-1 sm:mb-2
+              "
+            >
+              Ruby
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              3.3.5
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <%= image_tag "rails-logo.svg", alt: "Rails", class: "h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3" %>
+
+            <div
+              class="
+                text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold
+                text-primary mb-1 sm:mb-2
+              "
+            >
+              Rails
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              8.1.1
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <%= image_tag "tailwind-logo.svg", alt: "Tailwind CSS", class: "h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3" %>
+
+            <div
+              class="
+                text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold
+                text-secondary mb-1 sm:mb-2
+              "
+            >
+              Tailwind
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              CSS 4.x
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="<%= tech_stack_rule_path('daisy-ui') %>"
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+            cursor-pointer
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <%= image_tag "daisyui-logo.svg", alt: "DaisyUI", class: "h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3" %>
+
+            <div
+              class="
+                text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold
+                text-accent mb-1 sm:mb-2
+              "
+            >
+              DaisyUI
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              5.x
+            </div>
+          </div>
+        </a>
+
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <%= image_tag "importmap-logo.svg", alt: "Importmap", class: "h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3" %>
+
+            <div
+              class="
+                text-base sm:text-lg md:text-xl lg:text-2xl font-bold
+                text-info mb-1 sm:mb-2
+              "
+            >
+              Importmap
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              ESM
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <%= image_tag "kamal-logo.svg", alt: "Kamal", class: "h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3" %>
+
+            <div
+              class="
+                text-base sm:text-lg md:text-xl lg:text-2xl font-bold
+                text-success mb-1 sm:mb-2
+              "
+            >
+              Kamal
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              Docker
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="<%= tech_stack_rule_path('action-policy') %>"
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+            cursor-pointer
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <div
+              class="
+                h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3 flex items-center justify-center
+                bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg
               "
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-7 w-7 text-primary"
+                class="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+            </div>
+
+            <div
+              class="
+                text-base sm:text-lg md:text-xl lg:text-2xl font-bold
+                text-primary mb-1 sm:mb-2
+              "
+            >
+              Action Policy
+            </div>
+
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              授权框架
+            </div>
+          </div>
+        </a>
+
+        <a
+          href="<%= tech_stack_rule_path('authentication') %>"
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300
+            cursor-pointer
+          "
+        >
+          <div class="card-body items-center text-center p-3 sm:p-4 md:p-6">
+            <div
+              class="
+                h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 mb-2 sm:mb-3 flex items-center justify-center
+                bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-lg
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-secondary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -358,250 +402,375 @@
               </svg>
             </div>
 
-            <h3 class="card-title text-2xl">认证与授权</h3>
-          </div>
-
-          <p class="text-base-content/70 mb-5 leading-relaxed">
-            完整的用户认证系统，支持邮箱/手机号登录、OAuth 第三方授权、密码找回、2FA 等安全功能。
-          </p>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="badge badge-primary badge-outline">邮箱登录</span>
-            <span class="badge badge-primary badge-outline">OAuth</span>
-            <span class="badge badge-primary badge-outline">2FA</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Feature 2: RBAC -->
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300 group
-        "
-      >
-        <div class="card-body p-8">
-          <div class="flex items-center gap-4 mb-5">
             <div
               class="
-                p-4 rounded-xl bg-gradient-to-br from-secondary/20
-                to-secondary/10 group-hover:scale-110 transition-transform
-                duration-300
+                text-base sm:text-lg md:text-xl lg:text-2xl font-bold
+                text-secondary mb-1 sm:mb-2
               "
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-7 w-7 text-secondary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+              认证系统
             </div>
 
-            <h3 class="card-title text-2xl">角色与权限</h3>
+            <div class="text-xs sm:text-sm text-base-content/60 font-medium">
+              Warden + Rails
+            </div>
           </div>
+        </a>
+      </div>
+    </div>
+  </div>
 
-          <p class="text-base-content/70 mb-5 leading-relaxed">
-            基于角色的访问控制（RBAC），支持细粒度权限管理、资源级权限控制和权限继承机制。
-          </p>
+  <!-- Core Features Section -->
+  <div
+    id="features"
+    class="
+      min-h-screen flex items-center md:items-center py-8 md:py-0
+      justify-center relative overflow-hidden
+    "
+  >
+    <!-- Animated Background Gradient -->
+    <div
+      class="
+        absolute inset-0 bg-gradient-to-br from-accent/20 via-secondary/10
+        to-primary/20 animate-gradient
+      "
+    ></div>
 
-          <div class="flex flex-wrap gap-2">
-            <span class="badge badge-secondary badge-outline">RBAC</span>
-            <span class="badge badge-secondary badge-outline">权限控制</span>
-            <span class="badge badge-secondary badge-outline">资源级</span>
-          </div>
-        </div>
+    <!-- Decorative Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-5"
+      style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 50px 50px;"
+    ></div>
+
+    <div class="container mx-auto px-4 sm:px-4 md:px-5 relative z-10 w-full">
+      <div class="text-center mb-10 sm:mb-12 md:mb-16">
+        <h2
+          class="
+            text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content mb-3 sm:mb-4 bg-gradient-to-r
+            from-primary to-secondary bg-clip-text text-transparent
+          "
+        >
+          核心功能
+        </h2>
+
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl text-base-content/70">
+          开箱即用的企业级功能模块
+        </p>
       </div>
 
-      <!-- Feature 3: Multi-tenant -->
       <div
         class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300 group
+          grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4
+          md:gap-6 lg:gap-8
         "
       >
-        <div class="card-body p-8">
-          <div class="flex items-center gap-4 mb-5">
-            <div
-              class="
-                p-4 rounded-xl bg-gradient-to-br from-accent/20 to-accent/10
-                group-hover:scale-110 transition-transform duration-300
-              "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-7 w-7 text-accent"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+        <!-- Feature 1: Authentication -->
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="card-body p-5 sm:p-6 md:p-8">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-4 md:mb-5">
+              <div
+                class="
+                  p-3 sm:p-4 rounded-xl bg-gradient-to-br from-primary/20
+                  to-primary/10 group-hover:scale-110 transition-transform
+                  duration-300
+                "
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 sm:h-7 sm:w-7 text-primary"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+
+              <h3 class="card-title text-xl sm:text-2xl">认证与授权</h3>
             </div>
 
-            <h3 class="card-title text-2xl">多租户支持</h3>
-          </div>
+            <p
+              class="
+                text-sm sm:text-base text-base-content/70 mb-4 sm:mb-4
+                md:mb-5 leading-relaxed
+              "
+            >
+              完整的用户认证系统，支持邮箱/手机号登录、OAuth 第三方授权、密码找回、2FA 等安全功能。
+            </p>
 
-          <p class="text-base-content/70 mb-5 leading-relaxed">
-            完整的多租户架构，支持数据隔离、组织架构管理、团队协作等功能。
-          </p>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="badge badge-accent badge-outline">数据隔离</span>
-            <span class="badge badge-accent badge-outline">组织架构</span>
-            <span class="badge badge-accent badge-outline">团队协作</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="badge badge-primary badge-outline">邮箱登录</span>
+              <span class="badge badge-primary badge-outline">OAuth</span>
+              <span class="badge badge-primary badge-outline">2FA</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Feature 4: Webhook -->
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300 group
-        "
-      >
-        <div class="card-body p-8">
-          <div class="flex items-center gap-4 mb-5">
-            <div
-              class="
-                p-4 rounded-xl bg-gradient-to-br from-info/20 to-info/10
-                group-hover:scale-110 transition-transform duration-300
-              "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-7 w-7 text-info"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+        <!-- Feature 2: RBAC -->
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="card-body p-5 sm:p-6 md:p-8">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-4 md:mb-5">
+              <div
+                class="
+                  p-3 sm:p-4 rounded-xl bg-gradient-to-br from-secondary/20
+                  to-secondary/10 group-hover:scale-110 transition-transform
+                  duration-300
+                "
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 sm:h-7 sm:w-7 text-secondary"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+              </div>
+
+              <h3 class="card-title text-xl sm:text-2xl">角色与权限</h3>
             </div>
 
-            <h3 class="card-title text-2xl">Webhook 系统</h3>
-          </div>
+            <p
+              class="
+                text-sm sm:text-base text-base-content/70 mb-4 sm:mb-4
+                md:mb-5 leading-relaxed
+              "
+            >
+              基于角色的访问控制（RBAC），支持细粒度权限管理、资源级权限控制和权限继承机制。
+            </p>
 
-          <p class="text-base-content/70 mb-5 leading-relaxed">
-            完整的 Webhook 管理，支持事件订阅、签名验证、重试机制和日志记录。
-          </p>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="badge badge-info badge-outline">事件订阅</span>
-            <span class="badge badge-info badge-outline">签名验证</span>
-            <span class="badge badge-info badge-outline">重试机制</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="badge badge-secondary badge-outline">RBAC</span>
+              <span class="badge badge-secondary badge-outline">权限控制</span>
+              <span class="badge badge-secondary badge-outline">资源级</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Feature 5: Notification -->
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300 group
-        "
-      >
-        <div class="card-body p-8">
-          <div class="flex items-center gap-4 mb-5">
-            <div
-              class="
-                p-4 rounded-xl bg-gradient-to-br from-warning/20
-                to-warning/10 group-hover:scale-110 transition-transform
-                duration-300
-              "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-7 w-7 text-warning"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+        <!-- Feature 3: Multi-tenant -->
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="card-body p-5 sm:p-6 md:p-8">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-4 md:mb-5">
+              <div
+                class="
+                  p-3 sm:p-4 rounded-xl bg-gradient-to-br from-accent/20 to-accent/10
+                  group-hover:scale-110 transition-transform duration-300
+                "
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 sm:h-7 sm:w-7 text-accent"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
+                </svg>
+              </div>
+
+              <h3 class="card-title text-xl sm:text-2xl">多租户支持</h3>
             </div>
 
-            <h3 class="card-title text-2xl">通知系统</h3>
-          </div>
+            <p
+              class="
+                text-sm sm:text-base text-base-content/70 mb-4 sm:mb-4
+                md:mb-5 leading-relaxed
+              "
+            >
+              完整的多租户架构，支持数据隔离、组织架构管理、团队协作等功能。
+            </p>
 
-          <p class="text-base-content/70 mb-5 leading-relaxed">
-            多渠道通知支持，包括站内通知、邮件、短信、Web Push 等，支持模板管理。
-          </p>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="badge badge-warning badge-outline">多渠道</span>
-            <span class="badge badge-warning badge-outline">模板管理</span>
-            <span class="badge badge-warning badge-outline">Web Push</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="badge badge-accent badge-outline">数据隔离</span>
+              <span class="badge badge-accent badge-outline">组织架构</span>
+              <span class="badge badge-accent badge-outline">团队协作</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Feature 6: AI MCP -->
-      <div
-        class="
-          card bg-base-100 shadow-xl hover:shadow-2xl transition-all
-          duration-300 hover:-translate-y-2 border border-base-300 group
-        "
-      >
-        <div class="card-body p-8">
-          <div class="flex items-center gap-4 mb-5">
-            <div
-              class="
-                p-4 rounded-xl bg-gradient-to-br from-success/20
-                to-success/10 group-hover:scale-110 transition-transform
-                duration-300
-              "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-7 w-7 text-success"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+        <!-- Feature 4: Webhook -->
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="card-body p-5 sm:p-6 md:p-8">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-4 md:mb-5">
+              <div
+                class="
+                  p-3 sm:p-4 rounded-xl bg-gradient-to-br from-info/20 to-info/10
+                  group-hover:scale-110 transition-transform duration-300
+                "
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 sm:h-7 sm:w-7 text-info"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+
+              <h3 class="card-title text-xl sm:text-2xl">Webhook 系统</h3>
             </div>
 
-            <h3 class="card-title text-2xl">AI MCP 服务</h3>
+            <p
+              class="
+                text-sm sm:text-base text-base-content/70 mb-4 sm:mb-4
+                md:mb-5 leading-relaxed
+              "
+            >
+              完整的 Webhook 管理，支持事件订阅、签名验证、重试机制和日志记录。
+            </p>
+
+            <div class="flex flex-wrap gap-2">
+              <span class="badge badge-info badge-outline">事件订阅</span>
+              <span class="badge badge-info badge-outline">签名验证</span>
+              <span class="badge badge-info badge-outline">重试机制</span>
+            </div>
           </div>
+        </div>
 
-          <p class="text-base-content/70 mb-5 leading-relaxed">
-            集成 Model Context Protocol，支持 AI 助手、上下文管理、对话历史等功能。
-          </p>
+        <!-- Feature 5: Notification -->
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="card-body p-5 sm:p-6 md:p-8">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-4 md:mb-5">
+              <div
+                class="
+                  p-3 sm:p-4 rounded-xl bg-gradient-to-br from-warning/20
+                  to-warning/10 group-hover:scale-110 transition-transform
+                  duration-300
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 sm:h-7 sm:w-7 text-warning"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </div>
 
-          <div class="flex flex-wrap gap-2">
-            <span class="badge badge-success badge-outline">MCP 协议</span>
-            <span class="badge badge-success badge-outline">AI 助手</span>
-            <span class="badge badge-success badge-outline">上下文管理</span>
+              <h3 class="card-title text-xl sm:text-2xl">通知系统</h3>
+            </div>
+
+            <p
+              class="
+                text-sm sm:text-base text-base-content/70 mb-4 sm:mb-4
+                md:mb-5 leading-relaxed
+              "
+            >
+              多渠道通知支持，包括站内通知、邮件、短信、Web Push 等，支持模板管理。
+            </p>
+
+            <div class="flex flex-wrap gap-2">
+              <span class="badge badge-warning badge-outline">多渠道</span>
+              <span class="badge badge-warning badge-outline">模板管理</span>
+              <span class="badge badge-warning badge-outline">Web Push</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 6: AI MCP -->
+        <div
+          class="
+            card bg-base-100 shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-xl md:hover:shadow-2xl transition-all
+            duration-300 md:hover:-translate-y-2 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="card-body p-5 sm:p-6 md:p-8">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-4 md:mb-5">
+              <div
+                class="
+                  p-3 sm:p-4 rounded-xl bg-gradient-to-br from-success/20
+                  to-success/10 group-hover:scale-110 transition-transform
+                  duration-300
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 sm:h-7 sm:w-7 text-success"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  />
+                </svg>
+              </div>
+
+              <h3 class="card-title text-xl sm:text-2xl">AI MCP 服务</h3>
+            </div>
+
+            <p
+              class="
+                text-sm sm:text-base text-base-content/70 mb-4 sm:mb-4
+                md:mb-5 leading-relaxed
+              "
+            >
+              集成 Model Context Protocol，支持 AI 助手、上下文管理、对话历史等功能。
+            </p>
+
+            <div class="flex flex-wrap gap-2">
+              <span class="badge badge-success badge-outline">MCP 协议</span>
+              <span class="badge badge-success badge-outline">AI 助手</span>
+              <span class="badge badge-success badge-outline">上下文管理</span>
+            </div>
           </div>
         </div>
       </div>
@@ -609,263 +778,378 @@
   </div>
 
   <!-- Advantages Section -->
-  <div class="mt-32 container mx-auto px-5">
-    <div class="text-center mb-16">
-      <h2
-        class="
-          text-5xl font-bold text-base-content mb-4 bg-gradient-to-r
-          from-primary to-secondary bg-clip-text text-transparent
-        "
-      >
-        为什么选择 <%= site_name %>
-      </h2>
+  <div
+    class="
+      min-h-screen flex items-center md:items-center py-8 md:py-0
+      justify-center relative overflow-hidden
+    "
+  >
+    <!-- Animated Background Gradient -->
+    <div
+      class="
+        absolute inset-0 bg-gradient-to-br from-info/20 via-accent/10
+        to-secondary/20 animate-gradient
+      "
+    ></div>
 
-      <p class="text-xl text-base-content/70">标准化、快速、安全、开箱即用</p>
-    </div>
+    <!-- Decorative Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-5"
+      style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 50px 50px;"
+    ></div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-      <div
-        class="
-          flex gap-6 p-6 rounded-2xl bg-base-100 shadow-lg hover:shadow-xl
-          transition-all duration-300 border border-base-300 group
-        "
-      >
-        <div class="flex-shrink-0">
-          <div
-            class="
-              w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20
-              to-primary/10 flex items-center justify-center
-              group-hover:scale-110 transition-transform duration-300
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-primary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-        </div>
+    <div class="container mx-auto px-4 sm:px-4 md:px-5 relative z-10 w-full">
+      <div class="text-center mb-10 sm:mb-12 md:mb-16">
+        <h2
+          class="
+            text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content mb-3 sm:mb-4 bg-gradient-to-r
+            from-primary to-secondary bg-clip-text text-transparent
+          "
+        >
+          为什么选择 <%= site_name %>
+        </h2>
 
-        <div>
-          <h3 class="text-2xl font-bold mb-3">标准化开发</h3>
-
-          <p class="text-base-content/70 leading-relaxed">
-            提供统一的基础功能实现，确保代码质量和一致性，避免重复开发。
-          </p>
-        </div>
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl text-base-content/70">
+          标准化、快速、安全、开箱即用
+        </p>
       </div>
 
-      <div
-        class="
-          flex gap-6 p-6 rounded-2xl bg-base-100 shadow-lg hover:shadow-xl
-          transition-all duration-300 border border-base-300 group
-        "
-      >
-        <div class="flex-shrink-0">
-          <div
-            class="
-              w-16 h-16 rounded-xl bg-gradient-to-br from-secondary/20
-              to-secondary/10 flex items-center justify-center
-              group-hover:scale-110 transition-transform duration-300
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-secondary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-4 md:gap-6 lg:gap-10">
+        <div
+          class="
+            flex gap-4 sm:gap-5 md:gap-6 p-6 sm:p-7 md:p-8 rounded-2xl bg-base-100 shadow-none sm:shadow-md md:shadow-lg hover:shadow-none sm:hover:shadow-lg md:hover:shadow-xl
+            transition-all duration-300 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="flex-shrink-0">
+            <div
+              class="
+                w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-primary/20
+                to-primary/10 flex items-center justify-center
+                group-hover:scale-110 transition-transform duration-300
+              "
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">
+              标准化开发
+            </h3>
+
+            <p
+              class="
+                text-sm sm:text-base md:text-lg text-base-content/70
+                leading-relaxed
+              "
+            >
+              提供统一的基础功能实现，确保代码质量和一致性，避免重复开发。
+            </p>
           </div>
         </div>
 
-        <div>
-          <h3 class="text-2xl font-bold mb-3">快速启动</h3>
-
-          <p class="text-base-content/70 leading-relaxed">
-            跳过重复的基础开发工作，直接开始业务逻辑开发，节省开发时间。
-          </p>
-        </div>
-      </div>
-
-      <div
-        class="
-          flex gap-6 p-6 rounded-2xl bg-base-100 shadow-lg hover:shadow-xl
-          transition-all duration-300 border border-base-300 group
-        "
-      >
-        <div class="flex-shrink-0">
-          <div
-            class="
-              w-16 h-16 rounded-xl bg-gradient-to-br from-accent/20
-              to-accent/10 flex items-center justify-center
-              group-hover:scale-110 transition-transform duration-300
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-accent"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div
+          class="
+            flex gap-4 sm:gap-5 md:gap-6 p-6 sm:p-7 md:p-8 rounded-2xl bg-base-100 shadow-none sm:shadow-md md:shadow-lg hover:shadow-none sm:hover:shadow-lg md:hover:shadow-xl
+            transition-all duration-300 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="flex-shrink-0">
+            <div
+              class="
+                w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-secondary/20
+                to-secondary/10 flex items-center justify-center
+                group-hover:scale-110 transition-transform duration-300
+              "
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-secondary"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">
+              快速启动
+            </h3>
+
+            <p
+              class="
+                text-sm sm:text-base md:text-lg text-base-content/70
+                leading-relaxed
+              "
+            >
+              跳过重复的基础开发工作，直接开始业务逻辑开发，节省开发时间。
+            </p>
           </div>
         </div>
 
-        <div>
-          <h3 class="text-2xl font-bold mb-3">最佳实践</h3>
-
-          <p class="text-base-content/70 leading-relaxed">
-            集成 Rails 社区推荐的最佳实践和安全机制，确保应用安全可靠。
-          </p>
-        </div>
-      </div>
-
-      <div
-        class="
-          flex gap-6 p-6 rounded-2xl bg-base-100 shadow-lg hover:shadow-xl
-          transition-all duration-300 border border-base-300 group
-        "
-      >
-        <div class="flex-shrink-0">
-          <div
-            class="
-              w-16 h-16 rounded-xl bg-gradient-to-br from-info/20 to-info/10
-              flex items-center justify-center group-hover:scale-110
-              transition-transform duration-300
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-info"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div
+          class="
+            flex gap-4 sm:gap-5 md:gap-6 p-6 sm:p-7 md:p-8 rounded-2xl bg-base-100 shadow-none sm:shadow-md md:shadow-lg hover:shadow-none sm:hover:shadow-lg md:hover:shadow-xl
+            transition-all duration-300 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="flex-shrink-0">
+            <div
+              class="
+                w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-accent/20
+                to-accent/10 flex items-center justify-center
+                group-hover:scale-110 transition-transform duration-300
+              "
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-accent"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">
+              最佳实践
+            </h3>
+
+            <p
+              class="
+                text-sm sm:text-base md:text-lg text-base-content/70
+                leading-relaxed
+              "
+            >
+              集成 Rails 社区推荐的最佳实践和安全机制，确保应用安全可靠。
+            </p>
           </div>
         </div>
 
-        <div>
-          <h3 class="text-2xl font-bold mb-3">开箱即用</h3>
+        <div
+          class="
+            flex gap-4 sm:gap-5 md:gap-6 p-6 sm:p-7 md:p-8 rounded-2xl bg-base-100 shadow-none sm:shadow-md md:shadow-lg hover:shadow-none sm:hover:shadow-lg md:hover:shadow-xl
+            transition-all duration-300 border-0 sm:border md:border border-base-300/50 group
+          "
+        >
+          <div class="flex-shrink-0">
+            <div
+              class="
+                w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-info/20 to-info/10
+                flex items-center justify-center group-hover:scale-110
+                transition-transform duration-300
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-info"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
+              </svg>
+            </div>
+          </div>
 
-          <p class="text-base-content/70 leading-relaxed">
-            包含用户系统、权限管理、多租户等企业级功能，无需从零开始。
-          </p>
+          <div class="flex-1">
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">
+              开箱即用
+            </h3>
+
+            <p
+              class="
+                text-sm sm:text-base md:text-lg text-base-content/70
+                leading-relaxed
+              "
+            >
+              包含用户系统、权限管理、多租户等企业级功能，无需从零开始。
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Quick Start Section -->
-  <div class="mt-32 container mx-auto px-5">
-    <div class="bg-gradient-to-br from-base-200 to-base-300 rounded-2xl">
-      <div class="card-body p-10">
-        <div class="text-center mb-10">
-          <h2
-            class="
-              text-5xl font-bold text-base-content mb-4 bg-gradient-to-r
-              from-primary to-secondary bg-clip-text text-transparent
-            "
-          >
-            快速开始
-          </h2>
+  <div
+    class="
+      min-h-screen flex items-center md:items-center py-8 md:py-0
+      justify-center relative overflow-hidden
+    "
+  >
+    <!-- Animated Background Gradient -->
+    <div
+      class="
+        absolute inset-0 bg-gradient-to-br from-success/20 via-primary/10
+        to-info/20 animate-gradient
+      "
+    ></div>
 
-          <p class="text-xl text-base-content/70">几分钟内启动您的项目</p>
-        </div>
+    <!-- Decorative Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-5"
+      style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 50px 50px;"
+    ></div>
 
-        <div class="mockup-code w-full bg-base-100 shadow-xl">
-          <pre data-prefix="$" class="text-primary"><code>git clone https://github.com/xiaohui-zhangxh/buildx.work.git          </code></pre>
+    <div class="container mx-auto px-4 sm:px-4 md:px-5 relative z-10 max-w-4xl w-full">
+      <div class="text-center mb-10 sm:mb-12 md:mb-16">
+        <h2
+          class="
+            text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content mb-3 sm:mb-4 bg-gradient-to-r
+            from-primary to-secondary bg-clip-text text-transparent
+          "
+        >
+          快速开始
+        </h2>
 
-          <pre data-prefix="$" class="text-primary"><code>cd buildx.work</code></pre>
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl text-base-content/70">
+          几分钟内启动您的项目
+        </p>
+      </div>
 
-          <pre data-prefix="$" class="text-primary"><code>bundle install</code></pre>
+      <div
+        class="
+          card bg-base-100/80 backdrop-blur-sm shadow-2xl border border-base-300/50
+          hover:shadow-3xl transition-all duration-300
+        "
+      >
+        <div class="card-body p-5 sm:p-6 md:p-8 lg:p-10">
+          <div class="mockup-code bg-primary text-primary-content w-full">
+            <pre data-prefix="$"><code>git clone https://github.com/xiaohui-zhangxh/buildx.work.git            </code></pre>
 
-          <pre data-prefix="$" class="text-primary"><code>bin/rails db:setup</code></pre>
+            <pre data-prefix="$"><code>cd buildx.work</code></pre>
 
-          <pre data-prefix="$" class="text-primary"><code class="text-success">bin/dev</code></pre>
-        </div>
+            <pre data-prefix="$"><code>bundle install</code></pre>
 
-        <div class="card-actions justify-center mt-8">
-          <a
-            href="https://github.com/xiaohui-zhangxh/buildx.work"
-            target="_blank"
-            class="
-              btn btn-primary btn-lg shadow-xl hover:shadow-2xl
-              transition-all hover:scale-105
-            "
-          >
-            查看完整文档
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 ml-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <pre data-prefix="$"><code>bin/rails db:setup</code></pre>
+
+            <pre data-prefix="$"><code class="text-success">bin/dev</code></pre>
+          </div>
+
+          <div class="card-actions justify-center mt-8 sm:mt-8 md:mt-10">
+            <a
+              href="https://github.com/xiaohui-zhangxh/buildx.work"
+              target="_blank"
+              class="
+                btn btn-primary btn-sm sm:btn-md md:btn-lg shadow-xl
+                hover:shadow-2xl transition-all hover:scale-105 gap-2
+              "
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </a>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+              </svg>
+              查看完整文档
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Footer CTA -->
-  <div class="mt-32 text-center">
-    <div class="bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20">
-      <div class="card-body py-16">
+  <div
+    class="
+      min-h-screen flex items-center md:items-center py-8 md:py-0
+      justify-center relative overflow-hidden
+    "
+  >
+    <!-- Animated Background Gradient -->
+    <div
+      class="
+        absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10
+        to-accent/20 animate-gradient
+      "
+    ></div>
+
+    <!-- Decorative Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-5"
+      style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 50px 50px;"
+    ></div>
+
+    <div class="text-center relative z-10 w-full">
+      <div class="card-body py-10 sm:py-12 md:py-16 px-4 sm:px-4 md:px-5">
         <h2
           class="
-            text-4xl font-bold mb-4 bg-gradient-to-r from-primary
+            text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary
             to-secondary bg-clip-text text-transparent
           "
         >
           准备开始了吗？
         </h2>
 
-        <p class="text-xl text-base-content/70 mb-8">加入我们，一起构建更好的 Rails 应用</p>
+        <p
+          class="
+            text-sm sm:text-base md:text-lg lg:text-xl text-base-content/70
+            mb-4 sm:mb-6 md:mb-8
+          "
+        >
+          加入我们，一起构建更好的 Rails 应用
+        </p>
 
-        <div class="flex flex-wrap gap-4 justify-center">
+        <div class="flex flex-wrap gap-3 sm:gap-4 justify-center">
           <a
             href="https://github.com/xiaohui-zhangxh/buildx.work"
             target="_blank"
             class="
-              btn btn-primary btn-lg shadow-xl hover:shadow-2xl
+              btn btn-primary btn-sm sm:btn-md md:btn-lg shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-lg md:hover:shadow-2xl
               transition-all hover:scale-105 gap-2
             "
           >
@@ -886,7 +1170,7 @@
             href="https://github.com/xiaohui-zhangxh/buildx.work/issues"
             target="_blank"
             class="
-              btn btn-outline btn-lg shadow-xl hover:shadow-2xl
+              btn btn-outline btn-sm sm:btn-md md:btn-lg shadow-none sm:shadow-md md:shadow-xl hover:shadow-none sm:hover:shadow-lg md:hover:shadow-2xl
               transition-all hover:scale-105 border-2
             "
           >

@@ -3,10 +3,10 @@
   <%= stylesheet_link_tag "highlight/github-dark", "data-turbo-track": "reload" %>
 <% end %>
 
-<div class="container mx-auto px-5 py-8 max-w-5xl">
+<div class="container mx-auto px-3 sm:px-4 md:px-5 py-6 sm:py-8 max-w-5xl">
   <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
+  <div class="mb-6 sm:mb-8">
+    <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
       <a href="<%= root_path %>" class="btn btn-ghost btn-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,70 +26,82 @@
       </a>
     </div>
 
-    <div class="flex items-center gap-4 mb-4">
-      <% if @rule_config[:icon] %>
-        <%= image_tag @rule_config[:icon], alt: @rule_config[:name], class: "h-16 w-16" %>
-      <% elsif @tech_stack == "action-policy" %>
-        <div
-          class="
-            h-16 w-16 flex items-center justify-center bg-gradient-to-br
-            from-primary/20 to-primary/10 rounded-lg
-          "
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-10 w-10 text-primary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+    <div class="mb-4 sm:mb-6">
+      <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <% if @rule_config[:icon] %>
+          <%= image_tag @rule_config[:icon], alt: @rule_config[:name], class: "h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 shrink-0" %>
+        <% elsif @tech_stack == "action-policy" %>
+          <div
+            class="
+              h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 flex items-center justify-center bg-gradient-to-br
+              from-primary/20 to-primary/10 rounded-lg shrink-0
+            "
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-            />
-          </svg>
-        </div>
-      <% elsif @tech_stack == "authentication" %>
-        <div
-          class="
-            h-16 w-16 flex items-center justify-center bg-gradient-to-br
-            from-secondary/20 to-secondary/10 rounded-lg
-          "
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-10 w-10 text-secondary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+          </div>
+        <% elsif @tech_stack == "authentication" %>
+          <div
+            class="
+              h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 flex items-center justify-center bg-gradient-to-br
+              from-secondary/20 to-secondary/10 rounded-lg shrink-0
+            "
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-secondary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+          </div>
+        <% end %>
+
+        <div class="flex-1 min-w-0">
+          <h1
+            class="
+              text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold
+              text-base-content mb-2
+            "
+          >
+            <%= @rule_config[:name] %>
+          </h1>
+
+          <p class="text-sm sm:text-base md:text-lg text-base-content/70">
+            <%= @rule_config[:description] %>
+          </p>
         </div>
-      <% end %>
-
-      <div>
-        <h1 class="text-4xl font-bold text-base-content mb-2">
-          <%= @rule_config[:name] %>
-        </h1>
-
-        <p class="text-lg text-base-content/70">
-          <%= @rule_config[:description] %>
-        </p>
       </div>
     </div>
   </div>
 
   <!-- Content -->
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body" style="--card-p: 3rem;">
+  <div
+    class="
+      card bg-base-100 shadow-none sm:shadow-md md:shadow-xl border-0
+      sm:border md:border border-base-300/50
+    "
+  >
+    <div class="card-body p-4 sm:p-6 md:p-8 lg:p-12">
       <div class="markdown-body" data-controller="highlight">
         <%= raw @html_content %>
       </div>

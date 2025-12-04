@@ -3,10 +3,10 @@
   <%= stylesheet_link_tag "highlight/github-dark", "data-turbo-track": "reload" %>
 <% end %>
 
-<div class="container mx-auto px-5 py-8 max-w-5xl">
+<div class="container mx-auto px-3 sm:px-4 md:px-5 py-6 sm:py-8 max-w-5xl">
   <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
+  <div class="mb-6 sm:mb-8">
+    <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
       <%= link_to experiences_path, class: "btn btn-ghost btn-sm" do %>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,17 +26,17 @@
       <% end %>
     </div>
 
-    <div class="mb-6">
-      <div class="flex items-center gap-4 mb-4">
+    <div class="mb-4 sm:mb-6">
+      <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
         <div
           class="
-            h-16 w-16 flex items-center justify-center bg-gradient-to-br
-            from-primary/20 to-primary/10 rounded-lg
+            h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 flex items-center justify-center bg-gradient-to-br
+            from-primary/20 to-primary/10 rounded-lg shrink-0
           "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-10 w-10 text-primary"
+            class="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -50,17 +50,27 @@
           </svg>
         </div>
 
-        <div class="flex-1">
-          <h1 class="text-4xl font-bold text-base-content mb-2">
+        <div class="flex-1 min-w-0">
+          <h1
+            class="
+              text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold
+              text-base-content mb-2
+            "
+          >
             <%= @experience[:title] %>
           </h1>
 
-          <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/70">
+          <div
+            class="
+              flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-xs
+              sm:text-sm text-base-content/70
+            "
+          >
             <% if @experience[:date] %>
               <div class="flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
+                  class="h-3 w-3 sm:h-4 sm:w-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -78,9 +88,9 @@
             <% end %>
 
             <% if @experience[:problem_type] %>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-1.5 sm:gap-2">
                 <% @experience[:problem_type].split(/[、,]/).each do |type| %>
-                  <span class="badge badge-outline badge-sm">
+                  <span class="badge badge-outline badge-xs sm:badge-sm">
                     <%= type.strip %>
                   </span>
                 <% end %>
@@ -93,9 +103,14 @@
   </div>
 
   <!-- Content -->
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body" style="--card-p: 3rem;">
-      <div class="markdown-body" data-controller="highlight">
+  <div
+    class="
+      card bg-base-100 shadow-none sm:shadow-md md:shadow-xl border-0
+      sm:border md:border border-base-300/50
+    "
+  >
+    <div class="card-body p-4 sm:p-6 md:p-8 lg:p-12">
+      <div class="markdown-body prose" data-controller="highlight">
         <%= raw @html_content %>
       </div>
     </div>
