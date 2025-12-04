@@ -9,7 +9,8 @@ import json from "highlight.js/lib/languages/json"
 import xml from "highlight.js/lib/languages/xml"
 import css from "highlight.js/lib/languages/css"
 import sql from "highlight.js/lib/languages/sql"
-
+import erb from "highlight.js/lib/languages/erb"
+import markdown from "highlight.js/lib/languages/markdown"
 // Register languages
 hljs.registerLanguage("ruby", ruby)
 hljs.registerLanguage("javascript", javascript)
@@ -19,7 +20,9 @@ hljs.registerLanguage("json", json)
 hljs.registerLanguage("xml", xml)
 hljs.registerLanguage("css", css)
 hljs.registerLanguage("sql", sql)
-
+hljs.registerLanguage("erb", erb)
+hljs.registerLanguage("html", xml)
+hljs.registerLanguage("markdown", markdown)
 // Connects to data-controller="highlight"
 export default class extends Controller {
   static values = {
