@@ -9,6 +9,23 @@
 
 ### 新增
 
+- 实现 dialog + turbo frame 菜单交互功能（2025-12-26）
+  - 新增 Dialog Manager Stimulus 控制器（`dialog_manager_controller.js`），管理对话框的打开、关闭和内容加载
+  - 新增可复用的对话框组件（`_dialog.html.erb`），使用 dialog + turbo frame 实现功能菜单加载
+  - 支持延迟加载、局部更新、DaisyUI 样式和响应式设计
+  - 学习自 Basecamp Fizzy 项目的交互方式
+- 添加 Fizzy dialog + turbo frame 学习文档（2025-12-26）
+  - 新增 `fizzy-dialog-turbo-frame.md`：学习文档，包含核心概念、实现方式和最佳实践
+  - 新增 `fizzy-dialog-turbo-frame-usage.md`：使用示例文档，包含完整代码示例和使用场景
+  - 更新 `fizzy-overview.md`：添加新文档链接
+- 添加 Rails strict locals 学习文档（2025-12-26）
+  - 新增 `rails-strict-locals.md`：学习文档，包含语法、示例、最佳实践和迁移指南
+  - 在 `_dialog.html.erb` 中应用 strict locals 规范，使用 `html_class` 替代 `class` 参数（避免保留关键字冲突）
+  - 参考 Rails 8 官方文档：https://guides.rubyonrails.org/action_view_overview.html#strict-locals
+- 添加阶段 3 多租户产品文档（2025-12-26）
+  - 新增 `docs/phase-3-multi-tenant/PRODUCT.md`：产品文档，包含产品价值、用户故事、功能特性等
+  - 更新 `docs/phase-3-multi-tenant/README.md`：更新阶段概览
+  - 更新 `docs/phase-3-multi-tenant/plan.md`：更新开发计划
 - 添加 Fizzy 项目学习文档（2025-12-07）
   - 新增 27 个 Fizzy 学习专题文档，涵盖代码风格、模型设计、控制器设计、Hotwire 使用、路由设计、测试策略、业务系统设计等内容
   - 包含完整的学习指南和最佳实践总结
@@ -52,6 +69,17 @@
 
 ### 变更
 
+- 更新项目文档和进度（2025-12-26）
+  - 更新 `.cursor/rules/base.mdc`：添加 Rails strict locals 相关规则
+  - 更新 `CURRENT_WORK.md`：记录当前工作状态
+  - 更新 `TEST_COVERAGE_TASKS.md`：更新测试覆盖率任务
+  - 更新 `docs/DEVELOPER_GUIDE.md`：更新开发者指南
+  - 更新 `docs/FEATURES.md`：更新功能清单
+  - 更新 `docs/phase-2-authorization/progress.md`：更新阶段 2 进度
+  - 更新 `engines/buildx_core/README.md`：更新核心引擎文档
+- 完善测试用例（2025-12-26）
+  - 更新 `test/controllers/experiences_controller_test.rb`：添加更多测试用例
+  - 更新 `test/forms/installation_form_test.rb`：添加更多测试用例
 - 完善经验文档 metadata（2025-12-07）
   - 为 11 个现有经验文档添加 tags 和 description 字段，便于后续通过标签系统进行筛选和检索
   - 修复 form-local-parameter.md 的 YAML 格式问题

@@ -100,9 +100,23 @@ COVERAGE_FILES=app/models bin/rails test test/models/
 - 在视图中使用 `allowed_to?` 进行权限判断
 - 权限不足时返回 403 错误页面
 
+**管理后台功能**：
+- **用户管理**：用户列表（搜索、筛选、分页）、用户详情、用户编辑、批量操作（批量删除、批量分配角色、批量移除角色）
+- **角色管理**：角色列表、角色创建和编辑、角色权限分配
+- **权限说明**：Policy 类列表和详情展示（只读）
+- **系统配置**：系统配置管理界面、配置分类管理、配置值编辑和验证
+- **操作日志**：操作日志查看、日志搜索和筛选、日志详情查看、CSV 导出
+- **仪表盘**：数据统计和监控、最近操作列表
+
+**权限控制**：
+- 管理后台使用 `Admin::BaseController` 作为基础控制器
+- 所有管理后台路由都需要管理员权限（通过 `authorize!` 检查）
+- 在导航栏中，管理后台入口仅对管理员可见（使用 `current_user&.has_role?(:admin)` 判断）
+
 **相关文档**：
 - [第二阶段开发计划](phase-2-authorization/plan.md)
-- [权限系统架构图](phase-2-authorization/architecture.md)
+- [第二阶段开发进度](phase-2-authorization/progress.md)
+- [第二阶段开发笔记](phase-2-authorization/notes.md)
 
 ### 前端
 - **DaisyUI** - UI 组件库
