@@ -55,6 +55,49 @@ module MarkdownRenderable
     result.join
   end
 
+  # 转换 Markdown 中的相对路径链接为绝对路径 URL
+  # 将 [text](file.md) 转换为 [text](/base_path/file)
+  # 将 [text](file.md#section) 转换为 [text](/base_path/file#section)
+  # 只处理相对路径的 .md 文件链接，不处理外部链接、纯锚点链接等
+  #
+  # @param markdown [String] Markdown 内容
+  # @param base_path [String] 基础路径，如 "/experiences" 或 "/tech-stack"
+  # @return [String] 转换后的 Markdown 内容
+  def convert_relative_links(markdown, base_path:)
+    # 匹配 Markdown 链接格式：[text](path)
+    # 只处理以 .md 结尾的相对路径链接（可能包含锚点）
+    # 不处理：
+    # - 外部链接（http://, https://, //）
+    # - 纯锚点链接（#anchor，没有文件名）
+    # - 绝对路径（/path）
+    # - 其他相对路径（../path）
+    markdown.gsub(/\[([^\]]+)\]\(([^)]+\.md(?:#[^)]*)?)\)/) do |match|
+      link_text = Regexp.last_match[1]
+      link_path = Regexp.last_match[2]
+
+      # 分离文件名和锚点
+      if link_path.include?("#")
+        file_part, anchor_part = link_path.split("#", 2)
+        anchor = "##{anchor_part}"
+      else
+        file_part = link_path
+        anchor = ""
+      end
+
+      # 检查是否是相对路径的 .md 文件（不以 http://, https://, //, /, ../ 开头）
+      # 只匹配简单的文件名格式：filename.md（允许字母、数字、点号、连字符、下划线）
+      if file_part.match?(/\A[a-zA-Z0-9.\-_]+\.md\z/)
+        # 提取文件名（不含扩展名）
+        file_id = File.basename(file_part, ".md")
+        # 转换为绝对路径 URL（保留锚点）
+        "[#{link_text}](#{base_path}/#{file_id}#{anchor})"
+      else
+        # 保持原样（可能是外部链接或其他格式）
+        match
+      end
+    end
+  end
+
   # 将 Markdown 内容转换为 HTML
   # 使用自定义 renderer 确保代码块有正确的 language-xxx 类名，以便 highlight.js 正确识别
   # 注意：内容来自受控的文件（不是用户输入），已经过验证和转义

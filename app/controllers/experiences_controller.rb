@@ -38,6 +38,40 @@ class ExperiencesController < ApplicationController
       raise ActiveRecord::RecordNotFound, "经验记录不存在: #{params[:id]}"
     end
 
+    # 设置 meta tags
+    site_name = SystemConfig.installation_completed? ? (SystemConfig.get("site_name").presence || "BuildX.work") : "BuildX.work"
+
+    # 构建 keywords：合并 problem_type 和 tags
+    keywords = []
+    keywords.concat(@experience[:problem_type].split(/[、,]/).map(&:strip)) if @experience[:problem_type]
+    keywords.concat(@experience[:tags].split(/[、,]/).map(&:strip)) if @experience[:tags]
+    keywords = keywords.uniq.join(", ").presence
+
+    # 设置页面描述（优先使用 description，否则使用标题）
+    page_description = @experience[:description] || "开发经验记录：#{@experience[:title]}"
+
+    # 构建 meta tags 参数
+    meta_tags_params = {
+      title: @experience[:title],
+      description: page_description,
+      og: {
+        title: @experience[:title],
+        description: page_description,
+        type: "article",
+        site_name: site_name
+      },
+      twitter: {
+        card: "summary",
+        title: @experience[:title],
+        description: page_description
+      }
+    }
+
+    # 只有当 keywords 存在时才添加（避免空字符串）
+    meta_tags_params[:keywords] = keywords if keywords
+
+    set_meta_tags(meta_tags_params)
+
     # 使用 File.basename 防止路径遍历攻击
     safe_filename = File.basename("#{experience_id}.md")
     experience_file = EXPERIENCES_DIR.join(safe_filename)
@@ -65,6 +99,8 @@ class ExperiencesController < ApplicationController
         markdown_content = remove_first_heading(markdown_content)
         # 修复列表格式
         markdown_content = fix_list_formatting(markdown_content)
+        # 转换相对路径链接为绝对路径 URL
+        markdown_content = convert_relative_links(markdown_content, base_path: "/experiences")
         markdown_to_html(markdown_content)
       end
     end
@@ -109,6 +145,8 @@ class ExperiencesController < ApplicationController
       title: metadata[:title] || id.humanize,
       date: metadata[:date],
       problem_type: metadata[:problem_type],
+      description: metadata[:description],
+      tags: metadata[:tags],
       file_path: file_path,
       created_at: File.ctime(file_path)
     }
@@ -142,6 +180,12 @@ class ExperiencesController < ApplicationController
 
             # 提取状态（如果需要）
             metadata[:status] = yaml_data["status"]&.to_s
+
+            # 提取描述
+            metadata[:description] = yaml_data["description"]&.to_s
+
+            # 提取标签
+            metadata[:tags] = yaml_data["tags"]&.to_s
           end
         rescue Psych::SyntaxError, Psych::DisallowedClass => e
           # YAML 解析失败，记录警告
