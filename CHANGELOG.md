@@ -33,6 +33,13 @@
   - 添加 `.cursor/commands/83-merge-contribution.md` 指令文件
   - 定义贡献代码合并流程和规范
   - 支持深度代码审查和风险分析
+- 添加 Tailwind CSS 配置管理文档（2025-12-05）
+  - 创建完整的 Tailwind CSS 配置管理指南（`docs/TAILWIND_CSS_CONFIGURATION.md`）
+  - 说明如何通过系统配置管理 Tailwind CSS 主题和配置
+  - 记录实际使用的方案（lofi、dracula 主题）
+- 添加 Turbo progress bar 样式表（2025-12-05）
+  - 添加 `app/assets/stylesheets/turbo-progress-bar.css` 样式文件
+  - 优化 Turbo 页面加载进度条显示效果
 
 ### 变更
 
@@ -67,6 +74,23 @@
 - 完善更新日志内容（2025-12-03）
   - 将贡献摘要中的修复记录到更新日志
   - 添加 Pagy 分页支持、daisy_form_with 修复、邮件端口配置修复等记录
+- 清理 Tailwind CSS 配置文档，删除无意义内容（2025-12-05）
+  - 删除未采用的方案和与项目无关的内容
+  - 删除假设性的"未来阶段"内容
+  - 更新为实际使用的方案（lofi、dracula 主题）
+  - 简化文档结构，使其更清晰实用
+- 将 sync upstream 指令从 rebase 改为 merge 策略（2025-12-05）
+  - 使用 git merge 而不是 git rebase
+  - 保留合并记录，避免重复检查代码
+  - 更新所有相关说明和示例
+- 优化布局和视图样式（2025-12-05）
+  - 将主题控制器从 body 移到 html 标签，提高主题切换的准确性
+  - 格式化 Google Analytics 脚本标签，提高代码可读性
+  - 移除 experiences/show 页面中多余的 prose class
+- 改进 SystemConfig.ensure_config 方法（2025-12-05）
+  - 允许更新描述和分类而不覆盖现有值
+  - 保持现有配置值的同时允许元数据更新
+  - 提高配置管理的灵活性
 
 ## [0.2.0] - 2025-12-02
 
