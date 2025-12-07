@@ -15,6 +15,8 @@
 
 ## 📁 文档结构
 
+- **README.md**：阶段概览（本文件）
+- **PRODUCT.md**：产品功能文档 ⭐ - 从用户/产品角度描述功能
 - **plan.md**：详细的开发计划和任务清单
 - **progress.md**：开发进度跟踪
 - **notes.md**：开发笔记和问题记录
@@ -41,9 +43,12 @@
 
 ## 📚 参考文档
 
+- [产品功能文档](./PRODUCT.md) ⭐ - 用户故事、功能特性、业务流程
+- [开发计划](./plan.md) - 技术实现细节
 - [开发者指南](../DEVELOPER_GUIDE.md)
 - [第一阶段文档](../phase-1-authentication/README.md)
 - [第二阶段文档](../phase-2-authorization/README.md)
+- [Fizzy SaaS 多租户 Account 设计](../experiences/fizzy-saas-account-design.md) ⭐
 
 ## 🔗 相关阶段
 
