@@ -66,6 +66,17 @@ description: Fizzy 最佳实践学习的总览文档，包含所有专题文档�
 - 广播机制
 - 视图组织方式
 
+### 4.1 🎯 [Dialog + Turbo Frame 菜单交互](fizzy-dialog-turbo-frame.md)
+
+学习 Fizzy 中使用 dialog + turbo frame 实现功能菜单加载的交互方式，包括：
+- Dialog 元素的使用
+- Turbo Frame 局部更新
+- Dialog Manager 控制器实现
+- 延迟加载和性能优化
+- 在 BuildX 中的应用示例
+
+**使用示例**：[Dialog + Turbo Frame 使用示例](fizzy-dialog-turbo-frame-usage.md)
+
 ### 5. 🛣️ [路由设计](fizzy-routing-design.md)
 
 学习 Fizzy 的路由设计，包括：
