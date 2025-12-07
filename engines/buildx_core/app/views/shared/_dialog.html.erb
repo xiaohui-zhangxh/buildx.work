@@ -1,0 +1,74 @@
+<%#
+  对话框组件 - 使用 dialog + turbo frame 实现功能菜单加载
+  学习自 Basecamp Fizzy 项目的交互方式
+
+  locals:
+    - id (String|nil): 对话框的唯一 ID，如果为 nil 则自动生成
+    - frame_id (Symbol): Turbo Frame 的 ID（默认：:dialog_frame）
+    - url (String|nil): 菜单内容的 URL，可选，也可以通过 data-dialog-manager-url-value 设置
+    - title (String|nil): 对话框标题，可选
+    - size (String): 对话框大小，可选值：sm, md, lg, xl, full（默认：md）
+    - html_class (String|nil): 额外的 CSS 类，可选
+%>
+
+<%#
+  locals: (
+    id: nil,
+    frame_id: :dialog_frame,
+    url: nil,
+    title: nil,
+    size: "md",
+    html_class: nil
+  )
+-%>
+
+<% id ||= "dialog-#{SecureRandom.hex(4)}"
+  size_class = {
+    "sm" => "max-w-sm",
+    "md" => "max-w-md",
+    "lg" => "max-w-lg",
+    "xl" => "max-w-xl",
+    "full" => "max-w-full"
+  }[size] || "max-w-md" %>
+
+<dialog
+  id="<%= id %>"
+  class="modal <%= html_class %>"
+  data-controller="dialog-manager"
+  data-dialog-manager-dialog-target="dialog"
+  <% if url.present? %>
+    data-dialog-manager-url-value="<%= url %>"
+  <% end %>
+>
+  <div class="modal-box <%= size_class %>">
+    <% if title.present? %>
+      <h3 class="font-bold text-lg mb-4"><%= title %></h3>
+    <% end %>
+
+    <%= turbo_frame_tag frame_id,
+          data: {
+            dialog_manager_target: "frame"
+          },
+          src: url.present? ? url : nil do %>
+      <div class="flex items-center justify-center py-8">
+        <span class="loading loading-spinner loading-lg"></span>
+        <span class="ml-2">加载中...</span>
+      </div>
+    <% end %>
+
+    <div class="modal-action">
+      <button
+        class="btn"
+        type="button"
+        data-action="click->dialog-manager#close"
+      >
+        关闭
+      </button>
+    </div>
+  </div>
+
+  <%# 点击背景关闭对话框（使用 form method="dialog"） %>
+  <form method="dialog" class="modal-backdrop">
+    <button type="submit">关闭</button>
+  </form>
+</dialog>
