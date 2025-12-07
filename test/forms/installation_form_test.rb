@@ -426,4 +426,30 @@ class InstallationFormTest < ActiveSupport::TestCase
     assert_not form.valid?
     assert_not form.save
   end
+
+  test "should handle ActiveRecord::RecordInvalid exception gracefully" do
+    # Create a user with the same email address that will be used in the form
+    existing_user = User.create!(
+      email_address: "admin@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Existing User",
+      confirmed_at: Time.current
+    )
+
+    form = InstallationForm.new(
+      site_name: "Test Site",
+      time_zone: "Asia/Shanghai",
+      locale: "zh-CN",
+      admin_email: "admin@example.com", # Same email as existing user
+      admin_password: "password123",
+      admin_password_confirmation: "password123",
+      admin_name: "Admin User"
+    )
+
+    # save should return false and add error to base
+    assert_not form.save
+    assert form.errors[:base].any?
+    assert_match(/email_address|已经被使用/, form.errors[:base].first.to_s)
+  end
 end
