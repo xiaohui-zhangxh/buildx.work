@@ -2,6 +2,8 @@
 date: 2025-11-25
 problem_type: 配置问题、Importmap、SSL 证书
 status: 已解决
+tags: Importmap、SSL 证书、OpenSSL、证书验证、JSPM CDN
+description: 解决 Importmap SSL 证书验证错误问题，包括 OpenSSL gem 配置、SSL 证书验证、JSPM CDN 连接等
 ---
 
 # Importmap SSL 证书验证错误

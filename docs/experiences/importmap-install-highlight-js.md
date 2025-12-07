@@ -2,6 +2,8 @@
 date: 2025-11-25
 problem_type: 前端集成、Importmap、第三方库管理
 status: 已解决
+tags: Importmap、Highlight.js、第三方库、ES Module、Stimulus
+description: Highlight.js 集成问题与解决方案，包括 Importmap 路径配置、ES Module vs CommonJS 兼容性、Stimulus Controller 初始化等
 ---
 
 # Highlight.js 集成问题与解决方案

@@ -1,7 +1,9 @@
 ---
 date: 2025-12-02
-problem_type: 后端逻辑 / 配置问题
+problem_type: 后端逻辑、配置问题
 status: 已解决
+tags: ActionMailer、邮件配置、动态配置、数据库配置
+description: 解决 ActionMailer 从数据库动态读取配置的问题，包括配置加载机制、动态更新配置、多租户 URL 处理等
 ---
 
 # ActionMailer 动态配置从数据库读取

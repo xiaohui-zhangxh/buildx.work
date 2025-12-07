@@ -1,7 +1,9 @@
 ---
 date: 2025-11-29
-problem_type: 后端逻辑 / 认证系统
+problem_type: 后端逻辑、认证系统
 status: 已解决
+tags: Warden、认证系统、API 控制器、custom_failure、401 响应
+description: 解决 API 控制器返回 401 状态码时被 Warden 拦截的问题，使用 custom_failure! 实现自定义错误处理
 ---
 
 # Warden custom_failure! 使用经验

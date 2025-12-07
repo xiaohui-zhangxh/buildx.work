@@ -1,7 +1,9 @@
 ---
 date: 2025-12-03
-problem_type: 后端逻辑 / 分页功能
+problem_type: 后端逻辑、分页功能
 status: 已解决
+tags: Pagy、分页、升级、Pagy 43、API 迁移
+description: 从 Pagy 9 升级到 Pagy 43 的完整指南，包括新特性、配置迁移、代码更新步骤和最佳实践
 ---
 
 # Pagy 43 升级和使用经验

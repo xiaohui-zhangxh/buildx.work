@@ -2,6 +2,8 @@
 date: 2025-12-03
 problem_type: 前端集成、Rails Engine、Importmap 配置
 status: 已解决
+tags: Importmap、Rails Engine、Stimulus、JavaScript 加载、配置
+description: 解决 Rails Engine 中 Importmap 配置问题，包括三个关键路径配置、开发环境缓存清理、配置分离策略等
 ---
 
 # Importmap 从 Engine 中加载配置

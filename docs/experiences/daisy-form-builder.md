@@ -2,6 +2,8 @@
 date: 2025-11-26
 problem_type: 使用指南、前端开发、表单构建器
 status: 已解决
+tags: DaisyFormBuilder、表单构建器、DaisyUI、前端开发
+description: DaisyFormBuilder 使用指南，包括基本用法、local 参数使用场景、表单样式规范等
 ---
 
 # DaisyFormBuilder 使用指南

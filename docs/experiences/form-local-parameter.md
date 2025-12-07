@@ -2,6 +2,8 @@
 date: 2025-11-26
 problem_type: 使用指南、前端开发、表单提交
 status: 已解决
+tags: "form_with、local 参数、表单提交、Turbo、AJAX"
+description: "表单 local: true 参数使用指南，说明默认 AJAX 提交和传统 HTML 提交的区别，以及在不同场景下的使用建议"
 ---
 
 # 表单 `local: true` 参数使用指南

@@ -2,6 +2,8 @@
 date: 2025-12-02
 problem_type: 部署问题、Kamal、SSH 端口转发
 status: 已解决
+tags: Kamal、部署、SSH、端口转发、AllowTcpForwarding
+description: 解决 Kamal 部署时端口转发失败问题，包括 SSH 端口转发配置优先级、AllowTcpForwarding 配置、本地注册表端口转发机制等
 ---
 
 # Kamal 部署时端口转发失败问题

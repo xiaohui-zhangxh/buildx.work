@@ -2,6 +2,8 @@
 date: 2025-12-04
 problem_type: 前端集成、UI 交互优化、性能优化
 status: 已解决
+tags: Stimulus、导航栏、滚动交互、性能优化、requestAnimationFrame
+description: 导航栏滚动交互优化实现，使用 Stimulus 控制器实现自动隐藏/显示功能，包括性能优化技巧和用户体验优化
 ---
 
 # 导航栏滚动交互优化

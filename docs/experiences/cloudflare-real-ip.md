@@ -2,6 +2,8 @@
 date: 2025-11-26
 problem_type: 配置问题、Cloudflare、IP 地址
 status: 已解决
+tags: Cloudflare、IP 地址、代理、cloudflare-rails、安全
+description: 解决 Cloudflare 代理环境下获取真实客户端 IP 地址的问题，使用 cloudflare-rails gem 实现安全的 IP 地址获取
 ---
 
 # Cloudflare 真实 IP 地址获取
