@@ -9,6 +9,15 @@
 
 ### 新增
 
+- 添加 Fizzy 项目学习文档（2025-12-07）
+  - 新增 27 个 Fizzy 学习专题文档，涵盖代码风格、模型设计、控制器设计、Hotwire 使用、路由设计、测试策略、业务系统设计等内容
+  - 包含完整的学习指南和最佳实践总结
+  - 新增 Fizzy 项目分析脚本（`script/analyze_fizzy.sh`）
+- 增强经验系统功能和 SEO 优化（2025-12-07）
+  - 添加相对路径链接自动转换功能，支持经验文档间的链接跳转
+  - 添加 meta tags 设置，优化 SEO 和社交媒体分享（description、keywords、OG、Twitter Card）
+  - 优化经验列表卡片显示，添加描述信息和标签显示
+  - 添加相关测试用例
 - 添加 Google Analytics 4 支持（2025-12-04）
   - 集成 Google Analytics 4（gtag.js）
   - 支持通过系统配置（SystemConfig）设置 Google Analytics 测量 ID
@@ -43,6 +52,11 @@
 
 ### 变更
 
+- 完善经验文档 metadata（2025-12-07）
+  - 为 11 个现有经验文档添加 tags 和 description 字段，便于后续通过标签系统进行筛选和检索
+  - 修复 form-local-parameter.md 的 YAML 格式问题
+- 更新规则文档和脚本路径（2025-12-07）
+  - 更新脚本目录路径说明，统一使用 script/ 目录
 - 重构系统配置为 YAML 文件管理（2025-12-04）
   - 将系统配置从数据库迁移到 YAML 文件（`config/system_configs.yml`）
   - 支持配置的默认值和描述信息
