@@ -57,6 +57,16 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Generate deployment version (use git commit hash if available, otherwise use timestamp)
+# This version will be used for cache invalidation on each deployment
+RUN if [ -d .git ] && command -v git >/dev/null 2>&1; then \
+      VERSION=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown"); \
+    else \
+      VERSION=$(date +%Y%m%d%H%M%S); \
+    fi && \
+    echo "$VERSION" > config/version.txt && \
+    echo "Deployment version: $VERSION"
+
 # Precompile bootsnap code for faster boot times.
 # -j 1 disable parallel compilation to avoid a QEMU bug: https://github.com/rails/bootsnap/issues/495
 RUN bundle exec bootsnap precompile -j 1 app/ lib/

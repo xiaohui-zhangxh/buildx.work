@@ -56,6 +56,12 @@ module ApplicationHelper
     end
   end
 
+  # Get deployment version for cache invalidation
+  # Returns the version string from config/version.txt, or "dev" in development
+  def deployment_version
+    DeploymentVersion.current
+  end
+
   # Create a form with DaisyFormBuilder
   # Usage:
   #   <%= daisy_form_with model: @user do |form| %>

@@ -47,7 +47,9 @@ class TechStackController < ApplicationController
     # 获取文件修改时间用于缓存版本控制
     file_mtime = File.mtime(rule_file)
     file_mtime_int = file_mtime.to_i
-    cache_key = "tech_stack_rule:#{@tech_stack}:#{file_mtime_int}"
+    # 使用部署版本号作为缓存键的一部分，确保每次部署自动清空缓存
+    deployment_version = DeploymentVersion.current
+    cache_key = "tech_stack_rule:#{@tech_stack}:#{deployment_version}:#{file_mtime_int}"
 
     # 使用 stale? 检查请求是否过期
     # 只有在请求过期时才执行代码块，避免不必要的文件读取和渲染

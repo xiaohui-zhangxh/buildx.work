@@ -39,3 +39,6 @@
 /node_modules/
 /coverage/
 .DS_Store
+
+# Deployment version file (generated during Docker build)
+/config/version.txt

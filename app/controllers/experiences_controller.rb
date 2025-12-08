@@ -83,7 +83,9 @@ class ExperiencesController < ApplicationController
     # 获取文件修改时间用于缓存版本控制
     file_mtime = File.mtime(experience_file)
     file_mtime_int = file_mtime.to_i
-    cache_key = "experience:#{experience_id}:#{file_mtime_int}"
+    # 使用部署版本号作为缓存键的一部分，确保每次部署自动清空缓存
+    deployment_version = DeploymentVersion.current
+    cache_key = "experience:#{experience_id}:#{deployment_version}:#{file_mtime_int}"
 
     # 使用 stale? 检查请求是否过期
     if stale?(
