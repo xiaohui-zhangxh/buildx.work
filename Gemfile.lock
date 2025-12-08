@@ -168,7 +168,7 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (2.16.0)
+    json (2.17.1)
     kamal (2.9.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -243,7 +243,7 @@ GEM
       racc (~> 1.4)
     openssl (3.3.2)
     ostruct (0.6.3)
-    pagy (43.1.8)
+    pagy (43.2.0)
       json
       yaml
     parallel (1.27.0)
@@ -484,7 +484,7 @@ DEPENDENCIES
   letter_opener (~> 1.10.0)
   meta-tags (~> 2.22, >= 2.22.2)
   openssl (~> 3.3, >= 3.3.2)
-  pagy (~> 43.0)
+  pagy (~> 43.2)
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.1)
