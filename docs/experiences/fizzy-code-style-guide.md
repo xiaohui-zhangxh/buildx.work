@@ -270,17 +270,63 @@ class PushNotificationJob < ApplicationJob
 end
 ```
 
-## 7. To Bang or Not to Bang
+## 7. 默认参数的使用
 
-### 7.1 使用规则
+### 7.1 简化参数传递
+
+**如果方法已经将常用值（如 `Current.user`）作为默认参数，控制器中就不需要显式传递：**
+
+```ruby
+# ❌ Bad（不必要的参数传递）
+class Cards::ClosuresController < ApplicationController
+  def create
+    @card.close(user: Current.user)
+    render_card_replacement
+  end
+end
+
+# ✅ Good（利用默认参数）
+class Cards::ClosuresController < ApplicationController
+  def create
+    @card.close
+    render_card_replacement
+  end
+end
+```
+
+**前提**：模型方法已经将 `Current.user` 作为默认参数：
+
+```ruby
+# app/models/card.rb
+def close(user: Current.user)
+  # ...
+end
+```
+
+**好处**：
+- 代码更简洁
+- 减少重复
+- 如果默认值改变，只需要修改一处
+
+### 7.2 从 Commit 15983cede 学到的经验
+
+**时间**：2025-12-07  
+**作者**：Jorge Manrubia  
+**变更文件**：`app/controllers/cards/closures_controller.rb`
+
+Fizzy 团队移除了不必要的 `Current.user` 参数传递，因为 `close` 和 `reopen` 方法已经将 `Current.user` 作为默认参数。这体现了代码简化的原则。
+
+## 8. To Bang or Not to Bang
+
+### 8.1 使用规则
 
 **作为一般规则，只在有对应的不带 `!` 的方法时才使用 `!`。**
 
 特别是，**不使用 `!` 来标记破坏性操作**。Ruby 和 Rails 中有很多破坏性方法不以 `!` 结尾。
 
-## 8. 查找类似代码
+## 9. 查找类似代码
 
-### 8.1 编写新代码时
+### 9.1 编写新代码时
 
 **在编写新代码时，除非你非常熟悉我们的方法，否则尝试找到类似的代码作为参考。**
 
@@ -310,5 +356,5 @@ Pull Request 是进行这种讨论的好地方。
 ## 更新记录
 
 - **创建日期**：2025-12-07
-- **最后更新**：2025-12-07
+- **最后更新**：2025-12-08
 

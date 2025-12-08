@@ -41,13 +41,112 @@ Turbo Frame 提供了局部更新的能力：
 
 ## Fizzy 实现方式
 
-### 基本结构
+### 从 Fizzy 学到的核心组件
 
-**Fizzy 中的典型实现：**
+**Fizzy 实际提供的：**
+
+1. **`dialog_controller.js`** - 管理单个对话框的打开、关闭
+   - 参考：https://github.com/basecamp/fizzy/blob/main/app/javascript/controllers/dialog_controller.js
+   - 功能：`open()`, `close()`, `toggle()`, `loadLazyFrames()` 等方法
+
+2. **`dialog_manager_controller.js`** - 管理多个对话框（确保同时只有一个打开）
+   - 参考：https://github.com/basecamp/fizzy/blob/main/app/javascript/controllers/dialog_manager_controller.js
+   - 功能：监听 `dialog:show` 事件，自动关闭其他对话框
+
+3. **`dialog.css`** - Dialog 样式和动画
+   - 参考：https://github.com/basecamp/fizzy/blob/main/app/assets/stylesheets/dialog.css
+   - 功能：CSS 过渡动画、backdrop 样式
+
+**注意**：Fizzy **没有**提供 dialog partial，dialog 元素是直接写在视图中的。
+
+### Dialog Controller 实现
+
+**Fizzy 的 `dialog_controller.js` 核心方法：**
+
+```javascript
+import { Controller } from "@hotwired/stimulus"
+import { orient } from "helpers/orientation_helpers"
+
+export default class extends Controller {
+  static targets = [ "dialog" ]
+  static values = {
+    modal: { type: Boolean, default: false },
+    sizing: { type: Boolean, default: true }
+  }
+
+  connect() {
+    this.dialogTarget.setAttribute("aria-hidden", "true")
+  }
+
+  open() {
+    const modal = this.modalValue
+
+    if (modal) {
+      this.dialogTarget.showModal()
+    } else {
+      this.dialogTarget.show()
+      orient(this.dialogTarget)
+    }
+
+    this.loadLazyFrames()
+    this.dialogTarget.setAttribute("aria-hidden", "false")
+    this.dispatch("show")
+  }
+
+  close() {
+    this.dialogTarget.close()
+    this.dialogTarget.setAttribute("aria-hidden", "true")
+    this.dialogTarget.blur()
+    orient(this.dialogTarget, false)
+    this.dispatch("close")
+  }
+
+  loadLazyFrames() {
+    Array.from(this.dialogTarget.querySelectorAll("turbo-frame")).forEach(frame => { 
+      frame.loading = "eager" 
+    })
+  }
+}
+```
+
+### Dialog Manager Controller 实现
+
+**Fizzy 的 `dialog_manager_controller.js`：**
+
+```javascript
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  connect() {
+    this.element.addEventListener("dialog:show", this.handleDialogShow.bind(this))
+  }
+
+  disconnect() {
+    this.element.removeEventListener("dialog:show", this.handleDialogShow.bind(this))
+  }
+
+  handleDialogShow(event) {
+    this.#dialogControllers.forEach(dialogController => {
+      if (dialogController !== event.target) {
+        const dialog = dialogController.querySelector("dialog")
+        dialog.removeAttribute("open")
+      }
+    })
+  }
+
+  get #dialogControllers() {
+    return this.element.querySelectorAll('[data-controller~="dialog"]')
+  }
+}
+```
+
+### Fizzy 中的实际使用方式
+
+**Fizzy 在视图中直接使用 dialog 元素（没有 partial）：**
 
 ```erb
-<!-- 对话框结构 -->
-<dialog id="menu-dialog" data-controller="dialog-manager">
+<!-- 在视图中直接写 dialog -->
+<dialog id="menu-dialog" data-controller="dialog" data-dialog-dialog-target="dialog">
   <div class="dialog__content">
     <%= turbo_frame_tag :menu_frame, src: menu_path do %>
       <div class="loading">加载中...</div>
@@ -56,108 +155,9 @@ Turbo Frame 提供了局部更新的能力：
 </dialog>
 
 <!-- 触发按钮 -->
-<button data-action="click->dialog-manager#open" 
-        data-dialog-manager-url-value="<%= menu_path %>">
+<button data-action="click->dialog#open" data-dialog-target="dialog">
   打开菜单
 </button>
-```
-
-### Dialog Manager 控制器
-
-**Fizzy 的 `dialog_manager_controller.js` 实现思路：**
-
-```javascript
-import { Controller } from "@hotwired/stimulus"
-
-export default class extends Controller {
-  static values = { url: String }
-  static targets = ["frame", "dialog"]
-
-  connect() {
-    // 监听 Turbo Frame 加载完成事件
-    this.boundHandleFrameLoad = this.handleFrameLoad.bind(this)
-    if (this.hasFrameTarget) {
-      this.frameTarget.addEventListener("turbo:frame-load", this.boundHandleFrameLoad)
-    }
-
-    // 监听对话框关闭事件
-    this.boundHandleClose = this.handleClose.bind(this)
-    this.dialogTarget.addEventListener("close", this.boundHandleClose)
-  }
-
-  disconnect() {
-    if (this.hasFrameTarget) {
-      this.frameTarget.removeEventListener("turbo:frame-load", this.boundHandleFrameLoad)
-    }
-    this.dialogTarget.removeEventListener("close", this.boundHandleClose)
-  }
-
-  open(event) {
-    event.preventDefault()
-    
-    // 设置 Turbo Frame 的 src，触发加载
-    if (this.hasUrlValue && this.hasFrameTarget) {
-      this.frameTarget.src = this.urlValue
-    }
-    
-    // 显示对话框
-    this.dialogTarget.showModal()
-  }
-
-  close(event) {
-    event?.preventDefault()
-    this.dialogTarget.close()
-  }
-
-  handleFrameLoad(event) {
-    // Frame 加载完成后的处理
-    // 可以在这里处理加载成功或失败的情况
-  }
-
-  handleClose(event) {
-    // 对话框关闭时的清理工作
-    // 例如：清空 Frame 内容或重置状态
-    if (this.hasFrameTarget) {
-      this.frameTarget.src = ""
-    }
-  }
-}
-```
-
-### 控制器实现
-
-**Rails 控制器返回 Turbo Frame 内容：**
-
-```ruby
-class MenusController < ApplicationController
-  def show
-    # 返回菜单内容，包含在 turbo_frame_tag 中
-    render partial: "menus/menu"
-  end
-end
-```
-
-### 视图实现
-
-**菜单视图（`menus/_menu.html.erb`）：**
-
-```erb
-<%= turbo_frame_tag :menu_frame do %>
-  <div class="menu">
-    <div class="menu__header">
-      <h2>功能菜单</h2>
-      <button data-action="click->dialog-manager#close">关闭</button>
-    </div>
-    
-    <div class="menu__content">
-      <ul>
-        <li><%= link_to "功能 1", feature1_path, data: { turbo_frame: "_top" } %></li>
-        <li><%= link_to "功能 2", feature2_path, data: { turbo_frame: "_top" } %></li>
-        <li><%= link_to "功能 3", feature3_path, data: { turbo_frame: "_top" } %></li>
-      </ul>
-    </div>
-  </div>
-<% end %>
 ```
 
 ## 关键特性
@@ -210,21 +210,43 @@ end
 
 ## 应用到 BuildX
 
+### BuildX 的实现方式
+
+**从 Fizzy 学到的（直接使用）：**
+1. ✅ **`dialog_controller.js`** - 直接参考 Fizzy 实现
+2. ✅ **`dialog_manager_controller.js`** - 直接参考 Fizzy 实现
+3. ✅ **`dialog.css`** - 直接参考 Fizzy 实现
+
+**BuildX 自己实现的（Fizzy 没有）：**
+1. ⭐ **`_dialog.html.erb` partial** - 我们自己创建的可复用组件
+   - **原因**：Fizzy 没有 dialog partial，dialog 是直接写在视图中的
+   - **目的**：为了代码复用和统一样式（使用 DaisyUI）
+   - **实现**：基于 Fizzy 的 dialog 控制器和样式，但封装成 partial 以便复用
+
 ### 实现步骤
 
-1. **创建 Dialog Manager 控制器**
+1. **使用 Fizzy 的 Dialog Controller**
+   - 位置：`engines/buildx_core/app/javascript/controllers/dialog_controller.js`
+   - 来源：直接参考 Fizzy 的 `dialog_controller.js`
+
+2. **使用 Fizzy 的 Dialog Manager Controller**
    - 位置：`engines/buildx_core/app/javascript/controllers/dialog_manager_controller.js`
-   - 功能：管理对话框的打开、关闭和内容加载
+   - 来源：直接参考 Fizzy 的 `dialog_manager_controller.js`
 
-2. **创建对话框组件**
+3. **使用 Fizzy 的 Dialog CSS**
+   - 位置：`engines/buildx_core/app/assets/stylesheets/dialog.css`
+   - 来源：直接参考 Fizzy 的 `dialog.css`
+
+4. **创建 Dialog Partial（BuildX 自己实现）**
    - 位置：`engines/buildx_core/app/views/shared/_dialog.html.erb`
-   - 功能：可复用的对话框组件
+   - 功能：可复用的对话框组件，封装 dialog 元素和 Turbo Frame
+   - 注意：这是 BuildX 自己创建的，Fizzy 没有这个 partial
 
-3. **创建菜单视图**
+5. **创建菜单视图**
    - 位置：根据具体功能模块
    - 功能：返回菜单内容，包裹在 Turbo Frame 中
 
-4. **创建菜单控制器**
+6. **创建菜单控制器**
    - 位置：根据具体功能模块
    - 功能：处理菜单请求，返回 Turbo Frame 内容
 
@@ -284,21 +306,25 @@ export default class extends Controller {
 }
 ```
 
-**对话框组件（`shared/_dialog.html.erb`）：**
+**BuildX 的 Dialog Partial（我们自己实现的）：**
 
 ```erb
-<dialog id="<%= id %>" 
-        class="dialog" 
-        data-controller="dialog-manager"
-        data-dialog-manager-dialog-target="dialog">
-  <div class="dialog__content">
-    <%= turbo_frame_tag frame_id, 
-          data: { 
-            dialog_manager_target: "frame",
-            dialog_manager_url_value: url 
-          } do %>
-      <div class="dialog__loading">
-        <div class="spinner">加载中...</div>
+<%# 
+  注意：这是 BuildX 自己创建的 partial，Fizzy 没有这个
+  基于 Fizzy 的 dialog 控制器和样式，但封装成 partial 以便复用
+%>
+<dialog
+  id="<%= id %>"
+  class="dialog modal <%= html_class %>"
+  data-controller="dialog"
+  data-dialog-dialog-target="dialog"
+  data-dialog-modal-value="<%= modal %>"
+>
+  <div class="modal-box <%= size_class %> p-0">
+    <%= turbo_frame_tag frame_id, src: url, loading: "lazy" do %>
+      <div class="flex items-center justify-center py-8">
+        <span class="loading loading-spinner loading-lg"></span>
+        <span class="ml-2">加载中...</span>
       </div>
     <% end %>
   </div>
@@ -308,17 +334,18 @@ export default class extends Controller {
 **使用示例：**
 
 ```erb
-<!-- 在视图中使用 -->
+<!-- 在视图中使用 BuildX 的 dialog partial -->
 <%= render "shared/dialog", 
     id: "menu-dialog",
     frame_id: :menu_frame,
-    url: menu_path %>
+    url: menu_path,
+    size: "sm",
+    hide_close: true %>
 
 <!-- 触发按钮 -->
-<button data-action="click->dialog-manager#open"
-        data-dialog-manager-url-value="<%= menu_path %>"
-        data-dialog-manager-target="dialog"
-        data-dialog-manager-frame-target="frame">
+<button data-controller="dialog"
+        data-action="click->dialog#open"
+        data-dialog-dialog-id-value="menu-dialog">
   打开菜单
 </button>
 ```
