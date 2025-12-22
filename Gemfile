@@ -19,7 +19,7 @@ gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 # 解决 importmap 下载依赖失败的问题 state=error: certificate verify failed
-gem "openssl", "~> 3.3", ">= 3.3.2"
+gem "openssl", "~> 4.0"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
